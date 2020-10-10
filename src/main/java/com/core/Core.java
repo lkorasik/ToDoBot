@@ -55,7 +55,7 @@ public class Core {
     }
 
     private void addTask(String description) {
-        if (description == null || description.equals(" ")) {
+        if (description == null || description.equals(" ") || description.equals("")) {
             response = "Please enter a task description";
         } else{
             Task task = new Task(description);

@@ -1,10 +1,11 @@
 package com.consolebot;
 
+import com.core.Core;
 import java.util.Scanner;
 
 public class ConsoleBot {
     public static void main(String [] args){
-        com.core.Core bot = new com.core.Core();
+        Core bot = new Core();
         Scanner scanner = new Scanner(System.in);
         while (true){
             String userInput = scanner.nextLine();
