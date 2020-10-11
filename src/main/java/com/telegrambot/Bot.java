@@ -37,14 +37,10 @@ public class Bot extends TelegramLongPollingBot{
                 switch (command){
                     case CommandsNames.start:
                         Core = new Core();
-                        result = "I'm ready for work!";
+                        result = CommandsNames.startMsg;
                         break;
                     case CommandsNames.help:
-                        result = "/add [text] - You can add task.\n\ttext - task's text\n" +
-                                "/del [task_id] - You can delete task.\n\ttask_id - Task's id\n" +
-                                "/show - You can see all tasks\n" +
-                                "/start - You can start chating with bot\n" +
-                                "/help - You will see this message";
+                        result = CommandsNames.helpMsg;
                         break;
                     case CommandsNames.addTask:
                         result = Core.addTask(parsedMessage.getBody());
@@ -56,12 +52,12 @@ public class Bot extends TelegramLongPollingBot{
                         result = Core.showTasks();
                         break;
                     default:
-                        result = "This command isn't implemented yet";
+                        result = CommandsNames.notImplementedCommandMsg;
                         break;
                 }
             }
             else {
-                result = "Your command must starts with /";
+                result = CommandsNames.incorrectCommandFormatMsg;
             }
 
             answer.setText(result);
