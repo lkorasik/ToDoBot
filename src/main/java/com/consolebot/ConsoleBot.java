@@ -15,7 +15,7 @@ public class ConsoleBot {
         Scanner scanner = new Scanner(System.in);
         while (true){
             String userInput = scanner.nextLine();
-            ParsedCommand userArgs = CommandSplitter.Split(userInput);
+            ParsedCommand userArgs = CommandSplitter.split(userInput);
             if (userArgs.getCommand().startsWith("/")){
                 if (userArgs.getCommand().equals("/add")){
                     System.out.println(bot.addTask(userArgs.getBody()));

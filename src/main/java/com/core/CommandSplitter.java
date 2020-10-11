@@ -5,11 +5,11 @@ package com.core;
 
 public class CommandSplitter {
     /**
-     * Распрасить строчку. Выделить команду и тело команды
+     * Распарсить строчку. Выделить команду и тело команды
      * @param line - Строка с запросом
      * @return Команда
      */
-    public static ParsedCommand Split(String line){
+    public static ParsedCommand split(String line){
         var position = line.indexOf(" ");
 
         String command = null;
