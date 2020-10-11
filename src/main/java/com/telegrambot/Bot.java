@@ -7,6 +7,7 @@ import com.core.CommandSplitter;
 import com.core.CommandsNames;
 import com.core.Core;
 import com.core.ParsedCommand;
+import org.checkerframework.checker.units.qual.C;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Update;
@@ -15,8 +16,7 @@ import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 public class Bot extends TelegramLongPollingBot{
     private final String Token = "1309073462:AAFZKxukxVkrvvVhnHbWUzbnnrvhMRO6k7M";
     private final String BotUserName = "ToDoBot";
-
-    private final Core Core = new Core();
+    private Core Core = null;
 
     /**
      * Этот метод вызывается, когда приходит сообщение боту в тг
@@ -31,23 +31,39 @@ public class Bot extends TelegramLongPollingBot{
             SendMessage answer = new SendMessage();
             answer.setChatId(update.getMessage().getChatId());
 
+            System.out.println(message);
+
             String command = parsedMessage.getCommand();
             if(command.startsWith("/")){
-                if(command.equals(CommandsNames.addTask)){
-                    String result = Core.addTask(parsedMessage.getBody());
-                    answer.setText(result);
+                String result;
+
+                switch (command){
+                    case CommandsNames.start:
+                        Core = new Core();
+                        result = "I'm ready for work!";
+                        break;
+                    case CommandsNames.help:
+                        result = "/add [text] - You can add task.\n\ttext - task's text\n" +
+                                "/del [task_id] - You can delete task.\n\ttask_id - Task's id\n" +
+                                "/show - You can see all tasks\n" +
+                                "/start - You can start chating with bot\n" +
+                                "/help - You will see this message";
+                        break;
+                    case CommandsNames.addTask:
+                        result = Core.addTask(parsedMessage.getBody());
+                        break;
+                    case CommandsNames.deleteTask:
+                        result = Core.deleteTask(parsedMessage.getBody());
+                        break;
+                    case CommandsNames.showTasks:
+                        result = Core.showTasks();
+                        break;
+                    default:
+                        result = "This command isn't implemented yet";
+                        break;
                 }
-                else if(command.equals(CommandsNames.deleteTask)){
-                    String result = Core.deleteTask(parsedMessage.getBody());
-                    answer.setText(result);
-                }
-                else if(command.equals(CommandsNames.showTasks)){
-                    String result = Core.showTasks();
-                    answer.setText(result);
-                }
-                else{
-                    answer.setText("This command isn't implemented yet");
-                }
+
+                answer.setText(result);
             }
             else {
                 answer.setText("Your command must starts with /");
