@@ -52,8 +52,6 @@ public class Bot extends TelegramLongPollingBot{
                 answer.setText("Your command must starts with /");
             }
 
-            System.out.println(Core.showTasks());
-
             try{
                 execute(answer);
             }
