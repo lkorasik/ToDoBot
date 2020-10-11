@@ -4,6 +4,7 @@
 package com.telegrambot;
 
 import com.core.CommandSplitter;
+import com.core.CommandsNames;
 import com.core.Core;
 import com.core.ParsedCommand;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
@@ -32,15 +33,15 @@ public class Bot extends TelegramLongPollingBot{
 
             String command = parsedMessage.getCommand();
             if(command.startsWith("/")){
-                if(command.equals("/add")){
+                if(command.equals(CommandsNames.addTask)){
                     String result = Core.addTask(parsedMessage.getBody());
                     answer.setText(result);
                 }
-                else if(command.equals("/del")){
+                else if(command.equals(CommandsNames.deleteTask)){
                     String result = Core.deleteTask(parsedMessage.getBody());
                     answer.setText(result);
                 }
-                else if(command.equals("/show_tasks")){
+                else if(command.equals(CommandsNames.showTasks)){
                     String result = Core.showTasks();
                     answer.setText(result);
                 }
