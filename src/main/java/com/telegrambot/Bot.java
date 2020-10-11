@@ -31,12 +31,9 @@ public class Bot extends TelegramLongPollingBot{
             SendMessage answer = new SendMessage();
             answer.setChatId(update.getMessage().getChatId());
 
-            System.out.println(message);
-
             String command = parsedMessage.getCommand();
+            String result;
             if(command.startsWith("/")){
-                String result;
-
                 switch (command){
                     case CommandsNames.start:
                         Core = new Core();
@@ -62,12 +59,12 @@ public class Bot extends TelegramLongPollingBot{
                         result = "This command isn't implemented yet";
                         break;
                 }
-
-                answer.setText(result);
             }
             else {
-                answer.setText("Your command must starts with /");
+                result = "Your command must starts with /";
             }
+
+            answer.setText(result);
 
             try{
                 execute(answer);
