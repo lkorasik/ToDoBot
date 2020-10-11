@@ -12,6 +12,10 @@ public class Bot extends TelegramLongPollingBot{
     private final String Token = "1309073462:AAFZKxukxVkrvvVhnHbWUzbnnrvhMRO6k7M";
     private final String BotUserName = "ToDoBot";
 
+    /**
+     * Этот метод вызывается, когда приходит сообщение боту в тг
+     * @param update - объект, в ктором есть само сообщение (ну и еще немного полезной инфы)
+     */
     @Override
     public void onUpdateReceived(Update update) {
         if (update.hasMessage() && update.getMessage().hasText()) {
@@ -28,11 +32,19 @@ public class Bot extends TelegramLongPollingBot{
         }
     }
 
+    /**
+     * Возвращает имя бота
+     * @return Bot's name
+     */
     @Override
     public String getBotUsername() {
         return BotUserName;
     }
 
+    /**
+     * Возвращает токен доступа к телеграму
+     * @return Token
+     */
     @Override
     public String getBotToken() {
         return Token;
