@@ -44,7 +44,7 @@ public class Core {
             return "Please enter tasks id";
         }
         String[] strIdsForDelete = indexes.split(",");
-        Integer[] idsForDelete = new Integer[strIdsForDelete.length];
+        int[] idsForDelete = new int[strIdsForDelete.length];
         for (int i = 0; i < idsForDelete.length; i++) {
             try {
                 idsForDelete[i] = Integer.parseInt(strIdsForDelete[i]);
@@ -52,7 +52,7 @@ public class Core {
                 return "Please enter task id as number, not description";
             }
         }
-        Integer tasksLenBeforeDel = tasks.size();
+        int tasksLenBeforeDel = tasks.size();
         Iterator<Task> iter = tasks.iterator();
         while (iter.hasNext()){
             Task task = iter.next();
