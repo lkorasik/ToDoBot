@@ -16,7 +16,11 @@ import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 public class Bot extends TelegramLongPollingBot{
     private final String Token = "1309073462:AAFZKxukxVkrvvVhnHbWUzbnnrvhMRO6k7M";
     private final String BotUserName = "ToDoBot";
-    private Core Core = null;
+    private final Core Core;
+
+    public Bot(){
+        Core = new Core();
+    }
 
     /**
      * Этот метод вызывается, когда приходит сообщение боту в тг
@@ -36,7 +40,6 @@ public class Bot extends TelegramLongPollingBot{
             if(command.startsWith("/")){
                 switch (command){
                     case CommandsNames.start:
-                        Core = new Core();
                         result = CommandsNames.startMsg;
                         break;
                     case CommandsNames.help:
