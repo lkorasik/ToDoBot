@@ -1,18 +1,15 @@
-/*
-    Dmitry
- */
 package com.core;
 
+/**
+ * Класс, используемый для представления задач в логике Core
+ */
 public class Task
 {
-    public String description;
-    private static int id_counter = 0;
-    public int id;
+    private String description;
 
-    public Task(String description)
-    {
-        id = Task.id_counter + 1;
-        Task.id_counter += 1;
-        this.description = description;
+    public Task(String description) { this.description = description;  }
+
+    public String getDescription(){
+        return description;
     }
 }

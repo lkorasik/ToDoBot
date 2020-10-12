@@ -5,32 +5,45 @@ package com.consolebot;
 
 import com.core.CommandSplitter;
 import com.core.Core;
+import com.core.CommandsNames;
 import com.core.ParsedCommand;
 
 import java.util.Scanner;
 
+/**
+ * Класс для взаимодействия с ботом через CLI
+ */
 public class ConsoleBot {
     public static void main(String [] args){
         Core bot = new Core();
         Scanner scanner = new Scanner(System.in);
         while (true){
-            String userInput = scanner.nextLine();
-            ParsedCommand userArgs = CommandSplitter.split(userInput);
-            if (userArgs.getCommand().startsWith("/")){
-                if (userArgs.getCommand().equals("/add")){
-                    System.out.println(bot.addTask(userArgs.getBody()));
+            ParsedCommand parsedUserInput = CommandSplitter.split(scanner.nextLine());
+            String command = parsedUserInput.getCommand();
+            if(command.startsWith("/")){
+                switch (command){
+                    case CommandsNames.start:
+                        System.out.println(CommandsNames.startMsg);
+                        break;
+                    case CommandsNames.help:
+                        System.out.println(CommandsNames.helpMsg);
+                        break;
+                    case CommandsNames.addTask:
+                        System.out.println(bot.addTask(parsedUserInput.getBody()));
+                        break;
+                    case CommandsNames.deleteTask:
+                        System.out.println(bot.deleteTask(parsedUserInput.getBody()));
+                        break;
+                    case CommandsNames.showTasks:
+                        System.out.println(bot.showTasks());
+                        break;
+                    default:
+                        System.out.println(CommandsNames.notImplementedCommandMsg);
+                        break;
                 }
-                else if (userArgs.getCommand().equals("/del")){
-                    System.out.println(bot.deleteTask(userArgs.getBody()));
-                }
-                else if (userArgs.getCommand().equals("/show_tasks")){
-                    System.out.println(bot.showTasks());
-                }
-                else {
-                    System.out.println("This command is not implemented yet");
-                }
-            } else{
-                System.out.println("Your command must starts with /");
+            }
+            else {
+                System.out.println(CommandsNames.incorrectCommandFormatMsg);
             }
         }
     }
