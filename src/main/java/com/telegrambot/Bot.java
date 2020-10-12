@@ -7,19 +7,23 @@ import com.core.CommandSplitter;
 import com.core.CommandsNames;
 import com.core.Core;
 import com.core.ParsedCommand;
-import org.checkerframework.checker.units.qual.C;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
 public class Bot extends TelegramLongPollingBot{
-    private final String Token = "1309073462:AAFZKxukxVkrvvVhnHbWUzbnnrvhMRO6k7M";
-    private final String BotUserName = "ToDoBot";
+    private final String Token;
+    private final String BotUserName;
     private final Core Core;
 
     public Bot(){
         Core = new Core();
+
+        TokenLoader loader = new TokenLoader();
+
+        Token = loader.getToken();
+        BotUserName = loader.getName();
     }
 
     /**
