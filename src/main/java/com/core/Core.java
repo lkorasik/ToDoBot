@@ -7,6 +7,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.ArrayUtils;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 
 public class Core {
     private ArrayList<Task> tasks = new ArrayList<>();
@@ -31,15 +32,15 @@ public class Core {
     }
 
     /**
-     * Удаляет задание из списка задач
+     * Удаляет задание [задания] из списка задач
      *
      * @return Successful deletion message
      */
-    public String deleteTask(String ids) {
-        if (ids == null || StringUtils.isBlank(ids) || ids.equals("")) {
+    public String deleteTask(String indexes) {
+        if (indexes == null || StringUtils.isBlank(indexes) || indexes.equals("")) {
             return "Please enter tasks id";
         }
-        String[] strIdsForDelete = ids.split(",");
+        String[] strIdsForDelete = indexes.split(",");
         Integer[] idsForDelete = new Integer[strIdsForDelete.length];
         for (int i = 0; i < idsForDelete.length; i++) {
             try {
@@ -49,11 +50,17 @@ public class Core {
             }
         }
         Integer tasksLenBeforeDel = tasks.size();
-        tasks.removeIf(task -> ArrayUtils.contains(idsForDelete, task.getId()));
+        Iterator<Task> iter = tasks.iterator();
+        while (iter.hasNext()){
+            Task task = iter.next();
+            if (ArrayUtils.contains(idsForDelete, tasks.indexOf(task))){
+                iter.remove();
+            }
+        }
         if (tasksLenBeforeDel == tasks.size()) {
-            return String.format("There is no tasks with id: %s", ids);
+            return String.format("There is no tasks with id: %s", indexes);
         } else {
-            return String.format("Successfully deleted tasks with id: %s", ids);
+            return String.format("Successfully deleted tasks with id: %s", indexes);
         }
     }
 
@@ -69,9 +76,9 @@ public class Core {
             StringBuilder formattedTasks = new StringBuilder("Id\tОписание\n");
             for (int i = 0; i < tasks.size(); i++) {
                 if (i == tasks.size() - 1) {
-                    formattedTasks.append(String.format("%d\t%s", tasks.get(i).getId(), tasks.get(i).description));
+                    formattedTasks.append(String.format("%d\t%s", i, tasks.get(i).description));
                 } else {
-                    formattedTasks.append(String.format("%d\t%s%n", tasks.get(i).getId(), tasks.get(i).description));
+                    formattedTasks.append(String.format("%d\t%s%n",i, tasks.get(i).description));
                 }
             }
             return formattedTasks.toString();

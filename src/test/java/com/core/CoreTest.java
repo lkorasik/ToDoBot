@@ -1,6 +1,5 @@
 package com.core;
 
-import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -10,8 +9,6 @@ public class CoreTest {
     @Before
     public void setUp(){ core = new Core(); }
 
-    @After
-    public void tearDown(){ Task.id_counter = 0; }
 
     @Test
     public void addTaskWithNormalDescriptionTest(){
@@ -30,9 +27,9 @@ public class CoreTest {
     @Test
     public void deleteExistingTaskTest(){
         String firstTaskResult = core.addTask("First");
-        String deleteResult = core.deleteTask("1");
+        String deleteResult = core.deleteTask("0");
         Assert.assertEquals(0, core.getTasks().size());
-        Assert.assertEquals("Successfully deleted tasks with id: 1", deleteResult);
+        Assert.assertEquals("Successfully deleted tasks with id: 0", deleteResult);
     }
 
     @Test
@@ -53,6 +50,6 @@ public class CoreTest {
     public void showNotEmptyTaskList(){
         String firstTaskResult = core.addTask("Do something");
         String result = core.showTasks();
-        Assert.assertEquals("Id\tОписание\n1\tDo something", result);
+        Assert.assertEquals("Id\tОписание\n0\tDo something", result);
     }
 }
