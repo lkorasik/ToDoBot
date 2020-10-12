@@ -1,8 +1,15 @@
 package com.core;
 
+/**
+ * Класс, используемый для представления задач в логике Core
+ */
 public class Task
 {
-    public String description;
+    private String description;
 
     public Task(String description) { this.description = description;  }
+
+    public String getDescription(){
+        return description;
+    }
 }

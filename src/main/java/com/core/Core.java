@@ -9,6 +9,9 @@ import org.apache.commons.lang3.ArrayUtils;
 import java.util.ArrayList;
 import java.util.Iterator;
 
+/**
+ * Класс, отвечающий за бизнес-логику бота
+ */
 public class Core {
     private ArrayList<Task> tasks = new ArrayList<>();
 
@@ -27,7 +30,7 @@ public class Core {
         } else {
             Task task = new Task(description);
             tasks.add(task);
-            return String.format("Added task: %s", task.description);
+            return String.format("Added task: %s", task.getDescription());
         }
     }
 
@@ -76,9 +79,9 @@ public class Core {
             StringBuilder formattedTasks = new StringBuilder("Id\tОписание\n");
             for (int i = 0; i < tasks.size(); i++) {
                 if (i == tasks.size() - 1) {
-                    formattedTasks.append(String.format("%d\t%s", i, tasks.get(i).description));
+                    formattedTasks.append(String.format("%d\t%s", i, tasks.get(i).getDescription()));
                 } else {
-                    formattedTasks.append(String.format("%d\t%s%n",i, tasks.get(i).description));
+                    formattedTasks.append(String.format("%d\t%s%n",i, tasks.get(i).getDescription()));
                 }
             }
             return formattedTasks.toString();

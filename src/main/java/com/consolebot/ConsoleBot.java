@@ -10,6 +10,9 @@ import com.core.ParsedCommand;
 
 import java.util.Scanner;
 
+/**
+ * Класс для взаимодействия с ботом через CLI
+ */
 public class ConsoleBot {
     public static void main(String [] args){
         Core bot = new Core();
