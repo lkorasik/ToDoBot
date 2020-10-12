@@ -11,6 +11,10 @@ import java.util.ArrayList;
 public class Core {
     private ArrayList<Task> tasks = new ArrayList<>();
 
+    public ArrayList<Task> getTasks() {
+        return tasks;
+    }
+
     /**
      * Добавляет задание в список задач
      *

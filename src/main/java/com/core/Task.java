@@ -3,7 +3,7 @@ package com.core;
 public class Task
 {
     public String description;
-    private static int id_counter = 0;
+    public static int id_counter = 0;
     private int id;
 
     public Task(String description)
