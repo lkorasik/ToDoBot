@@ -3,7 +3,7 @@
  */
 package com.consolebot;
 
-import com.core.CommandSplitter;
+import com.core.RequestHandler;
 import com.core.Core;
 import com.core.CommandsNames;
 import com.core.ParsedCommand;
@@ -15,10 +15,11 @@ import java.util.Scanner;
  */
 public class ConsoleBot {
     public static void main(String [] args){
+        /*
         Core bot = new Core();
         Scanner scanner = new Scanner(System.in);
         while (true){
-            ParsedCommand parsedUserInput = CommandSplitter.split(scanner.nextLine());
+            ParsedCommand parsedUserInput = RequestHandler.split(scanner.nextLine());
             String command = parsedUserInput.getCommand();
             if(command.startsWith("/")){
                 switch (command){
@@ -46,5 +47,7 @@ public class ConsoleBot {
                 System.out.println(CommandsNames.incorrectCommandFormatMsg);
             }
         }
+
+         */
     }
 }

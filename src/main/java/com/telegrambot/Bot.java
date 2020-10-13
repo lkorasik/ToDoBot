@@ -3,10 +3,11 @@
  */
 package com.telegrambot;
 
-import com.core.CommandSplitter;
+import com.core.RequestHandler;
 import com.core.CommandsNames;
 import com.core.Core;
 import com.core.ParsedCommand;
+import org.checkerframework.checker.units.qual.C;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Update;
@@ -34,38 +35,15 @@ public class Bot extends TelegramLongPollingBot{
     public void onUpdateReceived(Update update) {
         if (update.hasMessage() && update.getMessage().hasText()) {
             String message = update.getMessage().getText();
-            ParsedCommand parsedMessage = CommandSplitter.split(message);
+
+            RequestHandler requestHandler = new RequestHandler();
+            ParsedCommand parsedMessage = requestHandler.split(message);
 
             SendMessage answer = new SendMessage();
             answer.setChatId(update.getMessage().getChatId());
 
             String command = parsedMessage.getCommand();
-            String result;
-            if(command.startsWith("/")){
-                switch (command){
-                    case CommandsNames.start:
-                        result = CommandsNames.startMsg;
-                        break;
-                    case CommandsNames.help:
-                        result = CommandsNames.helpMsg;
-                        break;
-                    case CommandsNames.addTask:
-                        result = Core.addTask(parsedMessage.getBody());
-                        break;
-                    case CommandsNames.deleteTask:
-                        result = Core.deleteTask(parsedMessage.getBody());
-                        break;
-                    case CommandsNames.showTasks:
-                        result = Core.showTasks();
-                        break;
-                    default:
-                        result = CommandsNames.notImplementedCommandMsg;
-                        break;
-                }
-            }
-            else {
-                result = CommandsNames.incorrectCommandFormatMsg;
-            }
+            String result = requestHandler.handle(Core, parsedMessage);
 
             answer.setText(result);
 
