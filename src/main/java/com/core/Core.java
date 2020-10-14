@@ -12,9 +12,6 @@ import java.util.ArrayList;
 public class Core {
     private ArrayList<Task> tasks = new ArrayList<>();
 
-    public ArrayList<Task> getTasks() {
-        return tasks;
-    }
 
     /**
      * Добавляет задание в список задач
@@ -42,7 +39,7 @@ public class Core {
      *
      * @return Formatted string with task's list
      */
-    public String showTasks() {
+    public String getTasks() {
         if (tasks.size() == 0) {
             return "Congratulations! You don't have any tasks yet";
         } else {
