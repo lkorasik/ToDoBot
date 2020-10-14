@@ -39,7 +39,7 @@ public class Core {
      *
      * @return Formatted string with task's list
      */
-    public String showTasks() {
+    public String getTasks() {
         if (tasks.size() == 0) {
             return "Congratulations! You don't have any tasks yet";
         } else {
