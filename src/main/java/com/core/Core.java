@@ -18,34 +18,23 @@ public class Core {
 
     /**
      * Добавляет задание в список задач
-     *
-     * @return Successful addition message
      */
-    public String addTask(String description) {
-        if (description == null || StringUtils.isBlank(description) || description.equals("")) {
-            return "Please enter not empty task description";
-        } else {
-            Task task = new Task(description);
-            tasks.add(task);
-            return String.format("Added task: %s", task.getDescription());
-        }
+    public void addTask(String description) {
+        Task task = new Task(description);
+        tasks.add(task);
     }
 
     /**
      * Удаляет задание [задания] из списка задач
-     *
-     * @return Successful deletion message
      */
-    public String deleteTask(String index) {
-        if (index == null || StringUtils.isBlank(index) || index.equals("")) {
-            return "Please enter tasks id";
-        }
+    public void deleteTask(String index) throws notExistingTaskIndexException, incorrectTaskIdTypeException {
         try{
             tasks.remove(Integer.parseInt(index));
         } catch (IndexOutOfBoundsException exception){
-            return String.format("There is no task with id: %s", index);
+            throw new notExistingTaskIndexException(index);
+        } catch (NumberFormatException exception){
+            throw new incorrectTaskIdTypeException();
         }
-        return String.format("Successfully deleted task with id: %s", index);
     }
 
     /**
