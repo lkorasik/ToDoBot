@@ -70,7 +70,8 @@ public class RequestHandler {
                     }
                     break;
                 case CommandsNames.showTasks:
-                    result = core.showTasks();
+                    //result = core.showTasks();
+                    result = core.getTasks();
                     break;
                 default:
                     result = CommandsNames.notImplementedCommandMsg;
