@@ -16,7 +16,7 @@ public class RequestHandler {
      * @param line - Строка с запросом
      * @return Команда
      */
-    public ParsedCommand split(String line) {
+    private ParsedCommand split(String line) {
         var position = line.indexOf(" ");
 
         String command = null;
@@ -37,7 +37,7 @@ public class RequestHandler {
      * @param body Тело команды
      * @return True, если все хорошо
      */
-    public boolean bodyIsCorrect(String body) {
+    private boolean bodyIsCorrect(String body) {
         if (body == null || StringUtils.isBlank(body) || body.equals("")) {
             return false;
         }
@@ -49,8 +49,10 @@ public class RequestHandler {
      * @param parsedCommand - сообщение
      * @return Строка с резульатом, которую надо показать пользователю
      */
-    public String handle(ParsedCommand parsedCommand) {
+    public String handle(String input) {
         String result;
+
+        ParsedCommand parsedCommand = split(input);
 
         String command = parsedCommand.getCommand();
         String body = parsedCommand.getBody();

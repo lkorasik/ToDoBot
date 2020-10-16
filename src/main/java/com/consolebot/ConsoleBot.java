@@ -5,7 +5,7 @@ package com.consolebot;
 
 import com.core.RequestHandler;
 import com.core.Core;
-import com.core.CommandsNames;
+//import com.core.CommandsNames;
 import com.core.ParsedCommand;
 
 import java.util.Scanner;
@@ -20,8 +20,8 @@ public class ConsoleBot {
         Scanner scanner = new Scanner(System.in);
         while (true){
             RequestHandler requestHandler = new RequestHandler();
-            ParsedCommand parsedMessage = requestHandler.split(scanner.nextLine());
-            System.out.println(requestHandler.handle(core, parsedMessage));
+            //ParsedCommand parsedMessage = requestHandler.split(scanner.nextLine());
+            //System.out.println(requestHandler.handle(core, parsedMessage));
         }
     }
 }
