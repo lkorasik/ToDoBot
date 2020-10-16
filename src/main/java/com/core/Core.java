@@ -1,12 +1,9 @@
-/*
-    Dmitry
- */
 package com.core;
 
-import org.apache.commons.lang3.StringUtils;
 import java.util.ArrayList;
 
 /**
+ * @author Dmitry
  * Класс, отвечающий за бизнес-логику бота
  */
 public class Core {
@@ -15,6 +12,8 @@ public class Core {
 
     /**
      * Добавляет задание в список задач
+     *
+     * @param description Текст задачи
      */
     public void addTask(String description) {
         Task task = new Task(description);
@@ -23,14 +22,16 @@ public class Core {
 
     /**
      * Удаляет задание [задания] из списка задач
+     *
+     * @param index Id задачи в списке
      */
-    public void deleteTask(String index) throws notExistingTaskIndexException, incorrectTaskIdTypeException {
-        try{
+    public void deleteTask(String index) throws NotExistingTaskIndexException, IncorrectTaskIdTypeException {
+        try {
             tasks.remove(Integer.parseInt(index));
-        } catch (IndexOutOfBoundsException exception){
-            throw new notExistingTaskIndexException(index);
-        } catch (NumberFormatException exception){
-            throw new incorrectTaskIdTypeException();
+        } catch (IndexOutOfBoundsException exception) {
+            throw new NotExistingTaskIndexException(index);
+        } catch (NumberFormatException exception) {
+            throw new IncorrectTaskIdTypeException();
         }
     }
 
@@ -48,7 +49,7 @@ public class Core {
                 if (i == tasks.size() - 1) {
                     formattedTasks.append(String.format("%d\t%s", i, tasks.get(i).getDescription()));
                 } else {
-                    formattedTasks.append(String.format("%d\t%s%n",i, tasks.get(i).getDescription()));
+                    formattedTasks.append(String.format("%d\t%s%n", i, tasks.get(i).getDescription()));
                 }
             }
             return formattedTasks.toString();
