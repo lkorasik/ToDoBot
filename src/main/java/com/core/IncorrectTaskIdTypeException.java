@@ -6,10 +6,10 @@ package com.core;
  * (Некорректный Id - это любой тип, который нельзя привести к int)
  */
 class IncorrectTaskIdTypeException extends Exception {
-    String message;
+    private String message;
 
-    public IncorrectTaskIdTypeException() {
-        message = "Please enter tasks id, not description";
+    public IncorrectTaskIdTypeException(String message) {
+        this.message = message;
     }
 
     @Override

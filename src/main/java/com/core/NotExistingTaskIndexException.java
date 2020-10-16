@@ -5,7 +5,7 @@ package com.core;
  * Исключение, возникающее при попытке удаления Task с несуществующим Id
  */
 class NotExistingTaskIndexException extends Exception {
-    String message;
+    private String message;
 
     public NotExistingTaskIndexException(String index) {
         message = String.format("There is no task with id: %s", index);
