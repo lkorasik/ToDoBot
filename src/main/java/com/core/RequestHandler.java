@@ -64,10 +64,10 @@ public class RequestHandler {
                     result = Constants.HELP_MSG;
                     break;
                 case Constants.ADD_TASK_COMMAND:
-                    result = AddTask(body);
+                    result = addTask(body);
                     break;
                 case Constants.DELETE_TASK_COMMAND:
-                    result = DeleteTask(body);
+                    result = deleteTask(body);
                     break;
                 case Constants.SHOW_TASKS_COMMAND:
                     result = core.getTasks();
@@ -88,7 +88,7 @@ public class RequestHandler {
      * @param body Текст задачи
      * @return Результат, который надо показать пользователю
      */
-    private String AddTask(String body){
+    private String addTask(String body){
         String result;
 
         if (bodyIsCorrect(body)) {
@@ -106,7 +106,7 @@ public class RequestHandler {
      * @param body Принимается идентификатор задачи
      * @return Результат, который надо вывести пользователю
      */
-    private String DeleteTask(String body){
+    private String deleteTask(String body){
         String result;
 
         if (bodyIsCorrect(body)) {
