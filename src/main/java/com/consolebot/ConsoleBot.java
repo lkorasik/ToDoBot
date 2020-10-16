@@ -12,8 +12,8 @@ public class ConsoleBot {
     public static void main(String[] args) {
 
         Scanner scanner = new Scanner(System.in);
+        RequestHandler requestHandler = new RequestHandler();
         while (true) {
-            RequestHandler requestHandler = new RequestHandler();
             System.out.println(requestHandler.handle(scanner.nextLine()));
         }
     }
