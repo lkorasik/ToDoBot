@@ -1,11 +1,15 @@
-/*
-    Lev
- */
 package com.core;
 
 import org.apache.commons.lang3.StringUtils;
 
+/**
+ * @author Lev
+ *
+ * Класс, который является прослойкой между ConsoleBot или Bot и Core
+ */
 public class RequestHandler {
+    private Core core = new Core();
+
     /**
      * Распарсить строчку. Выделить команду и тело команды
      *
@@ -28,6 +32,11 @@ public class RequestHandler {
         return new ParsedCommand(command, body);
     }
 
+    /**
+     * Проверка на то, что тело команды задано корректно
+     * @param body Тело команды
+     * @return True, если все хорошо
+     */
     public boolean bodyIsCorrect(String body) {
         if (body == null || StringUtils.isBlank(body) || body.equals("")) {
             return false;
@@ -35,7 +44,12 @@ public class RequestHandler {
         return true;
     }
 
-    public String handle(Core core, ParsedCommand parsedCommand) {
+    /**
+     * Обработка сообщения
+     * @param parsedCommand - сообщение
+     * @return Строка с резульатом, которую надо показать пользователю
+     */
+    public String handle(ParsedCommand parsedCommand) {
         String result;
 
         String command = parsedCommand.getCommand();
@@ -43,42 +57,67 @@ public class RequestHandler {
 
         if (command.startsWith("/")) {
             switch (command) {
-                case CommandsNames.start:
-                    result = CommandsNames.startMsg;
+                case Constants.START_COMMAND:
+                    result = Constants.START_MSG;
                     break;
-                case CommandsNames.help:
-                    result = CommandsNames.helpMsg;
+                case Constants.HELP_COMMAND:
+                    result = Constants.HELP_MSG;
                     break;
-                case CommandsNames.addTask:
-                    if (bodyIsCorrect(body)) {
-                        core.addTask(body);
-                        result = String.format("Added task: %s", body);
-                    } else {
-                        result = "Please enter not empty task description";
-                    }
+                case Constants.ADD_TASK_COMMAND:
+                    result = AddTask(body);
                     break;
-                case CommandsNames.deleteTask:
-                    if (bodyIsCorrect(body)) {
-                        try {
-                            core.deleteTask(body);
-                            result = String.format("Successfully deleted task with id: %s", body);
-                        } catch (notExistingTaskIndexException | incorrectTaskIdTypeException exception) {
-                            result = exception.toString();
-                        }
-                    } else {
-                        result = "Please enter not empty task id";
-                    }
+                case Constants.DELETE_TASK_COMMAND:
+                    result = DeleteTask(body);
                     break;
-                case CommandsNames.showTasks:
-                    //result = core.showTasks();
+                case Constants.SHOW_TASKS_COMMAND:
                     result = core.getTasks();
                     break;
                 default:
-                    result = CommandsNames.notImplementedCommandMsg;
+                    result = Constants.NOT_IMPLEMENTED_COMMAND_MSG;
                     break;
             }
         } else {
-            result = CommandsNames.incorrectCommandFormatMsg;
+            result = Constants.INCORRECT_COMMAND_FORMAT_MSG;
+        }
+
+        return result;
+    }
+
+    /**
+     * Добавить задачу в список
+     * @param body Текст задачи
+     * @return Результат, который надо показать пользователю
+     */
+    private String AddTask(String body){
+        String result;
+
+        if (bodyIsCorrect(body)) {
+            core.addTask(body);
+            result = Constants.TASK_ADDED_MSG + body;
+        } else {
+            result = Constants.EMPTY_TASK_DESCRIPTION_MSG;
+        }
+
+        return result;
+    }
+
+    /**
+     * Удаление задачи
+     * @param body Принимается идентификатор задачи
+     * @return Результат, который надо вывести пользователю
+     */
+    private String DeleteTask(String body){
+        String result;
+
+        if (bodyIsCorrect(body)) {
+            try {
+                core.deleteTask(body);
+                result = Constants.TASK_DELETED_MSG + body;
+            } catch (notExistingTaskIndexException | incorrectTaskIdTypeException exception) {
+                result = exception.toString();
+            }
+        } else {
+            result = Constants.EMPTY_TASK_ID_MSG;
         }
 
         return result;

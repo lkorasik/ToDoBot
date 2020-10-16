@@ -38,15 +38,13 @@ public class RequestHandlerTest {
 
     @Test
     public void requestAddCorrectTaskHandlingTest(){
-        Core core = new Core();
-        String response = requestHandler.handle(core, requestHandler.split("/add Task0"));
+        String response = requestHandler.handle(requestHandler.split("/add Task0"));
         Assert.assertEquals("Added task: Task0", response);
     }
 
     @Test
     public void requestAddTaskWithEmptyDescriptionTest(){
-        Core core = new Core();
-        String response = requestHandler.handle(core, requestHandler.split("/add    "));
+        String response = requestHandler.handle(requestHandler.split("/add    "));
         Assert.assertEquals("Please enter not empty task description", response);
     }
 
@@ -54,14 +52,13 @@ public class RequestHandlerTest {
     public void requestDeleteCorrectTaskTest(){
         Core core = new Core();
         core.addTask("Task0");
-        String response = requestHandler.handle(core, requestHandler.split("/del 0"));
+        String response = requestHandler.handle(requestHandler.split("/del 0"));
         Assert.assertEquals("Successfully deleted task with id: 0", response);
     }
 
     @Test
     public void requestDeleteTaskWithEmptyArgument(){
-        Core core = new Core();
-        String response = requestHandler.handle(core, requestHandler.split("/del    "));
+        String response = requestHandler.handle(requestHandler.split("/del    "));
         Assert.assertEquals("Please enter not empty task id", response);
     }
 }
