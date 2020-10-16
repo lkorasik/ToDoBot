@@ -70,21 +70,21 @@ notif_id - Идентификатор напоминания
 ## Примеры
 
 ```
-User: /add_task Task1
+User: /addt Task1
 Bot: Added Task1
-U: /add_task Task2
+U: /addt Task2
 B: Added Task2
-U: /show_tasks
-B: 0) Task1
+U: /showt
+B: \ 0) Task1
 1) Task2
-U: /del_tas1 0
+U: /delt 0
 B: Deleted Task1
 ```
 
 ```
-User: /add_task Task1
+User: /addt Task1
 Bot: Added Task1
-User: /add_notif Notification1
+User: /addn Notification1
 B: Added Notification1
 U: /set_task_duration [task_id] 50, где 50 - минуты
 B: Set Task1 ([task_id]) duration to 50 minutes
