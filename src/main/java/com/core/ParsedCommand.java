@@ -1,14 +1,17 @@
-/*
-    Lev
- */
 package com.core;
 
+/**
+ * @author Lev
+ *
+ * Класс, который представляет собой контейнер для
+ * хранения информации из команды
+ */
 public class ParsedCommand {
     private final String command;
     private final String body;
 
     /**
-     * Контейнер для команд
+     * Контейнер для команды
      * @param command - Команда (e.g. /add)
      * @param body - Тело команды (e.g. Task1)
      */
