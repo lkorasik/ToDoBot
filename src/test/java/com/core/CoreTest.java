@@ -12,19 +12,19 @@ public class CoreTest {
 
 
     @Test
-    public void deleteExistingTaskTest() throws incorrectTaskIdTypeException, notExistingTaskIndexException {
+    public void deleteExistingTaskTest() throws IncorrectTaskIdTypeException, NotExistingTaskIndexException {
         core.addTask("First");
         core.deleteTask("0");
     }
 
-    @Test(expected = notExistingTaskIndexException.class)
-    public void deleteNotExistingTaskTest() throws incorrectTaskIdTypeException, notExistingTaskIndexException {
+    @Test(expected = NotExistingTaskIndexException.class)
+    public void deleteNotExistingTaskTest() throws IncorrectTaskIdTypeException, NotExistingTaskIndexException {
         core.addTask("Do");
         core.deleteTask("2");
     }
 
-    @Test(expected = incorrectTaskIdTypeException.class)
-    public void deleteTaskWithIncorrectDEscription() throws incorrectTaskIdTypeException, notExistingTaskIndexException {
+    @Test(expected = IncorrectTaskIdTypeException.class)
+    public void deleteTaskWithIncorrectDescription() throws IncorrectTaskIdTypeException, NotExistingTaskIndexException {
         core.deleteTask("do");
     }
 

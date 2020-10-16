@@ -115,8 +115,8 @@ public class RequestHandler {
             try {
                 core.deleteTask(body);
                 result = Constants.TASK_DELETED_MSG + body;
-            } catch (notExistingTaskIndexException | incorrectTaskIdTypeException exception) {
-                result = exception.toString();
+            } catch (NotExistingTaskIndexException | IncorrectTaskIdTypeException exception) {
+                result = exception.getMessage();
             }
         } else {
             result = Constants.EMPTY_TASK_ID_MSG;
