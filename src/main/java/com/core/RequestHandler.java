@@ -46,7 +46,7 @@ public class RequestHandler {
 
     /**
      * Обработка сообщения
-     * @param parsedCommand - сообщение
+     * @param input - сообщение
      * @return Строка с резульатом, которую надо показать пользователю
      */
     public String handle(String input) {
