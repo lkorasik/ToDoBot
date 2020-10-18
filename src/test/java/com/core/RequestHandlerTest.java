@@ -71,6 +71,4 @@ public class RequestHandlerTest {
 
         Assert.assertEquals(result, Constants.INCORRECT_TASK_ID_TYPE_EXCEPTION_MSG);
     }
-
-    //TODO: Тесты на случай, когда выкидываются NotExistingTaskIndexException и IncorrectTaskIdTypeException
 }
