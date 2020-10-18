@@ -4,8 +4,9 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.junit.Before;
 
-import java.awt.desktop.ScreenSleepEvent;
-
+/**
+ * @author Lev
+ */
 public class RequestHandlerTest {
     RequestHandler requestHandler;
 

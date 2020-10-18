@@ -3,6 +3,9 @@ package com.core;
 import org.junit.Assert;
 import org.junit.Test;
 
+/**
+ * @author Lev
+ */
 public class ParsedCommandsTest {
     @Test
     public void parsedCommandsTest(){
