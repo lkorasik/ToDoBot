@@ -58,5 +58,19 @@ public class RequestHandlerTest {
         Assert.assertEquals(result, Constants.EMPTY_TASK_ID_MSG);
     }
 
+    @Test
+    public void TestDeleteTask3(){
+        String result = requestHandler.handle("/del 123");
+
+        Assert.assertEquals(result, Constants.NOT_EXISTING_TASK_ID_EXCEPTION_MSG + "123");
+    }
+
+    @Test
+    public void TestDeleteTask4(){
+        String result = requestHandler.handle("/del som");
+
+        Assert.assertEquals(result, Constants.INCORRECT_TASK_ID_TYPE_EXCEPTION_MSG);
+    }
+
     //TODO: Тесты на случай, когда выкидываются NotExistingTaskIndexException и IncorrectTaskIdTypeException
 }
