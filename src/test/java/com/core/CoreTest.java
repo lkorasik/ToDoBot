@@ -30,7 +30,6 @@ public class CoreTest {
 
     @Test
     public void showEmptyTaskListTest(){
-        //String result = core.showTasks();
         String result = core.getTasks();
         Assert.assertEquals("Congratulations! You don't have any tasks yet", result);
     }
@@ -38,7 +37,6 @@ public class CoreTest {
     @Test
     public void showNotEmptyTaskList(){
         core.addTask("Do something");
-        //String result = core.showTasks();
         String result = core.getTasks();
         Assert.assertEquals("Id\tОписание\n0\tDo something", result);
     }
