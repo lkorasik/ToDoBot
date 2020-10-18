@@ -31,7 +31,7 @@ public class Core {
         } catch (IndexOutOfBoundsException exception) {
             throw new NotExistingTaskIndexException(index);
         } catch (NumberFormatException exception) {
-            throw new IncorrectTaskIdTypeException("Please enter tasks id, not description");
+            throw new IncorrectTaskIdTypeException(Constants.INCORRECT_TASK_ID_TYPE_EXCEPTION_MSG);
         }
     }
 
