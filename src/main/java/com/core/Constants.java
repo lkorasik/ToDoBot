@@ -23,6 +23,6 @@ public class Constants {
     public static final String EMPTY_TASK_ID_MSG = "Please enter not empty task id";
     public static final String TASK_ADDED_MSG = "Added task: ";
     public static final String TASK_DELETED_MSG = "Successfully deleted task with id: ";
-    public static final String NOT_EXISTING_TASK_ID_EXCEPTION_MSG = "There is no task with id: %s";
+    public static final String NOT_EXISTING_TASK_ID_EXCEPTION_MSG = "There is no task with id: ";
     public static final String INCORRECT_TASK_ID_TYPE_EXCEPTION_MSG = "Please enter tasks id, not description";
 }

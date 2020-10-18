@@ -29,7 +29,7 @@ public class Core {
         try {
             tasks.remove(Integer.parseInt(index));
         } catch (IndexOutOfBoundsException exception) {
-            throw new NotExistingTaskIndexException(index);
+            throw new NotExistingTaskIndexException(Constants.NOT_EXISTING_TASK_ID_EXCEPTION_MSG + index);
         } catch (NumberFormatException exception) {
             throw new IncorrectTaskIdTypeException(Constants.INCORRECT_TASK_ID_TYPE_EXCEPTION_MSG);
         }
