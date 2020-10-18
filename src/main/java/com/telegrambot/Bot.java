@@ -1,8 +1,6 @@
 package com.telegrambot;
 
 import com.core.RequestHandler;
-import com.core.Core;
-import com.core.ParsedCommand;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Update;
