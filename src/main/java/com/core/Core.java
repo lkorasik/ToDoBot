@@ -1,13 +1,14 @@
 package com.core;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author Dmitry
  * Класс, отвечающий за бизнес-логику бота
  */
 public class Core {
-    private ArrayList<Task> tasks = new ArrayList<>();
+    private List<Task> tasks = new ArrayList<>();
 
     /**
      * Добавляет задание в список задач
