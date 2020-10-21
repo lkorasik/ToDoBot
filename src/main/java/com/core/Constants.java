@@ -25,4 +25,7 @@ public class Constants {
     public static final String TASK_DELETED_MSG = "Successfully deleted task with id: ";
     public static final String NOT_EXISTING_TASK_ID_EXCEPTION_MSG = "There is no task with id: ";
     public static final String INCORRECT_TASK_ID_TYPE_EXCEPTION_MSG = "Please enter tasks id, not description";
+    public static final String EMPTY_TASK_LIST = "Congratulations! You don't have any tasks yet";
+
+    public static final String TELEGRAM_TOKEN_FILENAME = "Token";
 }

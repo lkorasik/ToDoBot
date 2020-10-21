@@ -1,5 +1,8 @@
 package com.telegrambot;
 
+import com.core.Constants;
+import org.checkerframework.checker.signedness.qual.Constant;
+
 import java.io.File;
 import java.util.Scanner;
 
@@ -18,7 +21,7 @@ public class TokenLoader {
      */
     public TokenLoader(){
         try{
-            File file = new File("Token");
+            File file = new File(Constants.TELEGRAM_TOKEN_FILENAME);
             Scanner myReader = new Scanner(file);
 
             token = myReader.nextLine();

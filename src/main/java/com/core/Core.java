@@ -9,7 +9,6 @@ import java.util.ArrayList;
 public class Core {
     private ArrayList<Task> tasks = new ArrayList<>();
 
-
     /**
      * Добавляет задание в список задач
      *
@@ -42,7 +41,7 @@ public class Core {
      */
     public String getTasks() {
         if (tasks.size() == 0) {
-            return "Congratulations! You don't have any tasks yet";
+            return Constants.EMPTY_TASK_LIST;
         } else {
             StringBuilder formattedTasks = new StringBuilder("Id\tОписание\n");
             for (int i = 0; i < tasks.size(); i++) {
