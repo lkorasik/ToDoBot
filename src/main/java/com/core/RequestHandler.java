@@ -38,10 +38,7 @@ public class RequestHandler {
      * @return True, если все хорошо
      */
     private boolean bodyIsCorrect(String body) {
-        if (body == null || StringUtils.isBlank(body) || body.equals("")) {
-            return false;
-        }
-        return true;
+        return body != null && !StringUtils.isBlank(body) && !body.equals("");
     }
 
     /**
