@@ -5,8 +5,8 @@ import com.core.RequestHandler;
 import java.util.Scanner;
 
 /**
- * @author Dmitry
  * Класс для взаимодействия с ботом через CLI
+ * @author Dmitry
  */
 public class ConsoleBot {
     public static void main(String[] args) {

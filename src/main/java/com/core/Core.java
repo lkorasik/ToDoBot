@@ -4,8 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * @author Dmitry
  * Класс, отвечающий за бизнес-логику бота
+ * @author Dmitry
  */
 public class Core {
     private List<Task> tasks = new ArrayList<>();

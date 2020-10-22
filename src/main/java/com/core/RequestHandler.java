@@ -3,9 +3,9 @@ package com.core;
 import org.apache.commons.lang3.StringUtils;
 
 /**
- * @author Lev
- *
  * Класс, который является прослойкой между ConsoleBot или Bot и Core
+ *
+ * @author Lev
  */
 public class RequestHandler {
     private Core core = new Core();
