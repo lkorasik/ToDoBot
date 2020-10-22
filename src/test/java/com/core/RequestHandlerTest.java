@@ -5,70 +5,103 @@ import org.junit.Test;
 import org.junit.Before;
 
 /**
+ * Тестируем класс RequestHandler в связке с Core
+ *
  * @author Lev
  */
 public class RequestHandlerTest {
     RequestHandler requestHandler;
 
+    /**
+     * Подгтовка к тесту
+     */
     @Before
     public void setUp(){
         this.requestHandler = new RequestHandler();
     }
 
+    /**
+     * Доавбление задачи. Задача без пробелов
+     */
     @Test
-    public void TestAddTask1(){
+    public void testAddTaskWithoutSpace(){
         String result = requestHandler.handle("/add Task1");
 
-        Assert.assertEquals(result, Constants.TASK_ADDED_MSG + "Task1");
+        Assert.assertEquals(result, "Added task: Task1");
     }
 
+    /**
+     * Добавление задачи. Задача с пробелом
+     */
     @Test
-    public void TestAddTask2(){
+    public void testAddTaskWithSpace(){
         String result = requestHandler.handle("/add Go to");
 
-        Assert.assertEquals(result, Constants.TASK_ADDED_MSG + "Go to");
+        Assert.assertEquals(result, "Added task: Go to");
     }
 
+    /**
+     * Получаем помощь по командам
+     */
     @Test
-    public void TestHelp(){
+    public void testGetHelp(){
         String result = requestHandler.handle("/help");
 
-        Assert.assertEquals(result, Constants.HELP_MSG);
+        Assert.assertEquals(result, "/add [text] - You can add task.\n\ttext - task's text\n" +
+                "/del [task_id] - You can delete task.\n\ttask_id - Task's id\n" +
+                "/show - You can see all tasks\n" +
+                "/start - You can start chatting with bot\n" +
+                "/help - You will see this message");
     }
 
+    /**
+     * Проверям, что бот корректно начинает диалог
+     */
     @Test
-    public void TestStart(){
+    public void testStart(){
         String result = requestHandler.handle("/start");
 
-        Assert.assertEquals(result, Constants.START_MSG);
+        Assert.assertEquals(result, "I'm ready for work!");
     }
 
+    /**
+     * Удаляем задачу с существующим идентификатором
+     */
     @Test
-    public void TestDeleteTask1(){
+    public void testDeleteTaskWithExistingID(){
         requestHandler.handle("/add Task1");
         String result = requestHandler.handle("/del 0");
 
-        Assert.assertEquals(result, Constants.TASK_DELETED_MSG + "0");
+        Assert.assertEquals(result, "Successfully deleted task with id: 0");
     }
 
+    /**
+     * Пробуем удалить задачу без указания идентификатора
+     */
     @Test
-    public void TestDeleteTask2(){
+    public void testDeleteTaskWithoutID(){
         String result = requestHandler.handle("/del");
 
-        Assert.assertEquals(result, Constants.EMPTY_TASK_ID_MSG);
+        Assert.assertEquals(result, "Please enter not empty task id");
     }
 
+    /**
+     * Пробуем удалить задачу с несуществующим идентификатором
+     */
     @Test
-    public void TestDeleteTask3(){
+    public void testDeleteTaskWithNotExistingID(){
         String result = requestHandler.handle("/del 123");
 
-        Assert.assertEquals(result, Constants.NOT_EXISTING_TASK_ID_EXCEPTION_MSG + "123");
+        Assert.assertEquals(result, "There is no task with id: 123");
     }
 
+    /**
+     * Пробуем удалить задачу с некорректным типом идентификатора
+     */
     @Test
-    public void TestDeleteTask4(){
+    public void testDeleteTaskWithIncorrectTypeOfID(){
         String result = requestHandler.handle("/del som");
 
-        Assert.assertEquals(result, Constants.INCORRECT_TASK_ID_TYPE_EXCEPTION_MSG);
+        Assert.assertEquals(result, "Please enter tasks id, not description");
     }
 }
