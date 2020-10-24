@@ -37,9 +37,15 @@ public class Core {
      */
     public void addTask(String userId, String description) {
         Task task = new Task(description);
-        List<Task> tasks = taskContainer.get(userId);
-        tasks.add(task);
-        taskContainer.put(userId, tasks);
+        List<Task> tasksFromContainer = taskContainer.get(userId);
+        if (tasksFromContainer == null){
+            List<Task> newTasks = new ArrayList<>();
+            newTasks.add(task);
+            taskContainer.put(userId, newTasks);
+        }else{
+            tasksFromContainer.add(task);
+            taskContainer.put(userId, tasksFromContainer);
+        }
     }
 
     /**
@@ -49,10 +55,10 @@ public class Core {
      */
     public void deleteTask(String userId, String index) throws NotExistingTaskIndexException, IncorrectTaskIdTypeException {
         try {
-            List<Task> tasks = taskContainer.get(userId);
-            tasks.remove(Integer.parseInt(index));
-            taskContainer.put(userId, tasks);
-        } catch (IndexOutOfBoundsException exception) {
+            List<Task> taskFromContainer = taskContainer.get(userId);
+            taskFromContainer.remove(Integer.parseInt(index));
+            taskContainer.put(userId, taskFromContainer);
+        } catch (IndexOutOfBoundsException | NullPointerException exception) {
             throw new NotExistingTaskIndexException(Constants.NOT_EXISTING_TASK_ID_EXCEPTION_MSG + index);
         } catch (NumberFormatException exception) {
             throw new IncorrectTaskIdTypeException(Constants.INCORRECT_TASK_ID_TYPE_EXCEPTION_MSG);
@@ -66,7 +72,7 @@ public class Core {
      */
     public String getTasks(String userId) {
         List<Task> tasks = taskContainer.get(userId);
-        if (tasks.size() == 0) {
+        if (tasks == null || tasks.size() == 0) {
             return Constants.EMPTY_TASK_LIST;
         } else {
             StringBuilder formattedTasks = new StringBuilder("Id\tОписание\n");
