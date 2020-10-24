@@ -1,5 +1,6 @@
 package com.core;
 
+import com.fsm.FSM;
 import org.apache.commons.lang3.StringUtils;
 
 /**
@@ -9,6 +10,7 @@ import org.apache.commons.lang3.StringUtils;
  */
 public class RequestHandler {
     private Core core = new Core();
+    private FSM fsm = new FSM();
 
     /**
      * Распарсить строчку. Выделить команду и тело команды
@@ -47,6 +49,7 @@ public class RequestHandler {
      * @return Строка с резульатом, которую надо показать пользователю
      */
     public String handle(String input) {
+        /*
         String result;
 
         ParsedCommand parsedCommand = split(input);
@@ -80,6 +83,50 @@ public class RequestHandler {
         }
 
         return result;
+         */
+
+        String res;
+        boolean isAdd = fsm.cur.name.equals(Constants.ADD_STATE);
+        boolean isDel = fsm.cur.name.equals(Constants.DEL_STATE);
+        boolean isShow = fsm.cur.name.equals(Constants.SHOW_STATE);
+        boolean isHelp = fsm.cur.name.equals(Constants.HELP_STATE);
+
+        if (isShow)
+            fsm.update();
+        if (isHelp)
+            fsm.update();
+
+        fsm.update(input);
+
+        if(isAdd && !input.equals(Constants.CANCEL_COMMAND)){
+            res = addTask(input);
+        }
+        else if (isDel && !input.equals(Constants.CANCEL_COMMAND)){
+            res = deleteTask(input);
+        }
+        else {
+            res = fsm.cur.getValue();
+
+            switch (res) {
+                case Constants.START_STATE:
+                    res = Constants.START_MSG;
+                    break;
+                case Constants.HELP_STATE:
+                    res = Constants.HELP_MSG;
+                    break;
+                case Constants.ADD_STATE:
+                    res = Constants.TASK_DESCRIPTION_MSG;
+                    break;
+                case Constants.DEL_STATE:
+                    res = Constants.TASK_ID_MSG;
+                    break;
+                case Constants.SHOW_STATE:
+                    res = core.getTasks();
+                    break;
+            }
+        }
+
+        return res;
     }
 
     /**

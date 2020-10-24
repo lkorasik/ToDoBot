@@ -1,6 +1,9 @@
 package com.core;
 
+import com.authentication.Authenticator;
+
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -8,26 +11,47 @@ import java.util.List;
  * @author Dmitry
  */
 public class Core {
-    private List<Task> tasks = new ArrayList<>();
+    private HashMap<String, List<Task>> taskContainer = new HashMap<>();
+    private Authenticator authenticator = new Authenticator();
 
     /**
-     * Добавляет задание в список задач
-     *
-     * @param description Текст задачи
+     * Возвращает статус-код идентификации; Предпологается, что если пользователь
+     * ввел неправильный пароль, то его просят ввести заново
+     * @param userId идентификатор пользователя
+     * @param pass пароль пользователя
+     * @return false если userId существует, но введен неправильный пароль, иначе true
      */
-    public void addTask(String description) {
-        Task task = new Task(description);
-        tasks.add(task);
+    public boolean authenticate(String userId, String pass){
+        if (authenticator.hasAccount(userId)){
+            return authenticator.signIn(userId, pass);
+        } else{
+            authenticator.signUp(userId, pass);
+            return true;
+        }
     }
 
     /**
-     * Удаляет задание [задания] из списка задач
+     * Добавляет задание в список задач конкретного пользователя
+     *
+     * @param description Текст задачи
+     */
+    public void addTask(String userId, String description) {
+        Task task = new Task(description);
+        List<Task> tasks = taskContainer.get(userId);
+        tasks.add(task);
+        taskContainer.put(userId, tasks);
+    }
+
+    /**
+     * Удаляет задание из списка задач конкретного пользователя
      *
      * @param index Id задачи в списке
      */
-    public void deleteTask(String index) throws NotExistingTaskIndexException, IncorrectTaskIdTypeException {
+    public void deleteTask(String userId, String index) throws NotExistingTaskIndexException, IncorrectTaskIdTypeException {
         try {
+            List<Task> tasks = taskContainer.get(userId);
             tasks.remove(Integer.parseInt(index));
+            taskContainer.put(userId, tasks);
         } catch (IndexOutOfBoundsException exception) {
             throw new NotExistingTaskIndexException(Constants.NOT_EXISTING_TASK_ID_EXCEPTION_MSG + index);
         } catch (NumberFormatException exception) {
@@ -36,11 +60,12 @@ public class Core {
     }
 
     /**
-     * Возвращает строку с текущими заданиями
+     * Возвращает строку с текущими заданиями конкретного пользователя
      *
      * @return Formatted string with task's list
      */
-    public String getTasks() {
+    public String getTasks(String userId) {
+        List<Task> tasks = taskContainer.get(userId);
         if (tasks.size() == 0) {
             return Constants.EMPTY_TASK_LIST;
         } else {
