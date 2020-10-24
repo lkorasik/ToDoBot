@@ -40,7 +40,9 @@ public class Bot extends TelegramLongPollingBot{
             SendMessage answer = new SendMessage();
             answer.setChatId(update.getMessage().getChatId());
 
-            String result = requestHandler.handle(message);
+            String uid = update.getMessage().getFrom().getId().toString();
+
+            String result = requestHandler.handle(uid, message);
 
             answer.setText(result);
 

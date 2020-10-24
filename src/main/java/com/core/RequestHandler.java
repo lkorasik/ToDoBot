@@ -48,7 +48,7 @@ public class RequestHandler {
      * @param input - сообщение
      * @return Строка с резульатом, которую надо показать пользователю
      */
-    public String handle(String input) {
+    public String handle(String uid, String input) {
         /*
         String result;
 
@@ -99,10 +99,10 @@ public class RequestHandler {
         fsm.update(input);
 
         if(isAdd && !input.equals(Constants.CANCEL_COMMAND)){
-            res = addTask(input);
+            res = addTask(uid, input);
         }
         else if (isDel && !input.equals(Constants.CANCEL_COMMAND)){
-            res = deleteTask(input);
+            res = deleteTask(uid, input);
         }
         else {
             res = fsm.getCurrentStateName();
@@ -121,7 +121,7 @@ public class RequestHandler {
                     res = Constants.TASK_ID_MSG;
                     break;
                 case Constants.SHOW_STATE:
-                    res = core.getTasks();
+                    res = core.getTasks(uid);
                     break;
             }
         }
@@ -134,11 +134,11 @@ public class RequestHandler {
      * @param body Текст задачи
      * @return Результат, который надо показать пользователю
      */
-    private String addTask(String body){
+    private String addTask(String uid, String body){
         String result;
 
         if (bodyIsCorrect(body)) {
-            core.addTask(body);
+            core.addTask(uid, body);
             result = Constants.TASK_ADDED_MSG + body;
         } else {
             result = Constants.EMPTY_TASK_DESCRIPTION_MSG;
@@ -152,12 +152,12 @@ public class RequestHandler {
      * @param body Принимается идентификатор задачи
      * @return Результат, который надо вывести пользователю
      */
-    private String deleteTask(String body){
+    private String deleteTask(String uid, String body){
         String result;
 
         if (bodyIsCorrect(body)) {
             try {
-                core.deleteTask(body);
+                core.deleteTask(uid, body);
                 result = Constants.TASK_DELETED_MSG + body;
             } catch (NotExistingTaskIndexException | IncorrectTaskIdTypeException exception) {
                 result = exception.getMessage();
