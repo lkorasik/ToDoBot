@@ -1,15 +1,15 @@
 package com.fsm;
 
 public class State {
-    public String name;
-    public boolean waitUser;
+    private final String name;
+    //public boolean waitUser;
 
     public State(String name){
         this.name = name;
-        waitUser = false;
+        //waitUser = false;
     }
 
-    public String getValue(){
+    public String getName(){
         return name;
     }
 }

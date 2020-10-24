@@ -3,24 +3,29 @@ package com.fsm;
 import java.util.ArrayList;
 
 public class TransitionTable {
-    public ArrayList<Transition> transitions = new ArrayList<>();
+    private final ArrayList<Transition> transitions = new ArrayList<>();
 
-    public void add(Transition transition){
-        transitions.add(transition);
+    public void addTransition(Transition transition){
+        if(transition != null)
+            transitions.add(transition);
     }
 
-    public State get(State start, String key){
+    public State getEndState(State start, String key){
         for(int i = 0; i < transitions.size(); i++){
             Transition transition = transitions.get(i);
 
+            State m_start = transition.getStartState();
+            String m_key = transition.getKey();
+            State m_end = transition.getEndState();
+
             if(key == null){
-                if(transition.start.equals(start) && transition.key == null){
-                    return transition.end;
+                if(m_start.equals(start) && m_key == null){
+                    return m_end;
                 }
             }
             else {
-                if(transition.start.equals(start) && transition.key.equals(key)){
-                    return transition.end;
+                if(m_start.equals(start) && m_key.equals(key)){
+                    return m_end;
                 }
             }
         }
