@@ -1,6 +1,9 @@
 package com.core;
 
+import com.fsm.FSM;
 import org.apache.commons.lang3.StringUtils;
+
+import java.awt.image.AreaAveragingScaleFilter;
 
 /**
  * Класс, который является прослойкой между ConsoleBot или Bot и Core
@@ -9,6 +12,7 @@ import org.apache.commons.lang3.StringUtils;
  */
 public class RequestHandler {
     private Core core = new Core();
+    private FSM fsm = new FSM();
 
     /**
      * Распарсить строчку. Выделить команду и тело команды
@@ -47,6 +51,7 @@ public class RequestHandler {
      * @return Строка с резульатом, которую надо показать пользователю
      */
     public String handle(String input) {
+        /*
         String result;
 
         ParsedCommand parsedCommand = split(input);
@@ -80,6 +85,50 @@ public class RequestHandler {
         }
 
         return result;
+         */
+
+        String res;
+        boolean isAdd = fsm.cur.name.equals("ADD");
+        boolean isDel = fsm.cur.name.equals("DEL");
+        boolean isShow = fsm.cur.name.equals("SHOW");
+        boolean isHelp = fsm.cur.name.equals("HELP");
+
+        if (isShow)
+            fsm.next("");
+        if (isHelp)
+            fsm.next("");
+
+        fsm.next(input);
+
+        if(isAdd && !input.equals("/cancel")){
+            res = addTask(input);
+        }
+        else if (isDel && !input.equals("/cancel")){
+            res = deleteTask(input);
+        }
+        else {
+            res = fsm.cur.getValue();
+
+            switch (res) {
+                case "START":
+                    res = Constants.START_MSG;
+                    break;
+                case "HELP":
+                    res = Constants.HELP_MSG;
+                    break;
+                case "ADD":
+                    res = "Please, enter task description";
+                    break;
+                case "DEL":
+                    res = "Please, enter task id";
+                    break;
+                case "SHOW":
+                    res = core.getTasks();
+                    break;
+            }
+        }
+
+        return res;
     }
 
     /**
