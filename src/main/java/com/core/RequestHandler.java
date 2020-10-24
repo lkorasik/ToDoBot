@@ -86,10 +86,10 @@ public class RequestHandler {
          */
 
         String res;
-        boolean isAdd = fsm.cur.name.equals(Constants.ADD_STATE);
-        boolean isDel = fsm.cur.name.equals(Constants.DEL_STATE);
-        boolean isShow = fsm.cur.name.equals(Constants.SHOW_STATE);
-        boolean isHelp = fsm.cur.name.equals(Constants.HELP_STATE);
+        boolean isAdd = fsm.getCurrentStateName().equals(Constants.ADD_STATE);
+        boolean isDel = fsm.getCurrentStateName().equals(Constants.DEL_STATE);
+        boolean isShow = fsm.getCurrentStateName().equals(Constants.SHOW_STATE);
+        boolean isHelp = fsm.getCurrentStateName().equals(Constants.HELP_STATE);
 
         if (isShow)
             fsm.update();
@@ -105,7 +105,7 @@ public class RequestHandler {
             res = deleteTask(input);
         }
         else {
-            res = fsm.cur.getValue();
+            res = fsm.getCurrentStateName();
 
             switch (res) {
                 case Constants.START_STATE:

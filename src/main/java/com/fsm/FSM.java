@@ -4,11 +4,14 @@ import com.core.Constants;
 
 import java.util.ArrayList;
 
+/**
+ * Класс, который реализцует
+ */
 public class FSM {
-    ArrayList<State> states = new ArrayList<>();
-    TransitionTable trans = new TransitionTable();
-    ArrayList<String> commands = new ArrayList<>();
-    public State cur;
+    private final ArrayList<State> states = new ArrayList<>();
+    private final TransitionTable trans = new TransitionTable();
+    private final ArrayList<String> commands = new ArrayList<>();
+    private State currentState;
 
     public FSM(){
         State ep = new State(Constants.ENTRY_POINT_STATE);
@@ -25,19 +28,19 @@ public class FSM {
         states.add(show);
         states.add(help);
 
-        trans.add(new Transition(ep, Constants.START_COMMAND, start));
-        trans.add(new Transition(start, Constants.ADD_TASK_COMMAND, add));
-        trans.add(new Transition(add, Constants.CANCEL_COMMAND, start));
-        trans.add(new Transition(add, null, start));
-        trans.add(new Transition(start, Constants.DELETE_TASK_COMMAND, del));
-        trans.add(new Transition(del, Constants.CANCEL_COMMAND, start));
-        trans.add(new Transition(del, null, start));
-        trans.add(new Transition(start, Constants.SHOW_TASKS_COMMAND, show));
-        trans.add(new Transition(show, null, start));
-        trans.add(new Transition(start, Constants.HELP_COMMAND, help));
-        trans.add(new Transition(help, null, start));
+        trans.addTransition(new Transition(ep, Constants.START_COMMAND, start));
+        trans.addTransition(new Transition(start, Constants.ADD_TASK_COMMAND, add));
+        trans.addTransition(new Transition(add, Constants.CANCEL_COMMAND, start));
+        trans.addTransition(new Transition(add, null, start));
+        trans.addTransition(new Transition(start, Constants.DELETE_TASK_COMMAND, del));
+        trans.addTransition(new Transition(del, Constants.CANCEL_COMMAND, start));
+        trans.addTransition(new Transition(del, null, start));
+        trans.addTransition(new Transition(start, Constants.SHOW_TASKS_COMMAND, show));
+        trans.addTransition(new Transition(show, null, start));
+        trans.addTransition(new Transition(start, Constants.HELP_COMMAND, help));
+        trans.addTransition(new Transition(help, null, start));
 
-        cur = ep;
+        currentState = ep;
 
         commands.add(Constants.ADD_TASK_COMMAND);
         commands.add(Constants.DELETE_TASK_COMMAND);
@@ -52,14 +55,18 @@ public class FSM {
             line = null;
         }
 
-        State end = trans.get(cur, line);
+        State end = trans.getEndState(currentState, line);
 
         if(end != null) {
-            cur = end;
+            currentState = end;
         }
     }
 
     public void update(){
         update("");
+    }
+
+    public String getCurrentStateName(){
+        return currentState.getName();
     }
 }
