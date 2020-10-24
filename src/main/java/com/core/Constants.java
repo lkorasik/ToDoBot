@@ -10,6 +10,7 @@ public class Constants {
     public static final String SHOW_TASKS_COMMAND = "/show";
     public static final String START_COMMAND = "/start";
     public static final String HELP_COMMAND = "/help";
+    public static final String CANCEL_COMMAND = "/cancel";
 
     public static final String START_MSG = "I'm ready for work!";
     public static final String HELP_MSG = "/add [text] - You can add task.\n\ttext - task's text\n" +
@@ -20,7 +21,9 @@ public class Constants {
     public static final String NOT_IMPLEMENTED_COMMAND_MSG = "This command isn't implemented yet";
     public static final String INCORRECT_COMMAND_FORMAT_MSG = "Your command must starts with /";
     public static final String EMPTY_TASK_DESCRIPTION_MSG = "Please enter not empty task description";
+    public static final String TASK_DESCRIPTION_MSG = "Please, enter task description";
     public static final String EMPTY_TASK_ID_MSG = "Please enter not empty task id";
+    public static final String TASK_ID_MSG = "Please, enter task id";
     public static final String TASK_ADDED_MSG = "Added task: ";
     public static final String TASK_DELETED_MSG = "Successfully deleted task with id: ";
     public static final String NOT_EXISTING_TASK_ID_EXCEPTION_MSG = "There is no task with id: ";
@@ -28,4 +31,11 @@ public class Constants {
     public static final String EMPTY_TASK_LIST = "Congratulations! You don't have any tasks yet";
 
     public static final String TELEGRAM_TOKEN_FILENAME = "Token";
+
+    public static final String ENTRY_POINT_STATE = "ENTRY POINT";
+    public static final String START_STATE = "START";
+    public static final String ADD_STATE = "ADD";
+    public static final String DEL_STATE = "DEL";
+    public static final String SHOW_STATE = "SHOW";
+    public static final String HELP_STATE = "HELP";
 }

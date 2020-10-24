@@ -3,8 +3,6 @@ package com.core;
 import com.fsm.FSM;
 import org.apache.commons.lang3.StringUtils;
 
-import java.awt.image.AreaAveragingScaleFilter;
-
 /**
  * Класс, который является прослойкой между ConsoleBot или Bot и Core
  *
@@ -88,41 +86,41 @@ public class RequestHandler {
          */
 
         String res;
-        boolean isAdd = fsm.cur.name.equals("ADD");
-        boolean isDel = fsm.cur.name.equals("DEL");
-        boolean isShow = fsm.cur.name.equals("SHOW");
-        boolean isHelp = fsm.cur.name.equals("HELP");
+        boolean isAdd = fsm.cur.name.equals(Constants.ADD_STATE);
+        boolean isDel = fsm.cur.name.equals(Constants.DEL_STATE);
+        boolean isShow = fsm.cur.name.equals(Constants.SHOW_STATE);
+        boolean isHelp = fsm.cur.name.equals(Constants.HELP_STATE);
 
         if (isShow)
-            fsm.next("");
+            fsm.update();
         if (isHelp)
-            fsm.next("");
+            fsm.update();
 
-        fsm.next(input);
+        fsm.update(input);
 
-        if(isAdd && !input.equals("/cancel")){
+        if(isAdd && !input.equals(Constants.CANCEL_COMMAND)){
             res = addTask(input);
         }
-        else if (isDel && !input.equals("/cancel")){
+        else if (isDel && !input.equals(Constants.CANCEL_COMMAND)){
             res = deleteTask(input);
         }
         else {
             res = fsm.cur.getValue();
 
             switch (res) {
-                case "START":
+                case Constants.START_STATE:
                     res = Constants.START_MSG;
                     break;
-                case "HELP":
+                case Constants.HELP_STATE:
                     res = Constants.HELP_MSG;
                     break;
-                case "ADD":
-                    res = "Please, enter task description";
+                case Constants.ADD_STATE:
+                    res = Constants.TASK_DESCRIPTION_MSG;
                     break;
-                case "DEL":
-                    res = "Please, enter task id";
+                case Constants.DEL_STATE:
+                    res = Constants.TASK_ID_MSG;
                     break;
-                case "SHOW":
+                case Constants.SHOW_STATE:
                     res = core.getTasks();
                     break;
             }

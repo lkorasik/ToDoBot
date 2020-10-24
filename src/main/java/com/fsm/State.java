@@ -4,9 +4,9 @@ public class State {
     public String name;
     public boolean waitUser;
 
-    public State(String name, boolean waitUser){
+    public State(String name){
         this.name = name;
-        this.waitUser = waitUser;
+        waitUser = false;
     }
 
     public String getValue(){
