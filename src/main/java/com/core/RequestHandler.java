@@ -49,42 +49,6 @@ public class RequestHandler {
      * @return Строка с резульатом, которую надо показать пользователю
      */
     public String handle(String uid, String input) {
-        /*
-        String result;
-
-        ParsedCommand parsedCommand = split(input);
-
-        String command = parsedCommand.getCommand();
-        String body = parsedCommand.getBody();
-
-        if (command.startsWith("/")) {
-            switch (command) {
-                case Constants.START_COMMAND:
-                    result = Constants.START_MSG;
-                    break;
-                case Constants.HELP_COMMAND:
-                    result = Constants.HELP_MSG;
-                    break;
-                case Constants.ADD_TASK_COMMAND:
-                    result = addTask(body);
-                    break;
-                case Constants.DELETE_TASK_COMMAND:
-                    result = deleteTask(body);
-                    break;
-                case Constants.SHOW_TASKS_COMMAND:
-                    result = core.getTasks();
-                    break;
-                default:
-                    result = Constants.NOT_IMPLEMENTED_COMMAND_MSG;
-                    break;
-            }
-        } else {
-            result = Constants.INCORRECT_COMMAND_FORMAT_MSG;
-        }
-
-        return result;
-         */
-
         String res;
         boolean isAdd = fsm.getCurrentStateName().equals(Constants.ADD_STATE);
         boolean isDel = fsm.getCurrentStateName().equals(Constants.DEL_STATE);
