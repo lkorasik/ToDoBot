@@ -13,7 +13,7 @@ public class ConsoleBot {
         Scanner scanner = new Scanner(System.in);
         RequestHandler requestHandler = new RequestHandler();
         while (true) {
-            System.out.println(requestHandler.handle(scanner.nextLine()));
+            //System.out.println(requestHandler.handle(scanner.nextLine()));
         }
     }
 }
