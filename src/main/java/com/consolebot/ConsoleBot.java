@@ -2,7 +2,6 @@ package com.consolebot;
 
 import com.authentication.Authenticator;
 import com.core.RequestHandler;
-import org.checkerframework.checker.units.qual.A;
 
 import java.util.Scanner;
 
