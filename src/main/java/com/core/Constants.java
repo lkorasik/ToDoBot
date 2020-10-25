@@ -12,12 +12,13 @@ public class Constants {
     public static final String HELP_COMMAND = "/help";
     public static final String CANCEL_COMMAND = "/cancel";
 
-    public static final String START_MSG = "I'm ready for work!";
-    public static final String HELP_MSG = "/add [text] - You can add task.\n\ttext - task's text\n" +
-            "/del [task_id] - You can delete task.\n\ttask_id - Task's id\n" +
+    public static final String HELP_MSG = "/add - You can add task.\n\ttext - task's text\n" +
+            "/del - You can delete task.\n\ttask_id - Task's id\n" +
             "/show - You can see all tasks\n" +
             "/start - You can start chatting with bot\n" +
             "/help - You will see this message";
+    public static final String START_MSG = "Hello, I'm telegram bot that can help to manage your tasks. " +
+            "There is all commands that you can type to operate with me:\n" + HELP_MSG;
     public static final String NOT_IMPLEMENTED_COMMAND_MSG = "This command isn't implemented yet";
     public static final String INCORRECT_COMMAND_FORMAT_MSG = "Your command must starts with /";
     public static final String EMPTY_TASK_DESCRIPTION_MSG = "Please enter not empty task description";
