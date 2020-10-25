@@ -16,6 +16,7 @@ public class FSM {
     public FSM(){
         State ep = new State(Constants.ENTRY_POINT_STATE);
         State start = new State(Constants.START_STATE);
+        State listen = new State(Constants.LISTENING_STATE);
         State add = new State(Constants.ADD_STATE);
         State del = new State(Constants.DEL_STATE);
         State show = new State(Constants.SHOW_STATE);
@@ -23,22 +24,24 @@ public class FSM {
 
         states.add(ep);
         states.add(start);
+        states.add(listen);
         states.add(add);
         states.add(del);
         states.add(show);
         states.add(help);
 
         trans.addTransition(new Transition(ep, Constants.START_COMMAND, start));
-        trans.addTransition(new Transition(start, Constants.ADD_TASK_COMMAND, add));
-        trans.addTransition(new Transition(add, Constants.CANCEL_COMMAND, start));
-        trans.addTransition(new Transition(add, null, start));
-        trans.addTransition(new Transition(start, Constants.DELETE_TASK_COMMAND, del));
-        trans.addTransition(new Transition(del, Constants.CANCEL_COMMAND, start));
-        trans.addTransition(new Transition(del, null, start));
-        trans.addTransition(new Transition(start, Constants.SHOW_TASKS_COMMAND, show));
-        trans.addTransition(new Transition(show, null, start));
-        trans.addTransition(new Transition(start, Constants.HELP_COMMAND, help));
-        trans.addTransition(new Transition(help, null, start));
+        trans.addTransition(new Transition(start, null, listen));
+        trans.addTransition(new Transition(listen, Constants.ADD_TASK_COMMAND, add));
+        trans.addTransition(new Transition(add, Constants.CANCEL_COMMAND, listen));
+        trans.addTransition(new Transition(add, null, listen));
+        trans.addTransition(new Transition(listen, Constants.DELETE_TASK_COMMAND, del));
+        trans.addTransition(new Transition(del, Constants.CANCEL_COMMAND, listen));
+        trans.addTransition(new Transition(del, null, listen));
+        trans.addTransition(new Transition(listen, Constants.SHOW_TASKS_COMMAND, show));
+        trans.addTransition(new Transition(show, null, listen));
+        trans.addTransition(new Transition(listen, Constants.HELP_COMMAND, help));
+        trans.addTransition(new Transition(help, null, listen));
 
         currentState = ep;
 

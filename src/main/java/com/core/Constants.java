@@ -39,4 +39,5 @@ public class Constants {
     public static final String DEL_STATE = "DEL";
     public static final String SHOW_STATE = "SHOW";
     public static final String HELP_STATE = "HELP";
+    public static final String LISTENING_STATE = "LISTENING";
 }

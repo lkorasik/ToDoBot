@@ -29,15 +29,21 @@ public class RequestHandler {
      * @return Строка с резульатом, которую надо показать пользователю
      */
     public String handle(String uid, String input) {
+        if (input.equals("/fsmstate"))
+            return fsm.getCurrentStateName();
+
         String res;
         boolean isAdd = fsm.getCurrentStateName().equals(Constants.ADD_STATE);
         boolean isDel = fsm.getCurrentStateName().equals(Constants.DEL_STATE);
         boolean isShow = fsm.getCurrentStateName().equals(Constants.SHOW_STATE);
         boolean isHelp = fsm.getCurrentStateName().equals(Constants.HELP_STATE);
+        boolean isStart = fsm.getCurrentStateName().equals(Constants.START_STATE);
 
         if (isShow)
             fsm.update();
         if (isHelp)
+            fsm.update();
+        if(isStart)
             fsm.update();
 
         fsm.update(input);
@@ -66,6 +72,12 @@ public class RequestHandler {
                     break;
                 case Constants.SHOW_STATE:
                     res = core.getTasks(uid);
+                    break;
+                case Constants.ENTRY_POINT_STATE:
+                    res = "Enter /start";
+                    break;
+                case Constants.LISTENING_STATE:
+                    res = "Incorrect command";
                     break;
             }
         }
