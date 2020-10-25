@@ -12,23 +12,6 @@ import java.util.List;
  */
 public class Core {
     private HashMap<String, List<Task>> taskContainer = new HashMap<>();
-    private Authenticator authenticator = new Authenticator();
-
-    /**
-     * Возвращает статус-код идентификации; Предпологается, что если пользователь
-     * ввел неправильный пароль, то его просят ввести заново
-     * @param userId идентификатор пользователя
-     * @param pass пароль пользователя
-     * @return false если userId существует, но введен неправильный пароль, иначе true
-     */
-    public boolean authenticate(String userId, String pass){
-        if (authenticator.hasAccount(userId)){
-            return authenticator.signIn(userId, pass);
-        } else{
-            authenticator.signUp(userId, pass);
-            return true;
-        }
-    }
 
     /**
      * Добавляет задание в список задач конкретного пользователя

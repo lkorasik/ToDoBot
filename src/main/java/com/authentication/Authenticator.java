@@ -7,18 +7,25 @@ import java.util.HashMap;
  * @author Dmitry
  */
 public class Authenticator {
-    private HashMap<String, String> users = new HashMap<>();
+    private String userId;
 
-    public boolean hasAccount(String id){
-        return users.containsKey(id);
+    public String getStatus(){
+        if (userId == null){
+            return "Please input your login:";
+        }
+        return "";
     }
 
-    public boolean signIn(String userId, String pass){
-        if (hasAccount(userId)){ return users.get(userId).equals(pass); }
-        return false;
+    public String authenticate(String input){
+        userId = input;
+        return  "Now you can type /start to start using bot";
     }
 
-    public void signUp(String userId, String pass){
-        users.put(userId, pass);
+    public boolean gotCredentials(){
+        return userId != null;
+    }
+
+    public String getUserId(){
+        return userId;
     }
 }

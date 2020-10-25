@@ -12,27 +12,7 @@ public class RequestHandler {
     private Core core = new Core();
     private FSM fsm = new FSM();
 
-    /**
-     * Распарсить строчку. Выделить команду и тело команды
-     *
-     * @param line - Строка с запросом
-     * @return Команда
-     */
-    private ParsedCommand split(String line) {
-        var position = line.indexOf(" ");
 
-        String command = null;
-        String body = null;
-
-        if (position == -1) {
-            command = line;
-        } else {
-            command = line.substring(0, position);
-            body = line.substring(position + 1);
-        }
-
-        return new ParsedCommand(command, body);
-    }
 
     /**
      * Проверка на то, что тело команды задано корректно
