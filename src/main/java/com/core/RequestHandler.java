@@ -77,7 +77,7 @@ public class RequestHandler {
                     res = "Enter /start";
                     break;
                 case Constants.LISTENING_STATE:
-                    res = "Incorrect command";
+                    res = Constants.INCORRECT_COMMAND_MESSAGE;
                     break;
             }
         }
