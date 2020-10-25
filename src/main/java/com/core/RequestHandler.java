@@ -38,12 +38,9 @@ public class RequestHandler {
         boolean isShow = fsm.getCurrentStateName().equals(Constants.SHOW_STATE);
         boolean isHelp = fsm.getCurrentStateName().equals(Constants.HELP_STATE);
         boolean isStart = fsm.getCurrentStateName().equals(Constants.START_STATE);
+        boolean isCancel = input.equals(Constants.CANCEL_COMMAND);
 
-        if (isShow)
-            fsm.update();
-        if (isHelp)
-            fsm.update();
-        if(isStart)
+        if (isShow || isHelp || isStart)
             fsm.update();
 
         fsm.update(input);
@@ -77,7 +74,10 @@ public class RequestHandler {
                     res = "Enter /start";
                     break;
                 case Constants.LISTENING_STATE:
-                    res = Constants.INCORRECT_COMMAND_MESSAGE;
+                    if (!isCancel)
+                        res = Constants.INCORRECT_COMMAND_MESSAGE;
+                    else
+                        res = Constants.BOT_WAITING_COMMANDS;
                     break;
             }
         }
