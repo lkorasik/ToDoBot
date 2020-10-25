@@ -18,15 +18,11 @@ public class TransitionTable {
             String m_key = transition.getKey();
             State m_end = transition.getEndState();
 
-            if(key == null){
-                if(m_start.equals(start) && m_key == null){
-                    return m_end;
-                }
+            if(key == null && m_start.equals(start) && m_key == null){
+                return m_end;
             }
-            else {
-                if(m_start.equals(start) && m_key.equals(key)){
-                    return m_end;
-                }
+            else if(m_start.equals(start) && m_key.equals(key)){
+                return m_end;
             }
         }
 
