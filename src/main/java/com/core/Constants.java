@@ -41,4 +41,7 @@ public class Constants {
     public static final String SHOW_STATE = "SHOW";
     public static final String HELP_STATE = "HELP";
     public static final String LISTENING_STATE = "LISTENING";
+
+    public static final String LOGIN_MESSAGE = "Please input your login:";
+    public static final String SUCCESSFULL_AUTH_MSG = "Now you can type /start to start using bot";
 }
