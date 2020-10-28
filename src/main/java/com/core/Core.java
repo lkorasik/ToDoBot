@@ -1,7 +1,5 @@
 package com.core;
 
-import com.authentication.Authenticator;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;

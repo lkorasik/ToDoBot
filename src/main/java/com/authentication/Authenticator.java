@@ -1,5 +1,7 @@
 package com.authentication;
 
+import com.core.Constants;
+
 import java.util.HashMap;
 
 /**
@@ -11,14 +13,14 @@ public class Authenticator {
 
     public String getStatus(){
         if (userId == null){
-            return "Please input your login:";
+            return Constants.LOGIN_MESSAGE;
         }
         return "";
     }
 
     public String authenticate(String input){
         userId = input;
-        return  "Now you can type /start to start using bot";
+        return Constants.SUCCESSFULL_AUTH_MSG;
     }
 
     public boolean gotCredentials(){
