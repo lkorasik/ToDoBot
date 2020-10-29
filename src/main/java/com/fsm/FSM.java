@@ -5,7 +5,8 @@ import com.core.Constants;
 import java.util.ArrayList;
 
 /**
- * Класс, который реализцует
+ * Класс, который реализцует конечный автомат
+ * @author Lev
  */
 public class FSM {
     private final ArrayList<State> states = new ArrayList<>();
@@ -53,6 +54,10 @@ public class FSM {
         commands.add(Constants.CANCEL_COMMAND);
     }
 
+    /**
+     * Обновить состояние автомата
+     * @param line строка с сообщением от пользователя
+     */
     public void update(String line){
         if(!commands.contains(line)){
             line = null;
@@ -65,10 +70,17 @@ public class FSM {
         }
     }
 
+    /**
+     * Обновить состояние автомата
+     */
     public void update(){
         update("");
     }
 
+    /**
+     * Получить текущее сосотояние автмата
+     * @return состояние
+     */
     public String getCurrentStateName(){
         return currentState.getName();
     }
