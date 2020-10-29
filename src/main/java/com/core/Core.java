@@ -1,34 +1,45 @@
 package com.core;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 /**
- * @author Dmitry
  * Класс, отвечающий за бизнес-логику бота
+ * @author Dmitry
  */
 public class Core {
-    private List<Task> tasks = new ArrayList<>();
+    private HashMap<String, List<Task>> taskContainer = new HashMap<>();
 
     /**
-     * Добавляет задание в список задач
+     * Добавляет задание в список задач конкретного пользователя
      *
      * @param description Текст задачи
      */
-    public void addTask(String description) {
+    public void addTask(String userId, String description) {
         Task task = new Task(description);
-        tasks.add(task);
+        List<Task> tasksFromContainer = taskContainer.get(userId);
+        if (tasksFromContainer == null){
+            List<Task> newTasks = new ArrayList<>();
+            newTasks.add(task);
+            taskContainer.put(userId, newTasks);
+        }else{
+            tasksFromContainer.add(task);
+            taskContainer.put(userId, tasksFromContainer);
+        }
     }
 
     /**
-     * Удаляет задание [задания] из списка задач
+     * Удаляет задание из списка задач конкретного пользователя
      *
      * @param index Id задачи в списке
      */
-    public void deleteTask(String index) throws NotExistingTaskIndexException, IncorrectTaskIdTypeException {
+    public void deleteTask(String userId, String index) throws NotExistingTaskIndexException, IncorrectTaskIdTypeException {
         try {
-            tasks.remove(Integer.parseInt(index));
-        } catch (IndexOutOfBoundsException exception) {
+            List<Task> taskFromContainer = taskContainer.get(userId);
+            taskFromContainer.remove(Integer.parseInt(index));
+            taskContainer.put(userId, taskFromContainer);
+        } catch (IndexOutOfBoundsException | NullPointerException exception) {
             throw new NotExistingTaskIndexException(Constants.NOT_EXISTING_TASK_ID_EXCEPTION_MSG + index);
         } catch (NumberFormatException exception) {
             throw new IncorrectTaskIdTypeException(Constants.INCORRECT_TASK_ID_TYPE_EXCEPTION_MSG);
@@ -36,12 +47,13 @@ public class Core {
     }
 
     /**
-     * Возвращает строку с текущими заданиями
+     * Возвращает строку с текущими заданиями конкретного пользователя
      *
      * @return Formatted string with task's list
      */
-    public String getTasks() {
-        if (tasks.size() == 0) {
+    public String getTasks(String userId) {
+        List<Task> tasks = taskContainer.get(userId);
+        if (tasks == null || tasks.size() == 0) {
             return Constants.EMPTY_TASK_LIST;
         } else {
             StringBuilder formattedTasks = new StringBuilder("Id\tОписание\n");
