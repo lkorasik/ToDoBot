@@ -13,7 +13,6 @@ public class CoreTest {
     private Core core;
     private String user;
 
-
     @Before
     public void setUp(){
         core = new Core();

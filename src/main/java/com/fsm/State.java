@@ -1,14 +1,20 @@
 package com.fsm;
 
+/**
+ * Класс, который представляет состояние автомата
+ * @author Lev
+ */
 public class State {
     private final String name;
-    //public boolean waitUser;
 
     public State(String name){
         this.name = name;
-        //waitUser = false;
     }
 
+    /**
+     * Получить имя сосотояния
+     * @return имя
+     */
     public String getName(){
         return name;
     }
