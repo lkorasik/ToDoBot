@@ -185,4 +185,12 @@ public class RequestHandlerTest {
         Assert.assertEquals("Id\tОписание\n" +
                 "0\tSomething", result);
     }
+
+    @Test
+    public void testEPToAdd(){
+        String uid = String.valueOf((int)(Math.random() * 1000));
+
+        String result = requestHandler.handle(uid, "/add");
+        Assert.assertEquals("Enter /start", result);
+    }
 }

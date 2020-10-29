@@ -46,6 +46,8 @@ public class Bot extends TelegramLongPollingBot{
 
             answer.setText(result);
 
+            System.out.println(update.getMessage().getLocation());
+
             try{
                 execute(answer);
             }
