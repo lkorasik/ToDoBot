@@ -21,7 +21,7 @@ public class TransitionTable {
             if(key == null && m_start.equals(start) && m_key == null){
                 return m_end;
             }
-            else if(m_start.equals(start) && m_key.equals(key)){
+            else if(m_key != null && m_start.equals(start) && m_key.equals(key)){
                 return m_end;
             }
         }
