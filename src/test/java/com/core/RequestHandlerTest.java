@@ -186,6 +186,9 @@ public class RequestHandlerTest {
                 "0\tSomething", result);
     }
 
+    /**
+     * Пытаемся перескочить через одно состояние
+     */
     @Test
     public void testEPToAdd(){
         String uid = String.valueOf((int)(Math.random() * 1000));

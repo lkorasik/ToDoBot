@@ -14,15 +14,38 @@ public class FSM {
     private final ArrayList<String> commands = new ArrayList<>();
     private State currentState;
 
-    public FSM(){
-        State ep = new State(Constants.ENTRY_POINT_STATE);
-        State start = new State(Constants.START_STATE);
-        State listen = new State(Constants.LISTENING_STATE);
-        State add = new State(Constants.ADD_STATE);
-        State del = new State(Constants.DEL_STATE);
-        State show = new State(Constants.SHOW_STATE);
-        State help = new State(Constants.HELP_STATE);
+    private final State ep = new State(Constants.ENTRY_POINT_STATE);
+    private final State start = new State(Constants.START_STATE);
+    private final State listen = new State(Constants.LISTENING_STATE);
+    private final State add = new State(Constants.ADD_STATE);
+    private final State del = new State(Constants.DEL_STATE);
+    private final State show = new State(Constants.SHOW_STATE);
+    private final State help = new State(Constants.HELP_STATE);
 
+    public FSM(){
+        initStates();
+        initTransitions();
+        initCommands();
+
+        currentState = ep;
+    }
+
+    /**
+     * Инициализация списка команд
+     */
+    private void initCommands(){
+        commands.add(Constants.ADD_TASK_COMMAND);
+        commands.add(Constants.DELETE_TASK_COMMAND);
+        commands.add(Constants.SHOW_TASKS_COMMAND);
+        commands.add(Constants.START_COMMAND);
+        commands.add(Constants.HELP_COMMAND);
+        commands.add(Constants.CANCEL_COMMAND);
+    }
+
+    /**
+     * Инициализация списка состояний
+     */
+    private void initStates(){
         states.add(ep);
         states.add(start);
         states.add(listen);
@@ -30,7 +53,12 @@ public class FSM {
         states.add(del);
         states.add(show);
         states.add(help);
+    }
 
+    /**
+     * Инициализация таблицы переходов
+     */
+    private void initTransitions(){
         trans.addTransition(new Transition(ep, Constants.START_COMMAND, start));
         trans.addTransition(new Transition(start, null, listen));
         trans.addTransition(new Transition(listen, Constants.ADD_TASK_COMMAND, add));
@@ -43,15 +71,6 @@ public class FSM {
         trans.addTransition(new Transition(show, null, listen));
         trans.addTransition(new Transition(listen, Constants.HELP_COMMAND, help));
         trans.addTransition(new Transition(help, null, listen));
-
-        currentState = ep;
-
-        commands.add(Constants.ADD_TASK_COMMAND);
-        commands.add(Constants.DELETE_TASK_COMMAND);
-        commands.add(Constants.SHOW_TASKS_COMMAND);
-        commands.add(Constants.START_COMMAND);
-        commands.add(Constants.HELP_COMMAND);
-        commands.add(Constants.CANCEL_COMMAND);
     }
 
     /**
