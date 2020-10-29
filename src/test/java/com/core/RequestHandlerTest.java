@@ -4,6 +4,8 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.junit.Before;
 
+import javax.xml.transform.sax.SAXResult;
+
 /**
  * Тестируем класс RequestHandler в связке с Core
  *
@@ -21,23 +23,37 @@ public class RequestHandlerTest {
     }
 
     /**
-     * Доавбление задачи. Задача без пробелов
+     * Начало общения с ботом
      */
     @Test
-    public void testAddTaskWithoutSpace(){
-        String result = requestHandler.handle("/add Task1");
+    public void testStartChat(){
+        String uid = String.valueOf((int)(Math.random() * 1000));
 
-        Assert.assertEquals(result, "Added task: Task1");
+        String result = requestHandler.handle(uid, "/start");
+        Assert.assertEquals("Hello, I'm telegram bot that can help to manage your tasks. There is all commands that you can type to operate with me:\n" +
+                "/add - You can add task.\n" +
+                "\ttext - task's text\n" +
+                "/del - You can delete task.\n" +
+                "/show - You can see all tasks\n" +
+                "/help - You will see this message", result);
     }
 
     /**
-     * Добавление задачи. Задача с пробелом
+     * Попытка начать диалог два раза
      */
     @Test
-    public void testAddTaskWithSpace(){
-        String result = requestHandler.handle("/add Go to");
+    public void testStartChatTwice(){
+        String uid = String.valueOf((int)(Math.random() * 1000));
 
-        Assert.assertEquals(result, "Added task: Go to");
+        String result = requestHandler.handle(uid, "/start");
+        Assert.assertEquals("Hello, I'm telegram bot that can help to manage your tasks. " +
+                "There is all commands that you can type to operate with me:\n" + "/add - You can add task.\n\ttext - task's text\n" +
+                "/del - You can delete task.\n" +
+                "/show - You can see all tasks\n" +
+                "/help - You will see this message", result);
+
+        result = requestHandler.handle(uid, "/start");
+        Assert.assertEquals("Incorrect command", result);
     }
 
     /**
@@ -45,54 +61,86 @@ public class RequestHandlerTest {
      */
     @Test
     public void testGetHelp(){
-        String result = requestHandler.handle("/help");
+        String uid = String.valueOf((int)(Math.random() * 1000));
 
-        Assert.assertEquals(result, "/add [text] - You can add task.\n\ttext - task's text\n" +
-                "/del [task_id] - You can delete task.\n\ttask_id - Task's id\n" +
+        requestHandler.handle(uid, "/start");
+        String result = requestHandler.handle(uid, "/help");
+
+        Assert.assertEquals(result, "/add - You can add task.\n\ttext - task's text\n" +
+                "/del - You can delete task.\n" +
                 "/show - You can see all tasks\n" +
-                "/start - You can start chatting with bot\n" +
                 "/help - You will see this message");
     }
 
     /**
-     * Проверям, что бот корректно начинает диалог
+     * Проверяем, что можно добавить задачу
      */
     @Test
-    public void testStart(){
-        String result = requestHandler.handle("/start");
+    public void testAddTaskSuccessful(){
+        String uid = String.valueOf((int)(Math.random() * 1000));
 
-        Assert.assertEquals(result, "I'm ready for work!");
+        requestHandler.handle(uid, "/start");
+        String result = requestHandler.handle(uid, "/add");
+
+        Assert.assertEquals("Please enter task description", result);
+    }
+
+    /**
+     * Проверяем, что можено отказаться от добавления задачи
+     */
+    @Test
+    public void testAddTaskCanceled(){
+        String uid = String.valueOf((int)(Math.random() * 1000));
+
+        requestHandler.handle(uid, "/start");
+        requestHandler.handle(uid, "/add");
+        String result = requestHandler.handle(uid, "/cancel");
+
+        Assert.assertEquals("I'm waiting your commands", result);
     }
 
     /**
      * Удаляем задачу с существующим идентификатором
      */
     @Test
-    public void testDeleteTaskWithExistingID(){
-        requestHandler.handle("/add Task1");
-        String result = requestHandler.handle("/del 0");
+    public void testDeleteTaskSuccessful(){
+        String uid = String.valueOf((int)(Math.random() * 1000));
 
-        Assert.assertEquals(result, "Successfully deleted task with id: 0");
+        requestHandler.handle(uid, "/start");
+        requestHandler.handle(uid, "/add");
+        requestHandler.handle(uid, "Nothing");
+        requestHandler.handle(uid, "/del");
+        String result = requestHandler.handle(uid, "0");
+
+        Assert.assertEquals("Successfully deleted task with id: 0", result);
     }
 
     /**
-     * Пробуем удалить задачу без указания идентификатора
+     * Отменяем удаление задачи
      */
     @Test
-    public void testDeleteTaskWithoutID(){
-        String result = requestHandler.handle("/del");
+    public void testDeleteTaskCanceled(){
+        String uid = String.valueOf((int)(Math.random() * 1000));
 
-        Assert.assertEquals(result, "Please enter not empty task id");
+        requestHandler.handle(uid, "/start");
+        requestHandler.handle(uid, "/del");
+        String result = requestHandler.handle(uid, "/cancel");
+
+        Assert.assertEquals("I'm waiting your commands", result);
     }
 
     /**
-     * Пробуем удалить задачу с несуществующим идентификатором
+     * Пробуем удалить задачу с не тем id
      */
     @Test
-    public void testDeleteTaskWithNotExistingID(){
-        String result = requestHandler.handle("/del 123");
+    public void testDeleteTaskAnotherID(){
+        String uid = String.valueOf((int)(Math.random() * 1000));
 
-        Assert.assertEquals(result, "There is no task with id: 123");
+        requestHandler.handle(uid, "/start");
+        requestHandler.handle(uid, "/del");
+        String result = requestHandler.handle(uid, "48");
+
+        Assert.assertEquals("There is no task with id: 48", result);
     }
 
     /**
@@ -100,8 +148,41 @@ public class RequestHandlerTest {
      */
     @Test
     public void testDeleteTaskWithIncorrectTypeOfID(){
-        String result = requestHandler.handle("/del som");
+        String uid = String.valueOf((int)(Math.random() * 1000));
 
-        Assert.assertEquals(result, "Please enter tasks id, not description");
+        requestHandler.handle(uid, "/start");
+        requestHandler.handle(uid, "/del");
+        String result = requestHandler.handle(uid, "FEA15");
+
+        Assert.assertEquals("Please enter tasks id, not description", result);
+    }
+
+    /**
+     * Пытаемся посмотреть пустой список задач
+     */
+    @Test
+    public void testGetEmptyTaskList(){
+        String uid = String.valueOf((int)(Math.random() * 1000));
+
+        requestHandler.handle(uid, "/start");
+        String result = requestHandler.handle(uid, "/show");
+
+        Assert.assertEquals("Congratulations! You don't have any tasks yet", result);
+    }
+
+    /**
+     * Смотрим список задач
+     */
+    @Test
+    public void testGetTaskList(){
+        String uid = String.valueOf((int)(Math.random() * 1000));
+
+        requestHandler.handle(uid, "/start");
+        requestHandler.handle(uid, "/add");
+        requestHandler.handle(uid, "Something");
+        String result = requestHandler.handle(uid, "/show");
+
+        Assert.assertEquals("Id\tОписание\n" +
+                "0\tSomething", result);
     }
 }
