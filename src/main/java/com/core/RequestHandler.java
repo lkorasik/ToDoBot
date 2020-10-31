@@ -1,10 +1,8 @@
 package com.core;
 
 import com.fsm.FSM;
-import com.fsm.State;
 import com.fsm.States;
 import org.apache.commons.lang3.StringUtils;
-import org.checkerframework.checker.units.qual.C;
 
 /**
  * Класс, который является прослойкой между ConsoleBot или Bot и Core
@@ -14,8 +12,6 @@ import org.checkerframework.checker.units.qual.C;
 public class RequestHandler {
     private Core core = new Core();
     private FSM fsm = new FSM();
-
-
 
     /**
      * Проверка на то, что тело команды задано корректно
@@ -36,11 +32,11 @@ public class RequestHandler {
             return fsm.getCurrentState().toString();
 
         String res = null;
-        boolean isAdd = fsm.getCurrentState().equals(States.ADD);
-        boolean isDel = fsm.getCurrentState().equals(States.DEL);
-        boolean isShow = fsm.getCurrentState().equals(States.SHOW);
-        boolean isHelp = fsm.getCurrentState().equals(States.HELP);
-        boolean isStart = fsm.getCurrentState().equals(States.START);
+        boolean isAdd = fsm.isState(States.ADD);
+        boolean isDel = fsm.isState(States.DEL);
+        boolean isShow = fsm.isState(States.SHOW);
+        boolean isHelp = fsm.isState(States.HELP);
+        boolean isStart = fsm.isState(States.START);
         boolean isCancel = input.equals(Constants.CANCEL_COMMAND);
 
         if (isShow || isHelp || isStart)
@@ -54,95 +50,20 @@ public class RequestHandler {
         else if (isDel && !input.equals(Constants.CANCEL_COMMAND)){
             res = deleteTask(uid, input);
         }
+        else if (fsm.isState(States.SHOW)){
+            res = core.getTasks(uid);
+        }
+        else if(fsm.isState(States.LISTEN)){
+            if (!isCancel)
+                res = Constants.INCORRECT_COMMAND_MESSAGE;
+            else
+                res = Constants.BOT_WAITING_COMMANDS;
+        }
         else {
-            States state = fsm.getCurrentState();
-
-            switch (state) {
-                case START:
-                    res = Constants.START_MSG;
-                    break;
-                case HELP:
-                    res = Constants.HELP_MSG;
-                    break;
-                case ADD:
-                    res = Constants.TASK_DESCRIPTION_MSG;
-                    break;
-                case DEL:
-                    res = Constants.TASK_ID_MSG;
-                    break;
-                case SHOW:
-                    res = core.getTasks(uid);
-                    break;
-                case EP:
-                    res = "Enter /start";
-                    break;
-                case LISTEN:
-                    if (!isCancel)
-                        res = Constants.INCORRECT_COMMAND_MESSAGE;
-                    else
-                        res = Constants.BOT_WAITING_COMMANDS;
-                    break;
-            }
+            res = States.getMessageForState(fsm.getCurrentState());
         }
 
         return res;
-
-        /*
-        if (input.equals("/fsmstate"))
-            return fsm.getCurrentStateName();
-
-        String res;
-        boolean isAdd = fsm.getCurrentStateName().equals(Constants.ADD_STATE);
-        boolean isDel = fsm.getCurrentStateName().equals(Constants.DEL_STATE);
-        boolean isShow = fsm.getCurrentStateName().equals(Constants.SHOW_STATE);
-        boolean isHelp = fsm.getCurrentStateName().equals(Constants.HELP_STATE);
-        boolean isStart = fsm.getCurrentStateName().equals(Constants.START_STATE);
-        boolean isCancel = input.equals(Constants.CANCEL_COMMAND);
-
-        if (isShow || isHelp || isStart)
-            fsm.update();
-
-        fsm.update(input);
-
-        if(isAdd && !input.equals(Constants.CANCEL_COMMAND)){
-            res = addTask(uid, input);
-        }
-        else if (isDel && !input.equals(Constants.CANCEL_COMMAND)){
-            res = deleteTask(uid, input);
-        }
-        else {
-            res = fsm.getCurrentStateName();
-
-            switch (res) {
-                case Constants.START_STATE:
-                    res = Constants.START_MSG;
-                    break;
-                case Constants.HELP_STATE:
-                    res = Constants.HELP_MSG;
-                    break;
-                case Constants.ADD_STATE:
-                    res = Constants.TASK_DESCRIPTION_MSG;
-                    break;
-                case Constants.DEL_STATE:
-                    res = Constants.TASK_ID_MSG;
-                    break;
-                case Constants.SHOW_STATE:
-                    res = core.getTasks(uid);
-                    break;
-                case Constants.ENTRY_POINT_STATE:
-                    res = "Enter /start";
-                    break;
-                case Constants.LISTENING_STATE:
-                    if (!isCancel)
-                        res = Constants.INCORRECT_COMMAND_MESSAGE;
-                    else
-                        res = Constants.BOT_WAITING_COMMANDS;
-                    break;
-            }
-        }
-
-        return res;
-         */
     }
 
     /**

@@ -1,24 +1,41 @@
 package com.fsm;
 
+import com.core.Constants;
+
+/**
+ * Все возможные состояния конечного автомата
+ *
+ * @author Lev
+ */
 public enum States {
-    START("START"), EP("EP"), LISTEN("LISTEN"), ADD("ADD"), DEL("DEL"), SHOW("SHOW"), HELP("HELP");
-    private final String state;
+    START(), EP(), LISTEN(), ADD(), DEL(), SHOW(), HELP();
 
-    States(String state){
-        this.state = state;
-    }
+    /**
+     * Получить сообщение для пользователя с учетом текщего состояния автомата
+     * @param state Состояние, по которому надо получить сообщение
+     * @return Сообщение для пользователя
+     */
+    public static String getMessageForState(States state){
+        String res = null;
 
-    private String getState(){
-        return state;
-    }
+        switch (state) {
+            case START:
+                res = Constants.START_MSG;
+                break;
+            case HELP:
+                res = Constants.HELP_MSG;
+                break;
+            case ADD:
+                res = Constants.TASK_DESCRIPTION_MSG;
+                break;
+            case DEL:
+                res = Constants.TASK_ID_MSG;
+                break;
+            case EP:
+                res = Constants.EP_MSG;
+                break;
+        }
 
-
-    public boolean equals(States state){
-        return state.getState().equals(this.state);
-    }
-
-    @Override
-    public String toString() {
-        return state;
+        return res;
     }
 }

@@ -30,12 +30,14 @@ public class RequestHandlerTest {
         String uid = String.valueOf((int)(Math.random() * 1000));
 
         String result = requestHandler.handle(uid, "/start");
-        Assert.assertEquals("Hello, I'm telegram bot that can help to manage your tasks. There is all commands that you can type to operate with me:\n" +
-                "/add - You can add task.\n" +
-                "\ttext - task's text\n" +
-                "/del - You can delete task.\n" +
-                "/show - You can see all tasks\n" +
-                "/help - You will see this message", result);
+        Assert.assertEquals("Hello, I'm telegram bot that can help to manage your tasks. " +
+                        "There is all commands that you can type to operate with me:\n" +
+                        "/add - You can add task. In next message send your task.\n" +
+                        "/del - You can delete task. In next message send task's number\n" +
+                        "/show - You can see all tasks\n" +
+                        "/help - You will see this message\n" +
+                        "/cancel - You can use this command if you wnat to cancel action such as add task or delete task.\n",
+                result);
     }
 
     /**
@@ -46,11 +48,12 @@ public class RequestHandlerTest {
         String uid = String.valueOf((int)(Math.random() * 1000));
 
         String result = requestHandler.handle(uid, "/start");
-        Assert.assertEquals("Hello, I'm telegram bot that can help to manage your tasks. " +
-                "There is all commands that you can type to operate with me:\n" + "/add - You can add task.\n\ttext - task's text\n" +
-                "/del - You can delete task.\n" +
+        Assert.assertEquals("Hello, I'm telegram bot that can help to manage your tasks. There is all commands that you can type to operate with me:\n" +
+                "/add - You can add task. In next message send your task.\n" +
+                "/del - You can delete task. In next message send task's number\n" +
                 "/show - You can see all tasks\n" +
-                "/help - You will see this message", result);
+                "/help - You will see this message\n" +
+                "/cancel - You can use this command if you wnat to cancel action such as add task or delete task.\n", result);
 
         result = requestHandler.handle(uid, "/start");
         Assert.assertEquals("Incorrect command", result);
@@ -66,10 +69,11 @@ public class RequestHandlerTest {
         requestHandler.handle(uid, "/start");
         String result = requestHandler.handle(uid, "/help");
 
-        Assert.assertEquals(result, "/add - You can add task.\n\ttext - task's text\n" +
-                "/del - You can delete task.\n" +
+        Assert.assertEquals(result, "/add - You can add task. In next message send your task.\n" +
+                "/del - You can delete task. In next message send task's number\n" +
                 "/show - You can see all tasks\n" +
-                "/help - You will see this message");
+                "/help - You will see this message\n" +
+                "/cancel - You can use this command if you wnat to cancel action such as add task or delete task.\n");
     }
 
     /**
