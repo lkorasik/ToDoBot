@@ -1,7 +1,10 @@
 package com.core;
 
 import com.fsm.FSM;
+import com.fsm.State;
+import com.fsm.States;
 import org.apache.commons.lang3.StringUtils;
+import org.checkerframework.checker.units.qual.C;
 
 /**
  * Класс, который является прослойкой между ConsoleBot или Bot и Core
@@ -29,6 +32,62 @@ public class RequestHandler {
      * @return Строка с резульатом, которую надо показать пользователю
      */
     public String handle(String uid, String input) {
+        if (input.equals("/fsmstate"))
+            return fsm.getCurrentState().toString();
+
+        String res = null;
+        boolean isAdd = fsm.getCurrentState().equals(States.ADD);
+        boolean isDel = fsm.getCurrentState().equals(States.DEL);
+        boolean isShow = fsm.getCurrentState().equals(States.SHOW);
+        boolean isHelp = fsm.getCurrentState().equals(States.HELP);
+        boolean isStart = fsm.getCurrentState().equals(States.START);
+        boolean isCancel = input.equals(Constants.CANCEL_COMMAND);
+
+        if (isShow || isHelp || isStart)
+            fsm.update();
+
+        fsm.update(input);
+
+        if(isAdd && !input.equals(Constants.CANCEL_COMMAND)){
+            res = addTask(uid, input);
+        }
+        else if (isDel && !input.equals(Constants.CANCEL_COMMAND)){
+            res = deleteTask(uid, input);
+        }
+        else {
+            States state = fsm.getCurrentState();
+
+            switch (state) {
+                case START:
+                    res = Constants.START_MSG;
+                    break;
+                case HELP:
+                    res = Constants.HELP_MSG;
+                    break;
+                case ADD:
+                    res = Constants.TASK_DESCRIPTION_MSG;
+                    break;
+                case DEL:
+                    res = Constants.TASK_ID_MSG;
+                    break;
+                case SHOW:
+                    res = core.getTasks(uid);
+                    break;
+                case EP:
+                    res = "Enter /start";
+                    break;
+                case LISTEN:
+                    if (!isCancel)
+                        res = Constants.INCORRECT_COMMAND_MESSAGE;
+                    else
+                        res = Constants.BOT_WAITING_COMMANDS;
+                    break;
+            }
+        }
+
+        return res;
+
+        /*
         if (input.equals("/fsmstate"))
             return fsm.getCurrentStateName();
 
@@ -83,6 +142,7 @@ public class RequestHandler {
         }
 
         return res;
+         */
     }
 
     /**
