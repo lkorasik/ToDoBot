@@ -19,20 +19,21 @@ public class TransitionTable {
     }
 
     /**
-     * Получить конечное состояние по начальному состоянию и клбчевому слову
+     * Возвращает конечное состояние по начальному состоянию и ключевому слову.
+     * Если же состояние не было найдено будет возвращен null.
      * @param start начальное состояние
      * @param key Ключевое слово
      * @return конечное состояние
      */
-    public State getEndState(State start, String key){
+    public States getEndState(States start, String key){
         for(int i = 0; i < transitions.size(); i++){
             Transition transition = transitions.get(i);
 
-            State m_start = transition.getStartState();
             String m_key = transition.getKey();
-            State m_end = transition.getEndState();
+            States m_start = transition.getStartState();
+            States m_end = transition.getEndState();
 
-            if(key == null && m_start.equals(start) && m_key == null){
+            if (key == null && m_start.equals(start) && m_key == null){
                 return m_end;
             }
             else if(m_key != null && m_start.equals(start) && m_key.equals(key)){
