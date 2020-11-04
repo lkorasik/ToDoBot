@@ -22,6 +22,10 @@ public class RequestHandler {
         return body != null && !StringUtils.isBlank(body) && !body.equals("");
     }
 
+    public States getFSMState(){
+        return fsm.getCurrentState();
+    }
+
     /**
      * Обработка сообщения
      * @param input - сообщение
