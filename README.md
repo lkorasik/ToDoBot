@@ -19,7 +19,6 @@
 1) Сами задания
 2) Синхронизация с календарем
 3) Напоминания
-4) Напоминания с геолокацией
 5) Совместные задания (Можно создавать группы, создавать общие задачи)
 6) Статистика по времени, дням, выполненным заданиям
 
@@ -37,7 +36,7 @@
 
 ### Третья задача
 
-2) Добавить напоминания
+1) Добавить напоминания
   - Таймер, т.е. Через n минут бот напишет пользователю.
 
 ## Интерфейс
@@ -60,7 +59,7 @@
 
 - Удаление напоминания (Не входит в первую задачу)
 
-/showt
+/show
 
 - Просмотр задач
 
@@ -89,4 +88,33 @@ U: /showt
 B: 0) Task1
 U: /shown
 B: 0) 2 min
+```
+
+```
+User: /start
+Bot: Hello, I'm telegram bot that can help to manage your tasks. There is all commands that you can type to operate with me:
+      /add - You can add task. In next message send your task.
+      /del - You can delete task. In next message send task's number
+      /show - You can see all tasks
+      /help - You will see this message
+      /cancel - You can use this command if you wnat to cancel action such as add task or delete task.  
+      +--------+--------+----------+
+      |Add task|Del task|Show tasks|
+      +--------+--------+----------+
+U: *Click "Add task"*
+B: Please enter task description
+   +------+
+   |Cancel|
+   +------+
+U: Go to cinema
+B: Added task: Go to cinema
+  +--------+--------+----------+
+  |Add task|Del task|Show tasks|
+  +--------+--------+----------+
+U: *Click "Show tasks"*
+B: Id Описание
+    0 Task1
+   +--------+--------+
+   |Add task|Del task|
+   +--------+--------+
 ```
