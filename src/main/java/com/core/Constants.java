@@ -42,4 +42,5 @@ public class Constants {
 
     public static final String LOGIN_MESSAGE = "Please input your login:";
     public static final String SUCCESSFULL_AUTH_MSG = "Now you can type /start to start using bot";
+    public static final String USERS_FILE = "users.json";
 }

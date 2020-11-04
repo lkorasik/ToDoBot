@@ -1,15 +1,56 @@
 package com.core;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
+import java.io.*;
+import java.lang.reflect.Type;
+import java.util.*;
+import com.google.gson.*;
+import com.google.gson.reflect.TypeToken;
 
 /**
  * Класс, отвечающий за бизнес-логику бота
+ *
  * @author Dmitry
  */
 public class Core {
-    private HashMap<String, List<Task>> taskContainer = new HashMap<>();
+    private final String USERS_FILE;
+    private HashMap<String, List<Task>> taskContainer;
+
+    /**
+     * Записывает данные пользователей из JSON файла в `taskContainer`
+     */
+    public Core(String file_path) {
+        USERS_FILE = file_path;
+        File json_file = new File(USERS_FILE);
+        GsonBuilder builder = new GsonBuilder();
+        Gson gson = builder.create();
+        if (json_file.length() == 0) {
+            taskContainer = new HashMap<>();
+        }
+        try {
+            Scanner fileReader = new Scanner(json_file);
+            while(fileReader.hasNextLine()){
+                String jsonString = fileReader.nextLine();
+                Type type = new TypeToken<HashMap<String, List<Task>>>() {
+                }.getType();
+                taskContainer = gson.fromJson(jsonString, type);
+            }
+        } catch (FileNotFoundException ignored) { ; }
+    }
+
+    public Core() {this(Constants.USERS_FILE) ; }
+
+    /**
+     * Записывает текущее состояние `TaskContainer` в JSON файл
+     */
+    private void updateTasksState() {
+        Gson gson = new Gson();
+        try (FileWriter file = new FileWriter(USERS_FILE)) {
+            file.write(gson.toJson(this.taskContainer));
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 
     /**
      * Добавляет задание в список задач конкретного пользователя
@@ -19,14 +60,15 @@ public class Core {
     public void addTask(String userId, String description) {
         Task task = new Task(description);
         List<Task> tasksFromContainer = taskContainer.get(userId);
-        if (tasksFromContainer == null){
+        if (tasksFromContainer == null) {
             List<Task> newTasks = new ArrayList<>();
             newTasks.add(task);
             taskContainer.put(userId, newTasks);
-        }else{
+        } else {
             tasksFromContainer.add(task);
             taskContainer.put(userId, tasksFromContainer);
         }
+        updateTasksState();
     }
 
     /**
@@ -44,6 +86,7 @@ public class Core {
         } catch (NumberFormatException exception) {
             throw new IncorrectTaskIdTypeException(Constants.INCORRECT_TASK_ID_TYPE_EXCEPTION_MSG);
         }
+        updateTasksState();
     }
 
     /**
