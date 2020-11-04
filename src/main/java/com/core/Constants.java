@@ -33,6 +33,11 @@ public class Constants {
     public static final String EP_MSG = "Enter " + Constants.START_COMMAND;
     public static final String BOT_WAITING_COMMANDS = "I'm waiting your commands";
 
+    public static final String ADD_TASK_BUTTON = "Add task";
+    public static final String DEL_TASK_BUTTON = "Del task";
+    public static final String SHOW_TASKS_BUTTON = "Show tasks";
+    public static final String CANCEL_BUTTON = "Cacnel";
+
     public static final String TELEGRAM_TOKEN_FILENAME = "Token";
 
     public static final String LOGIN_MESSAGE = "Please input your login:";
