@@ -30,13 +30,15 @@ public class CoreTest {
      * Удаление файла после прохождения каждого теста
      */
     @After
-    public void tearDown() {
-        Path path = FileSystems.getDefault().getPath(test_filename);
+    public void tearDown(){
+        PrintWriter writer = null;
         try {
-            Files.deleteIfExists(path);
-        } catch (IOException e) {
+            writer = new PrintWriter(test_filename);
+        } catch (FileNotFoundException e) {
             e.printStackTrace();
         }
+        writer.print("");
+        writer.close();
     }
 
     /**
