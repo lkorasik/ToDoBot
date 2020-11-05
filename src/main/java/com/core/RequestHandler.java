@@ -1,6 +1,7 @@
 package com.core;
 
 import com.fsm.FSM;
+import com.fsm.States;
 import org.apache.commons.lang3.StringUtils;
 
 /**
@@ -12,8 +13,6 @@ public class RequestHandler {
     private Core core = new Core();
     private FSM fsm = new FSM();
 
-
-
     /**
      * Проверка на то, что тело команды задано корректно
      * @param body Тело команды
@@ -23,6 +22,10 @@ public class RequestHandler {
         return body != null && !StringUtils.isBlank(body) && !body.equals("");
     }
 
+    public States getFSMState(){
+        return fsm.getCurrentState();
+    }
+
     /**
      * Обработка сообщения
      * @param input - сообщение
@@ -30,14 +33,14 @@ public class RequestHandler {
      */
     public String handle(String uid, String input) {
         if (input.equals("/fsmstate"))
-            return fsm.getCurrentStateName();
+            return fsm.getCurrentState().toString();
 
-        String res;
-        boolean isAdd = fsm.getCurrentStateName().equals(Constants.ADD_STATE);
-        boolean isDel = fsm.getCurrentStateName().equals(Constants.DEL_STATE);
-        boolean isShow = fsm.getCurrentStateName().equals(Constants.SHOW_STATE);
-        boolean isHelp = fsm.getCurrentStateName().equals(Constants.HELP_STATE);
-        boolean isStart = fsm.getCurrentStateName().equals(Constants.START_STATE);
+        String res = null;
+        boolean isAdd = fsm.isState(States.ADD);
+        boolean isDel = fsm.isState(States.DEL);
+        boolean isShow = fsm.isState(States.SHOW);
+        boolean isHelp = fsm.isState(States.HELP);
+        boolean isStart = fsm.isState(States.START);
         boolean isCancel = input.equals(Constants.CANCEL_COMMAND);
 
         if (isShow || isHelp || isStart)
@@ -51,35 +54,17 @@ public class RequestHandler {
         else if (isDel && !input.equals(Constants.CANCEL_COMMAND)){
             res = deleteTask(uid, input);
         }
+        else if (fsm.isState(States.SHOW)){
+            res = core.getTasks(uid);
+        }
+        else if(fsm.isState(States.LISTEN)){
+            if (!isCancel)
+                res = Constants.INCORRECT_COMMAND_MESSAGE;
+            else
+                res = Constants.BOT_WAITING_COMMANDS;
+        }
         else {
-            res = fsm.getCurrentStateName();
-
-            switch (res) {
-                case Constants.START_STATE:
-                    res = Constants.START_MSG;
-                    break;
-                case Constants.HELP_STATE:
-                    res = Constants.HELP_MSG;
-                    break;
-                case Constants.ADD_STATE:
-                    res = Constants.TASK_DESCRIPTION_MSG;
-                    break;
-                case Constants.DEL_STATE:
-                    res = Constants.TASK_ID_MSG;
-                    break;
-                case Constants.SHOW_STATE:
-                    res = core.getTasks(uid);
-                    break;
-                case Constants.ENTRY_POINT_STATE:
-                    res = "Enter /start";
-                    break;
-                case Constants.LISTENING_STATE:
-                    if (!isCancel)
-                        res = Constants.INCORRECT_COMMAND_MESSAGE;
-                    else
-                        res = Constants.BOT_WAITING_COMMANDS;
-                    break;
-            }
+            res = States.getMessageForState(fsm.getCurrentState());
         }
 
         return res;
