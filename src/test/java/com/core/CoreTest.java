@@ -12,7 +12,7 @@ import java.util.Scanner;
 public class CoreTest {
     private Core core;
     private String user;
-    private final String test_filename = "testfile";
+    private static final String test_filename = "testfile";
 
     @Before
     public void setUp(){
@@ -27,13 +27,16 @@ public class CoreTest {
      * Удаление файла после прохождения каждого теста
      */
     @After
-    public void tearDown(){
-        File testFile = new File(test_filename);
-        if (testFile.exists()){
-            testFile.delete();
-        }
-        else {
-            System.out.printf("Cannot to delete file `%s%`n", test_filename);
+    public void tearDown() throws FileNotFoundException {
+        PrintWriter pw = new PrintWriter(test_filename);
+        pw.close();
+    }
+
+    @AfterClass
+    public static void deleteFile(){
+        File testfile = new File(test_filename);
+        if (testfile.exists()){
+            testfile.delete();
         }
     }
 

@@ -24,10 +24,15 @@ public class Core {
         GsonBuilder builder = new GsonBuilder();
         Gson gson = builder.create();
         try (Scanner fileReader = new Scanner(json_file)){
-            while(fileReader.hasNextLine()){
-                String jsonString = fileReader.nextLine();
+            if (!fileReader.hasNextLine()){
+                taskContainer = new HashMap<>();
+            } else {
+                StringBuilder jsonString = new StringBuilder();
+                while (fileReader.hasNextLine()){
+                    jsonString.append(fileReader.nextLine());
+                }
                 Type type = new TypeToken<HashMap<String, List<Task>>>(){}.getType();
-                taskContainer = gson.fromJson(jsonString, type);
+                taskContainer = gson.fromJson(jsonString.toString(), type);
             }
         } catch (FileNotFoundException ignored) {
             taskContainer = new HashMap<>();
