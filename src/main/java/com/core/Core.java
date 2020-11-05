@@ -23,17 +23,15 @@ public class Core {
         File json_file = new File(USERS_FILE);
         GsonBuilder builder = new GsonBuilder();
         Gson gson = builder.create();
-        if (json_file.length() == 0) {
-            taskContainer = new HashMap<>();
-        }
-        try(Scanner fileReader = new Scanner(json_file)) {
+        try (Scanner fileReader = new Scanner(json_file)){
             while(fileReader.hasNextLine()){
                 String jsonString = fileReader.nextLine();
-                Type type = new TypeToken<HashMap<String, List<Task>>>() {
-                }.getType();
+                Type type = new TypeToken<HashMap<String, List<Task>>>(){}.getType();
                 taskContainer = gson.fromJson(jsonString, type);
             }
-        } catch (FileNotFoundException ignored) { ; }
+        } catch (FileNotFoundException ignored) {
+            taskContainer = new HashMap<>();
+        }
     }
 
     public Core() {this(Constants.USERS_FILE) ; }

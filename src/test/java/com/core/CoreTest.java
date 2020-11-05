@@ -3,9 +3,6 @@ package com.core;
 import com.authentication.Authenticator;
 import org.junit.*;
 import java.io.*;
-import java.nio.file.FileSystems;
-import java.nio.file.Files;
-import java.nio.file.Path;
 import java.util.Scanner;
 
 /**
@@ -31,14 +28,13 @@ public class CoreTest {
      */
     @After
     public void tearDown(){
-        PrintWriter writer = null;
-        try {
-            writer = new PrintWriter(test_filename);
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
+        File testFile = new File(test_filename);
+        if (testFile.exists()){
+            testFile.delete();
         }
-        writer.print("");
-        writer.close();
+        else {
+            System.out.printf("Cannot to delete file `%s%`n", test_filename);
+        }
     }
 
     /**
