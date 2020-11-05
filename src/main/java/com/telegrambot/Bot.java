@@ -2,7 +2,7 @@ package com.telegrambot;
 
 import com.core.Constants;
 import com.core.RequestHandler;
-import com.fsm.States;
+import com.fsm.State;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Update;
@@ -139,7 +139,7 @@ public class Bot extends TelegramLongPollingBot{
 
         String result = requestHandler.handle(uid, message);
 
-        if ((requestHandler.getFSMState() == States.START) || (requestHandler.getFSMState() == States.LISTEN)){
+        if ((requestHandler.getFSMState() == State.START) || (requestHandler.getFSMState() == State.LISTEN)){
             answer.setReplyMarkup(mainMenuMarkup);
         }
 
@@ -163,10 +163,10 @@ public class Bot extends TelegramLongPollingBot{
 
         String result = requestHandler.handle(uid, message);
 
-        if((requestHandler.getFSMState() == States.ADD) || (requestHandler.getFSMState() == States.DEL)){
+        if((requestHandler.getFSMState() == State.ADD) || (requestHandler.getFSMState() == State.DEL)){
             answer.setReplyMarkup(addDelMenuMarkup);
         }
-        if (requestHandler.getFSMState() == States.SHOW){
+        if (requestHandler.getFSMState() == State.SHOW){
             answer.setReplyMarkup(shortMainMenuMarkup);
         }
 

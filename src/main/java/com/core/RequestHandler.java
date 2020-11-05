@@ -1,7 +1,7 @@
 package com.core;
 
 import com.fsm.FSM;
-import com.fsm.States;
+import com.fsm.State;
 import org.apache.commons.lang3.StringUtils;
 
 /**
@@ -22,7 +22,7 @@ public class RequestHandler {
         return body != null && !StringUtils.isBlank(body) && !body.equals("");
     }
 
-    public States getFSMState(){
+    public State getFSMState(){
         return fsm.getCurrentState();
     }
 
@@ -36,11 +36,11 @@ public class RequestHandler {
             return fsm.getCurrentState().toString();
 
         String res = null;
-        boolean isAdd = fsm.isState(States.ADD);
-        boolean isDel = fsm.isState(States.DEL);
-        boolean isShow = fsm.isState(States.SHOW);
-        boolean isHelp = fsm.isState(States.HELP);
-        boolean isStart = fsm.isState(States.START);
+        boolean isAdd = fsm.isState(State.ADD);
+        boolean isDel = fsm.isState(State.DEL);
+        boolean isShow = fsm.isState(State.SHOW);
+        boolean isHelp = fsm.isState(State.HELP);
+        boolean isStart = fsm.isState(State.START);
         boolean isCancel = input.equals(Constants.CANCEL_COMMAND);
 
         if (isShow || isHelp || isStart)
@@ -54,17 +54,17 @@ public class RequestHandler {
         else if (isDel && !input.equals(Constants.CANCEL_COMMAND)){
             res = deleteTask(uid, input);
         }
-        else if (fsm.isState(States.SHOW)){
+        else if (fsm.isState(State.SHOW)){
             res = core.getTasks(uid);
         }
-        else if(fsm.isState(States.LISTEN)){
+        else if(fsm.isState(State.LISTEN)){
             if (!isCancel)
                 res = Constants.INCORRECT_COMMAND_MESSAGE;
             else
                 res = Constants.BOT_WAITING_COMMANDS;
         }
         else {
-            res = States.getMessageForState(fsm.getCurrentState());
+            res = fsm.getCurrentState().getState();
         }
 
         return res;

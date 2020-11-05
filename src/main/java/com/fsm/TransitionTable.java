@@ -25,13 +25,13 @@ public class TransitionTable {
      * @param key Ключевое слово
      * @return конечное состояние
      */
-    public States getEndState(States start, String key){
+    public State getEndState(State start, String key){
         for(int i = 0; i < transitions.size(); i++){
             Transition transition = transitions.get(i);
 
             String m_key = transition.getKey();
-            States m_start = transition.getStartState();
-            States m_end = transition.getEndState();
+            State m_start = transition.getStartState();
+            State m_end = transition.getEndState();
 
             if (key == null && m_start.equals(start) && m_key == null){
                 return m_end;
