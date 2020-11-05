@@ -120,3 +120,16 @@ B: Id Описание
    |Add task|Del task|
    +--------+--------+
 ```
+
+```
+00:00 User: /add
+00:01 Bot: Please enter task description
+00:02 U: Task1
+00:03 B: Added
+00:04 U: /settimer
+00:05 B: Time?
+00:06 U: 10
+00:07 B: I will write you in 10 minutes
+00:17 B: Have you forgotten about the task?
+You wanted to do this: Task1
+```
