@@ -128,8 +128,8 @@ B: Id Описание
 00:03 B: Added
 00:04 U: /settimer
 00:05 B: Time?
-00:06 U: 10
-00:07 B: I will write you in 10 minutes
-00:17 B: Have you forgotten about the task?
+00:06 U: 10h 3m
+00:07 B: I will write you in 10 hours and 3 minutes
+10:10 B: Have you forgotten about the task?
 You wanted to do this: Task1
 ```
