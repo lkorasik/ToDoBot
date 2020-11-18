@@ -11,8 +11,9 @@ public enum State {
     START(Constants.START_MSG),
     EP(Constants.EP_MSG),
     LISTEN(Constants.BOT_WAITING_COMMANDS),
-    ADD(Constants.TASK_ADDED_MSG),
+    ADD(Constants.TASK_DESCRIPTION_MSG),
     DEL(Constants.TASK_ID_MSG),
+    CLEAR(null),
     SHOW(null),
     HELP(Constants.HELP_MSG);
 

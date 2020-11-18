@@ -30,6 +30,7 @@ public class FSM {
         commands.add(Constants.START_COMMAND);
         commands.add(Constants.HELP_COMMAND);
         commands.add(Constants.CANCEL_COMMAND);
+        commands.add(Constants.CLEAR_COMMAND);
     }
 
     /**
@@ -48,6 +49,8 @@ public class FSM {
         trans.addTransition(new Transition(State.SHOW, null, State.LISTEN));
         trans.addTransition(new Transition(State.LISTEN, Constants.HELP_COMMAND, State.HELP));
         trans.addTransition(new Transition(State.HELP, null, State.LISTEN));
+        trans.addTransition(new Transition(State.LISTEN, Constants.CLEAR_COMMAND, State.CLEAR));
+        trans.addTransition(new Transition(State.CLEAR, null, State.LISTEN));
     }
 
     /**

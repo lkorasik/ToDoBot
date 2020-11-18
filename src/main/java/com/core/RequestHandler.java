@@ -38,12 +38,13 @@ public class RequestHandler {
         String res = null;
         boolean isAdd = fsm.isState(State.ADD);
         boolean isDel = fsm.isState(State.DEL);
+        boolean isClear = fsm.isState(State.CLEAR);
         boolean isShow = fsm.isState(State.SHOW);
         boolean isHelp = fsm.isState(State.HELP);
         boolean isStart = fsm.isState(State.START);
         boolean isCancel = input.equals(Constants.CANCEL_COMMAND);
 
-        if (isShow || isHelp || isStart)
+        if (isShow || isHelp || isStart || isClear)
             fsm.update();
 
         fsm.update(input);
@@ -56,6 +57,9 @@ public class RequestHandler {
         }
         else if (fsm.isState(State.SHOW)){
             res = core.getTasks(uid);
+        }
+        else if (fsm.isState(State.CLEAR)){
+            res = clearTaskList(uid);
         }
         else if(fsm.isState(State.LISTEN)){
             if (!isCancel)
@@ -71,9 +75,10 @@ public class RequestHandler {
     }
 
     /**
-     * Добавить задачу в список
+     * Обертка над методом addTask класса Core.
+     *
      * @param body Текст задачи
-     * @return Результат, который надо показать пользователю
+     * @return Сообщение об результате операции
      */
     private String addTask(String uid, String body){
         String result;
@@ -89,9 +94,10 @@ public class RequestHandler {
     }
 
     /**
-     * Удаление задачи
+     * Обертка над методом deleteTask класса Core
+     *
      * @param body Принимается идентификатор задачи
-     * @return Результат, который надо вывести пользователю
+     * @return Сообщение об результате операции
      */
     private String deleteTask(String uid, String body){
         String result;
@@ -108,6 +114,18 @@ public class RequestHandler {
         }
 
         return result;
+    }
+
+    /**
+     * Обертка над методом emptyTaskList класса Core
+     *
+     * @param uid Id пользователя, у которого нужно очистить список задач
+     * @return Сообщение об результате операции
+     */
+    private String clearTaskList(String uid){
+        core.clearTaskList(uid);
+
+        return Constants.CLEARED_TASK_LIST_MSG;
     }
 }
 

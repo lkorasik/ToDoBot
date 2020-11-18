@@ -17,6 +17,8 @@ public class Core {
 
     /**
      * Записывает данные пользователей из JSON файла в `taskContainer`
+     *
+     * @param file_path Абсолютный путь к JSON файлу с пользовательскими данными
      */
     public Core(String file_path) {
         USERS_FILE = file_path;
@@ -77,6 +79,7 @@ public class Core {
      * Удаляет задание из списка задач конкретного пользователя
      *
      * @param index Id задачи в списке
+     * @param userId Id пользователя у которого нужно удалить задачу
      */
     public void deleteTask(String userId, String index) throws NotExistingTaskIndexException, IncorrectTaskIdTypeException {
         try {
@@ -92,14 +95,12 @@ public class Core {
     }
 
     /**
-     * Возвращает строку с текущими заданиями конкретного пользователя
-     *
-     * @return Formatted string with task's list
+     * @return Форматированная строка с списком задач для конкретного пользователя
      */
     public String getTasks(String userId) {
         List<Task> tasks = taskContainer.get(userId);
         if (tasks == null || tasks.size() == 0) {
-            return Constants.EMPTY_TASK_LIST;
+            return Constants.EMPTY_TASK_LIST_MSG;
         } else {
             StringBuilder formattedTasks = new StringBuilder("Id\tОписание\n");
             for (int i = 0; i < tasks.size(); i++) {
@@ -111,5 +112,15 @@ public class Core {
             }
             return formattedTasks.toString();
         }
+    }
+
+    /**
+     * Очищает список задач у конкретного пользователя
+     *
+     * @param userId Id пользователя у которого нужно очистить список задач
+     */
+    public void clearTaskList(String userId){
+        taskContainer.put(userId, null);
+        updateTasksState();
     }
 }
