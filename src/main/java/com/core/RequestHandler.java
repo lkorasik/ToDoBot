@@ -38,13 +38,15 @@ public class RequestHandler {
         String res = null;
         boolean isAdd = fsm.isState(State.ADD);
         boolean isDel = fsm.isState(State.DEL);
+        boolean isDone = fsm.isState(State.DONE);
         boolean isClear = fsm.isState(State.CLEAR);
-        boolean isShow = fsm.isState(State.SHOW);
+        boolean isShowCompleted = fsm.isState(State.SHOW_COMPLETED);
+        boolean isShowTodo = fsm.isState(State.SHOW_TODO);
         boolean isHelp = fsm.isState(State.HELP);
         boolean isStart = fsm.isState(State.START);
         boolean isCancel = input.equals(Constants.CANCEL_COMMAND);
 
-        if (isShow || isHelp || isStart || isClear)
+        if (isShowCompleted || isShowTodo || isHelp || isStart || isClear)
             fsm.update();
 
         fsm.update(input);
@@ -53,10 +55,16 @@ public class RequestHandler {
             res = addTask(uid, input);
         }
         else if (isDel && !input.equals(Constants.CANCEL_COMMAND)){
-            res = deleteTask(uid, input);
+            res = deleteTask(uid, input, false);
         }
-        else if (fsm.isState(State.SHOW)){
-            res = core.getTasks(uid);
+        else if (isDone && !input.equals(Constants.CANCEL_COMMAND)){
+            res = deleteTask(uid, input, true);
+        }
+        else if (fsm.isState(State.SHOW_COMPLETED)){
+            res = core.getCompletedTasks(uid);
+        }
+        else if (fsm.isState(State.SHOW_TODO)){
+            res = core.getToDoTasks(uid);
         }
         else if (fsm.isState(State.CLEAR)){
             res = clearTaskList(uid);
@@ -68,7 +76,7 @@ public class RequestHandler {
                 res = Constants.BOT_WAITING_COMMANDS;
         }
         else {
-            res = fsm.getCurrentState().getState();
+            res = fsm.getCurrentState().getStateMessage();
         }
 
         return res;
@@ -77,15 +85,15 @@ public class RequestHandler {
     /**
      * Обертка над методом addTask класса Core.
      *
-     * @param body Текст задачи
+     * @param taskDescription Текст задачи
      * @return Сообщение об результате операции
      */
-    private String addTask(String uid, String body){
+    private String addTask(String uid, String taskDescription){
         String result;
 
-        if (bodyIsCorrect(body)) {
-            core.addTask(uid, body);
-            result = Constants.TASK_ADDED_MSG + body;
+        if (bodyIsCorrect(taskDescription)) {
+            core.addTask(uid, taskDescription);
+            result = Constants.TASK_ADDED_MSG + taskDescription;
         } else {
             result = Constants.EMPTY_TASK_DESCRIPTION_MSG;
         }
@@ -96,16 +104,20 @@ public class RequestHandler {
     /**
      * Обертка над методом deleteTask класса Core
      *
-     * @param body Принимается идентификатор задачи
+     * @param taskId Принимается идентификатор задачи
      * @return Сообщение об результате операции
      */
-    private String deleteTask(String uid, String body){
+    private String deleteTask(String uid, String taskId, Boolean markAsCompleted){
         String result;
 
-        if (bodyIsCorrect(body)) {
+        if (bodyIsCorrect(taskId)) {
             try {
-                core.deleteTask(uid, body);
-                result = Constants.TASK_DELETED_MSG + body;
+                core.deleteTask(uid, taskId, markAsCompleted);
+                if (markAsCompleted){
+                    result = Constants.TASK_COMPLETED_MSG + taskId;
+                } else{
+                    result = Constants.TASK_DELETED_MSG + taskId;
+                }
             } catch (NotExistingTaskIndexException | IncorrectTaskIdTypeException exception) {
                 result = exception.getMessage();
             }

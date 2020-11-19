@@ -13,8 +13,10 @@ public enum State {
     LISTEN(Constants.BOT_WAITING_COMMANDS),
     ADD(Constants.TASK_DESCRIPTION_MSG),
     DEL(Constants.TASK_ID_MSG),
+    DONE(Constants.TASK_ID_MSG),
     CLEAR(null),
-    SHOW(null),
+    SHOW_COMPLETED(null),
+    SHOW_TODO(null),
     HELP(Constants.HELP_MSG);
 
     private final String state;
@@ -23,7 +25,7 @@ public enum State {
         this.state = state;
     }
 
-    public String getState(){
+    public String getStateMessage(){
         return state;
     }
 }
