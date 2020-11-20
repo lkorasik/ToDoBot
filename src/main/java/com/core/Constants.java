@@ -44,7 +44,9 @@ public class Constants {
 
     public static final String ADD_TASK_BUTTON = "Add task";
     public static final String DEL_TASK_BUTTON = "Del task";
+    public static final String DONE_TASK_BUTTON = "Done";
     public static final String SHOW_TASKS_BUTTON = "Show tasks";
+    public static final String SHOW_DONE_TASKS_BUTTON = "Show done tasks";
     public static final String CANCEL_BUTTON = "Cancel";
 
     public static final String TELEGRAM_TOKEN_FILENAME = "Token";
