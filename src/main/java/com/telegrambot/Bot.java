@@ -23,11 +23,13 @@ public class Bot extends TelegramLongPollingBot{
     private final String BotUserName;
 
     private final InlineKeyboardMarkup mainMenuMarkup = new InlineKeyboardMarkup();
-    private final InlineKeyboardMarkup addDelMenuMarkup = new InlineKeyboardMarkup();
+    private final InlineKeyboardMarkup addDelDoneMenuMarkup = new InlineKeyboardMarkup();
     private final InlineKeyboardMarkup shortMainMenuMarkup = new InlineKeyboardMarkup();
     private final InlineKeyboardButton addButton = new InlineKeyboardButton();
     private final InlineKeyboardButton delButton = new InlineKeyboardButton();
-    private final InlineKeyboardButton showButton = new InlineKeyboardButton();
+    private final InlineKeyboardButton doneButton = new InlineKeyboardButton();
+    private final InlineKeyboardButton showToDoButton = new InlineKeyboardButton();
+    private final InlineKeyboardButton showDoneButton = new InlineKeyboardButton();
     private final InlineKeyboardButton cancelButton = new InlineKeyboardButton();
 
     private final RequestHandler requestHandler = new RequestHandler();
@@ -43,7 +45,7 @@ public class Bot extends TelegramLongPollingBot{
 
         initButtons();
         initMainMenuKeyboardMarkup();
-        initAddDelMenuMarkup();
+        initAddDelDoneMenuMarkup();
         initShortMainMenuMarkup();
     }
 
@@ -55,8 +57,12 @@ public class Bot extends TelegramLongPollingBot{
         addButton.setCallbackData(Constants.ADD_TASK_COMMAND);
         delButton.setText(Constants.DEL_TASK_BUTTON);
         delButton.setCallbackData(Constants.DELETE_TASK_COMMAND);
-        showButton.setText(Constants.SHOW_TASKS_BUTTON);
-        showButton.setCallbackData(Constants.SHOW_TASKS_COMMAND);
+        doneButton.setText(Constants.DONE_TASK_BUTTON);
+        doneButton.setCallbackData(Constants.COMPLETE_TASK_COMMAND);
+        showToDoButton.setText(Constants.SHOW_TASKS_BUTTON);
+        showToDoButton.setCallbackData(Constants.SHOW_TODO_TASKS_COMMAND);
+        showDoneButton.setText(Constants.SHOW_DONE_TASKS_BUTTON);
+        showDoneButton.setCallbackData(Constants.SHOW_COMPLETED_TASKS_COMMAND);
         cancelButton.setText(Constants.CANCEL_BUTTON);
         cancelButton.setCallbackData(Constants.CANCEL_COMMAND);
     }
@@ -68,6 +74,7 @@ public class Bot extends TelegramLongPollingBot{
         List<InlineKeyboardButton> row = new ArrayList<>();
         row.add(addButton);
         row.add(delButton);
+        row.add(doneButton);
 
         List<List<InlineKeyboardButton>> rowList = new ArrayList<>();
         rowList.add(row);
@@ -78,26 +85,31 @@ public class Bot extends TelegramLongPollingBot{
      * Настройка разметки основной клавиатуры (Add, Del, Show)
      */
     private void initMainMenuKeyboardMarkup(){
-        List<InlineKeyboardButton> row = new ArrayList<>();
-        row.add(addButton);
-        row.add(delButton);
-        row.add(showButton);
+        List<InlineKeyboardButton> upperRow = new ArrayList<>();
+        upperRow.add(addButton);
+        upperRow.add(delButton);
+        upperRow.add(doneButton);
+        List<InlineKeyboardButton> downRow = new ArrayList<>();
+        downRow.add(showToDoButton);
+        downRow.add(showDoneButton);
 
         List<List<InlineKeyboardButton>> rowList = new ArrayList<>();
-        rowList.add(row);
+        rowList.add(upperRow);
+        rowList.add(downRow);
+
         mainMenuMarkup.setKeyboard(rowList);
     }
 
     /**
      * Настрйока дополнительной клавиатуры (Cancel)
      */
-    private void initAddDelMenuMarkup(){
+    private void initAddDelDoneMenuMarkup(){
         List<InlineKeyboardButton> row = new ArrayList<>();
         row.add(cancelButton);
 
         List<List<InlineKeyboardButton>> rowList = new ArrayList<>();
         rowList.add(row);
-        addDelMenuMarkup.setKeyboard(rowList);
+        addDelDoneMenuMarkup.setKeyboard(rowList);
     }
 
     /**
@@ -163,10 +175,10 @@ public class Bot extends TelegramLongPollingBot{
 
         String result = requestHandler.handle(uid, message);
 
-        if((requestHandler.getFSMState() == State.ADD) || (requestHandler.getFSMState() == State.DEL)){
-            answer.setReplyMarkup(addDelMenuMarkup);
+        if((requestHandler.getFSMState() == State.ADD) || (requestHandler.getFSMState() == State.DEL) || (requestHandler.getFSMState() == State.DONE)){
+            answer.setReplyMarkup(addDelDoneMenuMarkup);
         }
-        if (requestHandler.getFSMState() == State.SHOW){
+        if ((requestHandler.getFSMState() == State.SHOW_TODO) || (requestHandler.getFSMState() == State.SHOW_COMPLETED)){
             answer.setReplyMarkup(shortMainMenuMarkup);
         }
 
