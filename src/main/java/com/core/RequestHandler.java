@@ -32,6 +32,10 @@ public class RequestHandler {
      * @return Строка с резульатом, которую надо показать пользователю
      */
     public String handle(String uid, String input) {
+        var userState = core.getUserFSMState(uid);
+        if (userState != null)
+            fsm.setState(userState);
+
         if (input.equals("/fsmstate"))
             return fsm.getCurrentState().toString();
 
@@ -78,6 +82,8 @@ public class RequestHandler {
         else {
             res = fsm.getCurrentState().getStateMessage();
         }
+
+        core.setUserFSMState(uid, fsm.getCurrentState());
 
         return res;
     }

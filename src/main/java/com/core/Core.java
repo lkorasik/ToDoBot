@@ -3,6 +3,8 @@ package com.core;
 import java.io.*;
 import java.lang.reflect.Type;
 import java.util.*;
+
+import com.fsm.State;
 import com.google.gson.*;
 import com.google.gson.reflect.TypeToken;
 
@@ -39,6 +41,21 @@ public class Core {
             }
         } catch (FileNotFoundException exception) {
             users = new HashMap<>();
+        }
+    }
+
+    public State getUserFSMState(String uid) {
+        if (users.containsKey(uid)) {
+            return users.get(uid).getFsmState();
+        }
+        else {
+            return null;
+        }
+    }
+
+    public void setUserFSMState(String uid, State state){
+        if (users.containsKey(uid)) {
+            users.get(uid).setFsmState(state);
         }
     }
 

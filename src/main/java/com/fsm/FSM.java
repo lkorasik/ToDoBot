@@ -83,6 +83,14 @@ public class FSM {
     }
 
     /**
+     * Установить состояние fsm
+     * @param state Новове состояние
+     */
+    public void setState(State state){
+        currentState = state;
+    }
+
+    /**
      * Обновить состояние автомата
      */
     public void update(){
