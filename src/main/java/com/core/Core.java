@@ -56,6 +56,10 @@ public class Core {
     public void setUserFSMState(String uid, State state){
         if (users.containsKey(uid)) {
             users.get(uid).setFsmState(state);
+        } else {
+            User user = new User(uid);
+            user.setFsmState(state);
+            users.put(uid, user);
         }
     }
 
@@ -82,15 +86,7 @@ public class Core {
     public void addTask(String userId, String description) {
         Task task = new Task(description);
         User user = users.get(userId);
-        if (user == null){
-            user = new User(userId);
-            List<Task> newTasks = new ArrayList<>();
-            newTasks.add(task);
-            user.setToDoTasks(newTasks);
-            users.put(userId, user);
-        } else {
-            user.addTodoTask(task);
-        }
+        user.addTodoTask(task);
         updateTasksState();
     }
 

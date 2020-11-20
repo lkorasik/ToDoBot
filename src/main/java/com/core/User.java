@@ -2,6 +2,7 @@ package com.core;
 
 import com.fsm.State;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class User {
@@ -12,6 +13,8 @@ public class User {
     private State fsmState;
 
     public User(String userId){
+        toDoTasks = new ArrayList<>();
+        completedTasks = new ArrayList<>();
         id = userId;
     }
 
