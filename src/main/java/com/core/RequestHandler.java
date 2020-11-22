@@ -32,9 +32,7 @@ public class RequestHandler {
      * @return Строка с резульатом, которую надо показать пользователю
      */
     public String handle(String uid, String input) {
-        var userState = core.getUserFSMState(uid);
-        if (userState != null)
-            fsm.setState(userState);
+        fsm.setState(core.getUserFSMState(uid));
 
         if (input.equals("/fsmstate"))
             return fsm.getCurrentState().toString();

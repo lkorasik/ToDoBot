@@ -49,7 +49,10 @@ public class Core {
             return users.get(uid).getFsmState();
         }
         else {
-            return null;
+            var user = new User(uid);
+            user.setFsmState(State.EP);
+            users.put(uid, user);
+            return State.EP;
         }
     }
 
