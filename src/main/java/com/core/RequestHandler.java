@@ -22,6 +22,8 @@ public class RequestHandler {
         return body != null && !StringUtils.isBlank(body) && !body.equals("");
     }
 
+    public State getUserFSMState(String uid) { return core.getUserFSMState(uid); }
+
     public State getFSMState(){
         return fsm.getCurrentState();
     }
@@ -32,6 +34,14 @@ public class RequestHandler {
      * @return Строка с резульатом, которую надо показать пользователю
      */
     public String handle(String uid, String input) {
+        State userState = core.getUserFSMState(uid);
+        if (userState == null){
+            core.createUser(uid);
+            fsm.setState(State.EP);
+        } else{
+            fsm.setState(userState);
+        }
+
         if (input.equals("/fsmstate"))
             return fsm.getCurrentState().toString();
 
@@ -78,6 +88,8 @@ public class RequestHandler {
         else {
             res = fsm.getCurrentState().getStateMessage();
         }
+
+        core.setUserFSMState(uid, fsm.getCurrentState());
 
         return res;
     }

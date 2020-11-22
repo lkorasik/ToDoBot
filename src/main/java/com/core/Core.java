@@ -3,6 +3,8 @@ package com.core;
 import java.io.*;
 import java.lang.reflect.Type;
 import java.util.*;
+
+import com.fsm.State;
 import com.google.gson.*;
 import com.google.gson.reflect.TypeToken;
 
@@ -44,13 +46,31 @@ public class Core {
 
     public Core() {this(Constants.USERS_FILE) ; }
 
+    public void createUser(String userId){
+        User user = new User();
+        users.put(userId, user);
+        updateUsersState();
+    }
+
+    public State getUserFSMState(String userId) {
+        if (users.containsKey(userId)) {
+            return users.get(userId).getFsmState();
+        }
+        else { return null; }
+    }
+
+    public void setUserFSMState(String userId, State state){
+        users.get(userId).setFsmState(state);
+        updateUsersState();
+    }
+
     /**
      * Записывает текущее состояние поля `users` в JSON файл
      */
-    private void updateTasksState() {
+    private void updateUsersState() {
         Gson gson = new Gson();
         try (FileWriter file = new FileWriter(USERS_FILE)) {
-            file.write(gson.toJson(this.users));
+            file.write(gson.toJson(users));
 
         } catch (IOException e) {
             e.printStackTrace();
@@ -65,16 +85,8 @@ public class Core {
     public void addTask(String userId, String description) {
         Task task = new Task(description);
         User user = users.get(userId);
-        if (user == null){
-            user = new User(userId);
-            List<Task> newTasks = new ArrayList<>();
-            newTasks.add(task);
-            user.setToDoTasks(newTasks);
-            users.put(userId, user);
-        } else {
-            user.addTodoTask(task);
-        }
-        updateTasksState();
+        user.addTodoTask(task);
+        updateUsersState();
     }
 
     /**
@@ -110,7 +122,7 @@ public class Core {
         } catch (NumberFormatException exception) {
             throw new IncorrectTaskIdTypeException(Constants.INCORRECT_TASK_ID_TYPE_EXCEPTION_MSG);
         }
-        updateTasksState();
+        updateUsersState();
     }
 
     /**
@@ -169,7 +181,7 @@ public class Core {
      * @param userId Id пользователя у которого нужно очистить список задач
      */
     public void clearTaskList(String userId){
-        users.put(userId, null);
-        updateTasksState();
+        users.put(userId, new User());
+        updateUsersState();
     }
 }
