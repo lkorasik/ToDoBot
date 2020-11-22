@@ -3,6 +3,7 @@ package com.core;
 import java.io.*;
 import java.lang.reflect.Type;
 import java.util.*;
+import java.util.function.BiConsumer;
 
 import com.fsm.State;
 import com.google.gson.*;
@@ -87,6 +88,12 @@ public class Core {
         User user = users.get(userId);
         user.addTodoTask(task);
         updateUsersState();
+    }
+
+    public void setTimer(String uid, String chatId, int taskId, Date date, BiConsumer<String, String> func){
+        User user = users.get(uid);
+        var tasks = user.getToDoTasks();
+        tasks.get(taskId).setTimer(date, chatId, "TRRR", func);
     }
 
     /**

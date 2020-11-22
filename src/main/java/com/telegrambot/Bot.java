@@ -10,6 +10,7 @@ import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMa
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKeyboardButton;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -122,10 +123,18 @@ public class Bot extends TelegramLongPollingBot{
         var answer = new SendMessage();
 
         if(update.hasMessage()){
-            answer = handleMessage(update);
+            try {
+                answer = handleMessage(update);
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
         }
         if (update.hasCallbackQuery()){
-            answer = handleCallback(update);
+            try {
+                answer = handleCallback(update);
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
         }
 
         try {
@@ -140,7 +149,7 @@ public class Bot extends TelegramLongPollingBot{
      * @param update Объект с сообщением
      * @return Ответ пользователю, его надо только отправить
      */
-    private SendMessage handleMessage(Update update){
+    private SendMessage handleMessage(Update update) throws ParseException {
         String message = update.getMessage().getText();
 
         var answer = new SendMessage();
@@ -149,7 +158,7 @@ public class Bot extends TelegramLongPollingBot{
 
         String uid = update.getMessage().getFrom().getId().toString();
 
-        String result = requestHandler.handle(uid, message);
+        String result = requestHandler.handle(uid, update.getMessage().getChatId().toString(), message, this::Print);
 
         if ((requestHandler.getFSMState() == State.START) || (requestHandler.getFSMState() == State.LISTEN)){
             answer.setReplyMarkup(mainMenuMarkup);
@@ -165,7 +174,7 @@ public class Bot extends TelegramLongPollingBot{
      * @param update
      * @return
      */
-    private SendMessage handleCallback(Update update){
+    private SendMessage handleCallback(Update update) throws ParseException {
         SendMessage answer = new SendMessage();
         answer.setChatId(update.getCallbackQuery().getMessage().getChatId());
 
@@ -173,7 +182,8 @@ public class Bot extends TelegramLongPollingBot{
 
         String uid = update.getCallbackQuery().getFrom().getId().toString();
 
-        String result = requestHandler.handle(uid, message);
+        //String result = requestHandler.handle(uid, message);
+        String result = requestHandler.handle(uid, update.getMessage().getChatId().toString(), message, this::Print);
 
         if((requestHandler.getFSMState() == State.ADD) || (requestHandler.getFSMState() == State.DEL) || (requestHandler.getFSMState() == State.DONE)){
             answer.setReplyMarkup(addDelDoneMenuMarkup);
@@ -203,5 +213,17 @@ public class Bot extends TelegramLongPollingBot{
     @Override
     public String getBotToken() {
         return Token;
+    }
+
+    public void Print(String chatId, String message){
+        System.out.println("Call");
+        var answer = new SendMessage().setText(message).setChatId(chatId);
+
+        try{
+            execute(answer);
+        }
+        catch (TelegramApiException a){
+            a.printStackTrace();
+        }
     }
 }

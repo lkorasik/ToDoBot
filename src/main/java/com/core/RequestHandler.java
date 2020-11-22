@@ -4,6 +4,11 @@ import com.fsm.FSM;
 import com.fsm.State;
 import org.apache.commons.lang3.StringUtils;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.function.BiConsumer;
+
 /**
  * Класс, который является прослойкой между ConsoleBot или Bot и Core
  *
@@ -33,7 +38,7 @@ public class RequestHandler {
      * @param input - сообщение
      * @return Строка с резульатом, которую надо показать пользователю
      */
-    public String handle(String uid, String input) {
+    public String handle(String uid, String chatId, String input, BiConsumer<String, String> func) throws ParseException {
         State userState = core.getUserFSMState(uid);
         if (userState == null){
             core.createUser(uid);
@@ -44,6 +49,13 @@ public class RequestHandler {
 
         if (input.equals("/fsmstate"))
             return fsm.getCurrentState().toString();
+
+        var arr = input.split(" ");
+        if(arr[0].equals("/s")){
+            setTimer(uid, chatId, Integer.parseInt(arr[1]), (new SimpleDateFormat("dd.MM.yy_HH:mm:ss")).parse(arr[2]), func);
+            System.out.println("Seted");
+            return "Set";
+        }
 
         String res = null;
         boolean isAdd = fsm.isState(State.ADD);
@@ -92,6 +104,10 @@ public class RequestHandler {
         core.setUserFSMState(uid, fsm.getCurrentState());
 
         return res;
+    }
+
+    private void setTimer(String uid, String chatId, int taskid, Date date, BiConsumer<String, String> func){
+        core.setTimer(uid, chatId, taskid, date, func);
     }
 
     /**

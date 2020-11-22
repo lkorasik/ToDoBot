@@ -62,8 +62,14 @@ public class FSM {
 
         trans.addTransition(new Transition(State.LISTEN, Constants.HELP_COMMAND, State.HELP));
         trans.addTransition(new Transition(State.HELP, null, State.LISTEN));
+
         trans.addTransition(new Transition(State.LISTEN, Constants.CLEAR_COMMAND, State.CLEAR));
         trans.addTransition(new Transition(State.CLEAR, null, State.LISTEN));
+
+        trans.addTransition(new Transition(State.LISTEN, "/setnotif", State.NOTIFICATION));
+        trans.addTransition(new Transition(State.NOTIFICATION, Constants.CANCEL_COMMAND, State.LISTEN));
+        trans.addTransition(new Transition(State.NOTIFICATION, null, State.TIME));
+        trans.addTransition(new Transition(State.TIME, null, State.LISTEN));
     }
 
     /**
