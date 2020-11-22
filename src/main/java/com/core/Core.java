@@ -44,37 +44,33 @@ public class Core {
         }
     }
 
-    public State getUserFSMState(String uid) {
-        if (users.containsKey(uid)) {
-            return users.get(uid).getFsmState();
-        }
-        else {
-            var user = new User(uid);
-            user.setFsmState(State.EP);
-            users.put(uid, user);
-            return State.EP;
-        }
-    }
-
-    public void setUserFSMState(String uid, State state){
-        if (users.containsKey(uid)) {
-            users.get(uid).setFsmState(state);
-        } else {
-            User user = new User(uid);
-            user.setFsmState(state);
-            users.put(uid, user);
-        }
-    }
-
     public Core() {this(Constants.USERS_FILE) ; }
+
+    public void createUser(String userId){
+        User user = new User();
+        users.put(userId, user);
+        updateUsersState();
+    }
+
+    public State getUserFSMState(String userId) {
+        if (users.containsKey(userId)) {
+            return users.get(userId).getFsmState();
+        }
+        else { return null; }
+    }
+
+    public void setUserFSMState(String userId, State state){
+        users.get(userId).setFsmState(state);
+        updateUsersState();
+    }
 
     /**
      * Записывает текущее состояние поля `users` в JSON файл
      */
-    private void updateTasksState() {
+    private void updateUsersState() {
         Gson gson = new Gson();
         try (FileWriter file = new FileWriter(USERS_FILE)) {
-            file.write(gson.toJson(this.users));
+            file.write(gson.toJson(users));
 
         } catch (IOException e) {
             e.printStackTrace();
@@ -90,7 +86,7 @@ public class Core {
         Task task = new Task(description);
         User user = users.get(userId);
         user.addTodoTask(task);
-        updateTasksState();
+        updateUsersState();
     }
 
     /**
@@ -126,7 +122,7 @@ public class Core {
         } catch (NumberFormatException exception) {
             throw new IncorrectTaskIdTypeException(Constants.INCORRECT_TASK_ID_TYPE_EXCEPTION_MSG);
         }
-        updateTasksState();
+        updateUsersState();
     }
 
     /**
@@ -185,7 +181,7 @@ public class Core {
      * @param userId Id пользователя у которого нужно очистить список задач
      */
     public void clearTaskList(String userId){
-        users.put(userId, null);
-        updateTasksState();
+        users.put(userId, new User());
+        updateUsersState();
     }
 }
