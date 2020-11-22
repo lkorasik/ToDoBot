@@ -15,15 +15,6 @@ public class ConsoleBot {
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
         RequestHandler requestHandler = new RequestHandler();
-        String userId = Authenticate();
-        while (true) {
-            System.out.println(requestHandler.handle(userId, scanner.nextLine()));
-        }
-    }
-
-    public static String Authenticate(){
-        RequestHandler requestHandler = new RequestHandler();
-        Scanner scanner = new Scanner(System.in);
         String userId = "";
         while (userId.equals("")){
             System.out.println(Constants.LOGIN_MESSAGE);
@@ -34,7 +25,8 @@ public class ConsoleBot {
         } else {
             System.out.println(Constants.NOT_ENTRY_POINT_GREETINGS_MSG);
         }
-
-        return userId;
+        while (true) {
+            System.out.println(requestHandler.handle(userId, scanner.nextLine()));
+        }
     }
 }
