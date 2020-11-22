@@ -52,6 +52,7 @@ public class Constants {
     public static final String TELEGRAM_TOKEN_FILENAME = "Token";
 
     public static final String LOGIN_MESSAGE = "Please input your login:";
-    public static final String SUCCESSFUL_AUTH_MSG = "Now you can type /start to start using bot";
+    public static final String ENTRY_POINT_GREETINGS_MSG = "You successfully logged in. Type `/start` to start using the bot.";
+    public static final String NOT_ENTRY_POINT_GREETINGS_MSG = "You successfully logged in. You can continue using the bot.";
     public static final String USERS_FILE = "users.json";
 }
