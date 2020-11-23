@@ -14,7 +14,7 @@ public class User {
     public User(){
         toDoTasks = new ArrayList<>();
         completedTasks = new ArrayList<>();
-        fsmState = State.EP;
+        fsmState = State.ENTRY_POINT;
     }
 
     public State getFsmState() {

@@ -27,7 +27,7 @@ public class Core {
         USERS_FILE = file_path;
         File json_file = new File(USERS_FILE);
         GsonBuilder builder = new GsonBuilder();
-        Gson gson = builder.create();
+        Gson gson = builder.setPrettyPrinting().create();
         try (Scanner fileReader = new Scanner(json_file)){
             StringBuilder jsonString = new StringBuilder();
             while (fileReader.hasNextLine()){
@@ -93,7 +93,7 @@ public class Core {
     public void setTimer(String uid, String chatId, int taskId, Date date, BiConsumer<String, String> func){
         User user = users.get(uid);
         var tasks = user.getToDoTasks();
-        tasks.get(taskId).setTimer(date, chatId, "TRRR", func);
+        tasks.get(taskId).setTimer(date, chatId, func);
     }
 
     /**

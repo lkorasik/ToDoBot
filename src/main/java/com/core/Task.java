@@ -11,20 +11,20 @@ import java.util.function.BiConsumer;
  */
 public class Task {
     private String description;
-    private Timer timer;
+    private transient Timer timer;
 
     public Task(String description) {
         this.description = description;
     }
 
-    public void setTimer(Date date, String chatId, String text, BiConsumer<String, String> func){
+    public void setTimer(Date date, String chatId, BiConsumer<String, String> func){
         timer = new Timer();
 
         timer.schedule(
                 new TimerTask() {
                     @Override
                     public void run() {
-                        func.accept(chatId, text);
+                        func.accept(chatId, Constants.NOTIFICATION_MSG + description);
                     }
         }, date);
     }

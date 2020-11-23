@@ -10,4 +10,3 @@ class NotExistingTaskIndexException extends Exception {
         super(message);
     }
 }
-
