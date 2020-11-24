@@ -27,7 +27,7 @@ public class Core {
         USERS_FILE = file_path;
         File json_file = new File(USERS_FILE);
         GsonBuilder builder = new GsonBuilder();
-        Gson gson = builder.setPrettyPrinting().create();
+        Gson gson = builder.create();
         try (Scanner fileReader = new Scanner(json_file)){
             StringBuilder jsonString = new StringBuilder();
             while (fileReader.hasNextLine()){

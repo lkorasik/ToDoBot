@@ -80,15 +80,6 @@ public class RequestHandler {
             res = deleteTask(uid, input, true);
         }
         else if(isNotification && !input.equals(Constants.CANCEL_COMMAND)){
-            /*
-            Date date = tryParseDate(getTime(input));
-            if (date != null) {
-                res = setTimer(uid, chatId, Integer.parseInt(getTaskId(input)), date, func);
-            }
-            else {
-                res = "err";
-            }
-             */
             var converter = new DateConverter();
             var date = converter.parse(getTime(input));
             if(date != null){
