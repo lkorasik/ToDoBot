@@ -14,6 +14,7 @@ public class Constants {
     public static final String HELP_COMMAND = "/help";
     public static final String CANCEL_COMMAND = "/cancel";
     public static final String CLEAR_COMMAND = "/clear";
+    public static final String NOTIF_COMMAND = "/setnotif";
 
     public static final String HELP_MSG =
             "/add - You can add task. In next message send your task.\n" +
@@ -39,8 +40,9 @@ public class Constants {
     public static final String EMPTY_TODO_TASK_LIST_MSG = "Congratulations! You don't have any tasks";
     public static final String EMPTY_COMPLETED_TASK_LIST_MSG = "You haven't done any tasks yet";
     public static final String INCORRECT_COMMAND_MESSAGE = "Incorrect command";
-    public static final String EP_MSG = "Enter " + Constants.START_COMMAND;
+    public static final String ENTRY_POINT_MSG = "Enter " + Constants.START_COMMAND;
     public static final String BOT_WAITING_COMMANDS = "I'm waiting your commands";
+    public static final String NOTIFICATION_MSG = "Don't forget about: ";
 
     public static final String ADD_TASK_BUTTON = "Add task";
     public static final String DEL_TASK_BUTTON = "Del task";

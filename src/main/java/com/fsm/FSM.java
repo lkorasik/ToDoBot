@@ -17,7 +17,7 @@ public class FSM {
         initTransitions();
         initCommands();
 
-        currentState = State.EP;
+        currentState = State.ENTRY_POINT;
     }
 
     /**
@@ -33,13 +33,14 @@ public class FSM {
         commands.add(Constants.HELP_COMMAND);
         commands.add(Constants.CANCEL_COMMAND);
         commands.add(Constants.CLEAR_COMMAND);
+        commands.add(Constants.NOTIF_COMMAND);
     }
 
     /**
      * Инициализация таблицы переходов
      */
     private void initTransitions(){
-        trans.addTransition(new Transition(State.EP, Constants.START_COMMAND, State.START));
+        trans.addTransition(new Transition(State.ENTRY_POINT, Constants.START_COMMAND, State.START));
         trans.addTransition(new Transition(State.START, null, State.LISTEN));
 
         trans.addTransition(new Transition(State.LISTEN, Constants.ADD_TASK_COMMAND, State.ADD));
@@ -62,8 +63,13 @@ public class FSM {
 
         trans.addTransition(new Transition(State.LISTEN, Constants.HELP_COMMAND, State.HELP));
         trans.addTransition(new Transition(State.HELP, null, State.LISTEN));
+
         trans.addTransition(new Transition(State.LISTEN, Constants.CLEAR_COMMAND, State.CLEAR));
         trans.addTransition(new Transition(State.CLEAR, null, State.LISTEN));
+
+        trans.addTransition(new Transition(State.LISTEN, Constants.NOTIF_COMMAND, State.NOTIFICATION));
+        trans.addTransition(new Transition(State.NOTIFICATION, Constants.CANCEL_COMMAND, State.LISTEN));
+        trans.addTransition(new Transition(State.NOTIFICATION, null, State.LISTEN));
     }
 
     /**

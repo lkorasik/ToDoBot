@@ -4,6 +4,10 @@ import com.fsm.FSM;
 import com.fsm.State;
 import org.apache.commons.lang3.StringUtils;
 
+import java.text.ParseException;
+import java.util.Date;
+import java.util.function.BiConsumer;
+
 /**
  * Класс, который является прослойкой между ConsoleBot или Bot и Core
  *
@@ -28,19 +32,23 @@ public class RequestHandler {
         return fsm.getCurrentState();
     }
 
+    private void updateFSMState(String uid){
+        State userState = core.getUserFSMState(uid);
+        if (userState == null){
+            core.createUser(uid);
+            fsm.setState(State.ENTRY_POINT);
+        } else{
+            fsm.setState(userState);
+        }
+    }
+
     /**
      * Обработка сообщения
      * @param input - сообщение
      * @return Строка с резульатом, которую надо показать пользователю
      */
-    public String handle(String uid, String input) {
-        State userState = core.getUserFSMState(uid);
-        if (userState == null){
-            core.createUser(uid);
-            fsm.setState(State.EP);
-        } else{
-            fsm.setState(userState);
-        }
+    public String handle(String uid, String chatId, String input, BiConsumer<String, String> func) throws ParseException {
+        updateFSMState(uid);
 
         if (input.equals("/fsmstate"))
             return fsm.getCurrentState().toString();
@@ -55,6 +63,7 @@ public class RequestHandler {
         boolean isHelp = fsm.isState(State.HELP);
         boolean isStart = fsm.isState(State.START);
         boolean isCancel = input.equals(Constants.CANCEL_COMMAND);
+        boolean isNotification = fsm.isState(State.NOTIFICATION);
 
         if (isShowCompleted || isShowTodo || isHelp || isStart || isClear)
             fsm.update();
@@ -69,6 +78,16 @@ public class RequestHandler {
         }
         else if (isDone && !input.equals(Constants.CANCEL_COMMAND)){
             res = deleteTask(uid, input, true);
+        }
+        else if(isNotification && !input.equals(Constants.CANCEL_COMMAND)){
+            var converter = new DateConverter();
+            var date = converter.parse(getTime(input));
+            if(date != null){
+                res = setTimer(uid, chatId, Integer.parseInt(getTaskId(input)), date, func);
+            }
+            else {
+                res = "None";
+            }
         }
         else if (fsm.isState(State.SHOW_COMPLETED)){
             res = core.getCompletedTasks(uid);
@@ -92,6 +111,24 @@ public class RequestHandler {
         core.setUserFSMState(uid, fsm.getCurrentState());
 
         return res;
+    }
+
+    private String getTaskId(String message){
+        int position = message.indexOf(" ");
+
+        return message.substring(0, position);
+    }
+
+    private String getTime(String message){
+        int position = message.indexOf(" ");
+
+        return message.substring(position + 1);
+    }
+
+    private String setTimer(String uid, String chatId, int taskid, Date date, BiConsumer<String, String> func){
+        core.setTimer(uid, chatId, taskid, date, func);
+
+        return "Added";
     }
 
     /**
