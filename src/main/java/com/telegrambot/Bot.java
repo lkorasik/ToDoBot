@@ -58,11 +58,11 @@ public class Bot extends TelegramLongPollingBot{
         addButton.setCallbackData(Constants.ADD_TASK_COMMAND);
         delButton.setText(Constants.DEL_TASK_BUTTON);
         delButton.setCallbackData(Constants.DELETE_TASK_COMMAND);
-        doneButton.setText(Constants.DONE_TASK_BUTTON);
+        doneButton.setText(Constants.COMPLETED_TASK_BUTTON);
         doneButton.setCallbackData(Constants.COMPLETE_TASK_COMMAND);
         showToDoButton.setText(Constants.SHOW_TASKS_BUTTON);
         showToDoButton.setCallbackData(Constants.SHOW_TODO_TASKS_COMMAND);
-        showDoneButton.setText(Constants.SHOW_DONE_TASKS_BUTTON);
+        showDoneButton.setText(Constants.SHOW_COMPLETED_TASKS_BUTTON);
         showDoneButton.setCallbackData(Constants.SHOW_COMPLETED_TASKS_COMMAND);
         cancelButton.setText(Constants.CANCEL_BUTTON);
         cancelButton.setCallbackData(Constants.CANCEL_COMMAND);

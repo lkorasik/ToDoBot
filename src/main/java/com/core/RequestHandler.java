@@ -74,10 +74,10 @@ public class RequestHandler {
             res = addTask(uid, input);
         }
         else if (isDel && !input.equals(Constants.CANCEL_COMMAND)){
-            res = deleteTask(uid, input, false);
+            res = deleteTask(uid, input);
         }
         else if (isDone && !input.equals(Constants.CANCEL_COMMAND)){
-            res = deleteTask(uid, input, true);
+            res = completeTask(uid, input);
         }
         else if(isNotification && !input.equals(Constants.CANCEL_COMMAND)){
             var converter = new DateConverter();
@@ -90,10 +90,10 @@ public class RequestHandler {
             }
         }
         else if (fsm.isState(State.SHOW_COMPLETED)){
-            res = core.getCompletedTasks(uid);
+            res = core.getFormattedCompletedTasksString(uid);
         }
         else if (fsm.isState(State.SHOW_TODO)){
-            res = core.getToDoTasks(uid);
+            res = core.getFormattedToDoTasks(uid);
         }
         else if (fsm.isState(State.CLEAR)){
             res = clearTaskList(uid);
@@ -135,7 +135,7 @@ public class RequestHandler {
      * Обертка над методом addTask класса Core.
      *
      * @param taskDescription Текст задачи
-     * @return Сообщение об результате операции
+     * @return Сообщение с результатом операции
      */
     private String addTask(String uid, String taskDescription){
         String result;
@@ -154,19 +154,15 @@ public class RequestHandler {
      * Обертка над методом deleteTask класса Core
      *
      * @param taskId Принимается идентификатор задачи
-     * @return Сообщение об результате операции
+     * @return Сообщение с результатом операции
      */
-    private String deleteTask(String uid, String taskId, Boolean markAsCompleted){
+    private String deleteTask(String uid, String taskId){
         String result;
 
         if (bodyIsCorrect(taskId)) {
             try {
-                core.deleteTask(uid, taskId, markAsCompleted);
-                if (markAsCompleted){
-                    result = Constants.TASK_COMPLETED_MSG + taskId;
-                } else{
-                    result = Constants.TASK_DELETED_MSG + taskId;
-                }
+                core.deleteTask(uid, taskId);
+                result = Constants.TASK_DELETED_MSG + taskId;
             } catch (NotExistingTaskIndexException | IncorrectTaskIdTypeException exception) {
                 result = exception.getMessage();
             }
@@ -178,13 +174,37 @@ public class RequestHandler {
     }
 
     /**
+     * Обертка над методом completeTask класса Core
+     *
+     * @param uid Id пользователя
+     * @param taskId Id задачи
+     * @return Сообщение с результатом операции
+     */
+    public String completeTask(String uid, String taskId){
+        String result;
+
+        if (bodyIsCorrect(taskId)) {
+            try {
+                core.completeTask(uid, taskId);
+                result = String.format(Constants.TASK_COMPLETED_MSG, taskId);
+            } catch (IncorrectTaskIdTypeException | NotExistingTaskIndexException exception) {
+                result = exception.getMessage();
+            }
+        } else {
+            result  = Constants.EMPTY_COMPLETED_TASK_LIST_MSG;
+        }
+
+        return result;
+    }
+
+    /**
      * Обертка над методом emptyTaskList класса Core
      *
      * @param uid Id пользователя, у которого нужно очистить список задач
-     * @return Сообщение об результате операции
+     * @return Сообщение с результатом операции
      */
     private String clearTaskList(String uid){
-        core.clearTaskList(uid);
+        core.clearAllTaskLists(uid);
 
         return Constants.CLEARED_TASK_LIST_MSG;
     }

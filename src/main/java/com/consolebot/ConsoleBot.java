@@ -2,9 +2,7 @@ package com.consolebot;
 
 import com.core.Constants;
 import com.core.RequestHandler;
-import com.fsm.State;
-
-import java.net.Authenticator;
+import java.text.ParseException;
 import java.util.Scanner;
 
 /**
@@ -12,10 +10,10 @@ import java.util.Scanner;
  * @author Dmitry
  */
 public class ConsoleBot {
-    public static void main(String[] args) {
-        Scanner scanner = new Scanner(System.in);
-        RequestHandler requestHandler = new RequestHandler();
-        String userId = "";
+    public static void main(String[] args) throws ParseException {
+        var scanner = new Scanner(System.in);
+        var requestHandler = new RequestHandler();
+        var userId = "";
         while (userId.equals("")){
             System.out.println(Constants.LOGIN_MESSAGE);
             userId = scanner.nextLine();
@@ -26,7 +24,11 @@ public class ConsoleBot {
             System.out.println(Constants.NOT_ENTRY_POINT_GREETINGS_MSG);
         }
         while (true) {
-            //System.out.println(requestHandler.handle(userId, scanner.nextLine()));
+            System.out.println(requestHandler.handle(userId, "1", scanner.nextLine(), ConsoleBot::print));
         }
+    }
+
+    private static void print(String chatId, String message) {
+        System.out.println(message);
     }
 }

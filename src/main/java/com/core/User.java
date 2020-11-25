@@ -29,20 +29,12 @@ public class User {
         return toDoTasks;
     }
 
-    public void setToDoTasks(List<Task> toDoTasks) {
-        this.toDoTasks = toDoTasks;
-    }
-
     public void addTodoTask(Task task){
         this.toDoTasks.add(task);
     }
 
     public List<Task> getCompletedTasks() {
         return completedTasks;
-    }
-
-    public void setCompletedTasks(List<Task> completedTasks) {
-        this.completedTasks = completedTasks;
     }
 
     public void addCompletedTask(Task task){

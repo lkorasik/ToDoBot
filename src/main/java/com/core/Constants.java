@@ -33,11 +33,11 @@ public class Constants {
     public static final String TASK_ID_MSG = "Please, enter task id";
     public static final String TASK_ADDED_MSG = "Added task: ";
     public static final String TASK_DELETED_MSG = "Successfully deleted task with id: ";
-    public static final String TASK_COMPLETED_MSG = "Successfully marked task as done with id: ";
+    public static final String TASK_COMPLETED_MSG = "Successfully marked task with id: %s as completed";
     public static final String CLEARED_TASK_LIST_MSG = "Successfully cleared the task list";
     public static final String NOT_EXISTING_TASK_ID_EXCEPTION_MSG = "There is no task with id: ";
     public static final String INCORRECT_TASK_ID_TYPE_EXCEPTION_MSG = "Please enter tasks id, not description";
-    public static final String EMPTY_TODO_TASK_LIST_MSG = "Congratulations! You don't have any tasks";
+    public static final String EMPTY_TODO_TASK_LIST_MSG = "Congratulations! You don't have any tasks!";
     public static final String EMPTY_COMPLETED_TASK_LIST_MSG = "You haven't done any tasks yet";
     public static final String INCORRECT_COMMAND_MESSAGE = "Incorrect command";
     public static final String ENTRY_POINT_MSG = "Enter " + Constants.START_COMMAND;
@@ -46,9 +46,9 @@ public class Constants {
 
     public static final String ADD_TASK_BUTTON = "Add task";
     public static final String DEL_TASK_BUTTON = "Del task";
-    public static final String DONE_TASK_BUTTON = "Done";
+    public static final String COMPLETED_TASK_BUTTON = "Complete task";
     public static final String SHOW_TASKS_BUTTON = "Show tasks";
-    public static final String SHOW_DONE_TASKS_BUTTON = "Show done tasks";
+    public static final String SHOW_COMPLETED_TASKS_BUTTON = "Show done tasks";
     public static final String CANCEL_BUTTON = "Cancel";
 
     public static final String TELEGRAM_TOKEN_FILENAME = "Token";
