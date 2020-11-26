@@ -1,10 +1,12 @@
 package com.core;
 
+import org.glassfish.grizzly.PendingWriteQueueLimitExceededException;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.Before;
 
 import javax.xml.transform.sax.SAXResult;
+import java.text.ParseException;
 
 /**
  * Тестируем класс RequestHandler в связке с Core
@@ -26,17 +28,19 @@ public class RequestHandlerTest {
      * Начало общения с ботом
      */
     @Test
-    public void testStartChat(){
+    public void testStartChat() throws ParseException {
         String uid = String.valueOf((int)(Math.random() * 1000));
 
-        String result = requestHandler.handle(uid, "/start");
-        Assert.assertEquals("Hello, I'm telegram bot that can help to manage your tasks. " +
-                        "There is all commands that you can type to operate with me:\n" +
+        String result = requestHandler.handle(uid, "0", "/start", null);
+        Assert.assertEquals("Hello, I'm telegram bot that can help to manage your tasks. There is all commands that you can type to operate with me:\n" +
                         "/add - You can add task. In next message send your task.\n" +
                         "/del - You can delete task. In next message send task's number\n" +
-                        "/show - You can see all tasks\n" +
+                        "/done - You can mark task as completed. In next message send task's number\n" +
+                        "/showtodo - You can see all tasks that you need to solve\n" +
+                        "/showdone - You can see all tasks that you have done\n" +
                         "/help - You will see this message\n" +
-                        "/cancel - You can use this command if you wnat to cancel action such as add task or delete task.\n",
+                        "/clear - You can clear your both task lists\n" +
+                        "/cancel - You can use this command if you want to cancel action such as add task or delete task.\n",
                 result);
     }
 
@@ -44,18 +48,21 @@ public class RequestHandlerTest {
      * Попытка начать диалог два раза
      */
     @Test
-    public void testStartChatTwice(){
+    public void testStartChatTwice() throws ParseException {
         String uid = String.valueOf((int)(Math.random() * 1000));
 
-        String result = requestHandler.handle(uid, "/start");
+        String result = requestHandler.handle(uid, "0", "/start", null);
         Assert.assertEquals("Hello, I'm telegram bot that can help to manage your tasks. There is all commands that you can type to operate with me:\n" +
                 "/add - You can add task. In next message send your task.\n" +
                 "/del - You can delete task. In next message send task's number\n" +
-                "/show - You can see all tasks\n" +
+                "/done - You can mark task as completed. In next message send task's number\n" +
+                "/showtodo - You can see all tasks that you need to solve\n" +
+                "/showdone - You can see all tasks that you have done\n" +
                 "/help - You will see this message\n" +
-                "/cancel - You can use this command if you wnat to cancel action such as add task or delete task.\n", result);
+                "/clear - You can clear your both task lists\n" +
+                "/cancel - You can use this command if you want to cancel action such as add task or delete task.\n", result);
 
-        result = requestHandler.handle(uid, "/start");
+        result = requestHandler.handle(uid, "0", "/start", null);
         Assert.assertEquals("Incorrect command", result);
     }
 
@@ -63,28 +70,31 @@ public class RequestHandlerTest {
      * Получаем помощь по командам
      */
     @Test
-    public void testGetHelp(){
+    public void testGetHelp() throws ParseException {
         String uid = String.valueOf((int)(Math.random() * 1000));
 
-        requestHandler.handle(uid, "/start");
-        String result = requestHandler.handle(uid, "/help");
+        requestHandler.handle(uid, "0", "/start", null);
+        String result = requestHandler.handle(uid, "0", "/help", null);
 
         Assert.assertEquals(result, "/add - You can add task. In next message send your task.\n" +
                 "/del - You can delete task. In next message send task's number\n" +
-                "/show - You can see all tasks\n" +
+                "/done - You can mark task as completed. In next message send task's number\n" +
+                "/showtodo - You can see all tasks that you need to solve\n" +
+                "/showdone - You can see all tasks that you have done\n" +
                 "/help - You will see this message\n" +
-                "/cancel - You can use this command if you wnat to cancel action such as add task or delete task.\n");
+                "/clear - You can clear your both task lists\n" +
+                "/cancel - You can use this command if you want to cancel action such as add task or delete task.\n");
     }
 
     /**
      * Проверяем, что можно добавить задачу
      */
     @Test
-    public void testAddTaskSuccessful(){
+    public void testAddTaskSuccessful() throws ParseException {
         String uid = String.valueOf((int)(Math.random() * 1000));
 
-        requestHandler.handle(uid, "/start");
-        String result = requestHandler.handle(uid, "/add");
+        requestHandler.handle(uid, "0", "/start", null);
+        String result = requestHandler.handle(uid, "0", "/add", null);
 
         Assert.assertEquals("Please enter task description", result);
     }
@@ -93,12 +103,12 @@ public class RequestHandlerTest {
      * Проверяем, что можено отказаться от добавления задачи
      */
     @Test
-    public void testAddTaskCanceled(){
+    public void testAddTaskCanceled() throws ParseException{
         String uid = String.valueOf((int)(Math.random() * 1000));
 
-        requestHandler.handle(uid, "/start");
-        requestHandler.handle(uid, "/add");
-        String result = requestHandler.handle(uid, "/cancel");
+        requestHandler.handle(uid, "0", "/start", null);
+        requestHandler.handle(uid, "0", "/add", null);
+        String result = requestHandler.handle(uid, "0", "/cancel", null);
 
         Assert.assertEquals("I'm waiting your commands", result);
     }
@@ -107,14 +117,14 @@ public class RequestHandlerTest {
      * Удаляем задачу с существующим идентификатором
      */
     @Test
-    public void testDeleteTaskSuccessful(){
+    public void testDeleteTaskSuccessful() throws ParseException{
         String uid = String.valueOf((int)(Math.random() * 1000));
 
-        requestHandler.handle(uid, "/start");
-        requestHandler.handle(uid, "/add");
-        requestHandler.handle(uid, "Nothing");
-        requestHandler.handle(uid, "/del");
-        String result = requestHandler.handle(uid, "0");
+        requestHandler.handle(uid, "0", "/start", null);
+        requestHandler.handle(uid, "0", "/add", null);
+        requestHandler.handle(uid, "0", "Nothing", null);
+        requestHandler.handle(uid, "0", "/del", null);
+        String result = requestHandler.handle(uid, "0", "0", null);
 
         Assert.assertEquals("Successfully deleted task with id: 0", result);
     }
@@ -123,12 +133,12 @@ public class RequestHandlerTest {
      * Отменяем удаление задачи
      */
     @Test
-    public void testDeleteTaskCanceled(){
+    public void testDeleteTaskCanceled() throws ParseException{
         String uid = String.valueOf((int)(Math.random() * 1000));
 
-        requestHandler.handle(uid, "/start");
-        requestHandler.handle(uid, "/del");
-        String result = requestHandler.handle(uid, "/cancel");
+        requestHandler.handle(uid, "0", "/start", null);
+        requestHandler.handle(uid, "0", "/del", null);
+        String result = requestHandler.handle(uid, "0", "/cancel", null);
 
         Assert.assertEquals("I'm waiting your commands", result);
     }
@@ -137,12 +147,12 @@ public class RequestHandlerTest {
      * Пробуем удалить задачу с не тем id
      */
     @Test
-    public void testDeleteTaskAnotherID(){
+    public void testDeleteTaskAnotherID() throws ParseException{
         String uid = String.valueOf((int)(Math.random() * 1000));
 
-        requestHandler.handle(uid, "/start");
-        requestHandler.handle(uid, "/del");
-        String result = requestHandler.handle(uid, "48");
+        requestHandler.handle(uid, "0", "/start", null);
+        requestHandler.handle(uid, "0", "/del", null);
+        String result = requestHandler.handle(uid, "0", "48", null);
 
         Assert.assertEquals("There is no task with id: 48", result);
     }
@@ -151,12 +161,12 @@ public class RequestHandlerTest {
      * Пробуем удалить задачу с некорректным типом идентификатора
      */
     @Test
-    public void testDeleteTaskWithIncorrectTypeOfID(){
+    public void testDeleteTaskWithIncorrectTypeOfID() throws ParseException{
         String uid = String.valueOf((int)(Math.random() * 1000));
 
-        requestHandler.handle(uid, "/start");
-        requestHandler.handle(uid, "/del");
-        String result = requestHandler.handle(uid, "FEA15");
+        requestHandler.handle(uid, "0", "/start", null);
+        requestHandler.handle(uid, "0", "/del", null);
+        String result = requestHandler.handle(uid, "0", "FEA15", null);
 
         Assert.assertEquals("Please enter tasks id, not description", result);
     }
@@ -165,26 +175,26 @@ public class RequestHandlerTest {
      * Пытаемся посмотреть пустой список задач
      */
     @Test
-    public void testGetEmptyTaskList(){
+    public void testGetEmptyTaskList() throws ParseException {
         String uid = String.valueOf((int)(Math.random() * 1000));
 
-        requestHandler.handle(uid, "/start");
-        String result = requestHandler.handle(uid, "/show");
+        requestHandler.handle(uid, "0", "/start", null);
+        String result = requestHandler.handle(uid, "0", "/show", null);
 
-        Assert.assertEquals("Congratulations! You don't have any tasks yet", result);
+        Assert.assertEquals("Incorrect command", result);
     }
 
     /**
      * Смотрим список задач
      */
     @Test
-    public void testGetTaskList(){
+    public void testGetTaskList() throws ParseException {
         String uid = String.valueOf((int)(Math.random() * 1000));
 
-        requestHandler.handle(uid, "/start");
-        requestHandler.handle(uid, "/add");
-        requestHandler.handle(uid, "Something");
-        String result = requestHandler.handle(uid, "/show");
+        requestHandler.handle(uid, "0", "/start", null);
+        requestHandler.handle(uid, "0", "/add", null);
+        requestHandler.handle(uid, "0", "Something", null);
+        String result = requestHandler.handle(uid, "0", "/showtodo", null);
 
         Assert.assertEquals("Id\tОписание\n" +
                 "0\tSomething", result);
@@ -194,10 +204,10 @@ public class RequestHandlerTest {
      * Пытаемся перескочить через одно состояние
      */
     @Test
-    public void testEPToAdd(){
+    public void testEPToAdd() throws ParseException {
         String uid = String.valueOf((int)(Math.random() * 1000));
 
-        String result = requestHandler.handle(uid, "/add");
+        String result = requestHandler.handle(uid, "0", "/add", null);
         Assert.assertEquals("Enter /start", result);
     }
 }

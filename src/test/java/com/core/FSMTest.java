@@ -37,7 +37,7 @@ public class FSMTest {
         fsm.update("/add");
 
         Assert.assertFalse(fsm.isState(State.ADD));
-        Assert.assertTrue(fsm.isState(State.EP));
+        Assert.assertTrue(fsm.isState(State.ENTRY_POINT));
     }
 
     /**
