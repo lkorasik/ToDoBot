@@ -1,8 +1,8 @@
 package com.consolebot;
 
-import com.authentication.Authenticator;
+import com.core.Constants;
 import com.core.RequestHandler;
-
+import java.text.ParseException;
 import java.util.Scanner;
 
 /**
@@ -10,16 +10,25 @@ import java.util.Scanner;
  * @author Dmitry
  */
 public class ConsoleBot {
-    public static void main(String[] args) {
-        Scanner scanner = new Scanner(System.in);
-        RequestHandler requestHandler = new RequestHandler();
-        Authenticator authenticator = new Authenticator();
-        while (!authenticator.gotCredentials()){
-            System.out.println(authenticator.getStatus());
-            System.out.println(authenticator.authenticate(scanner.nextLine()));
+    public static void main(String[] args) throws ParseException {
+        var scanner = new Scanner(System.in);
+        var requestHandler = new RequestHandler();
+        var userId = "";
+        while (userId.equals("")){
+            System.out.println(Constants.LOGIN_MESSAGE);
+            userId = scanner.nextLine();
+        }
+        if (requestHandler.getUserFSMState(userId) == null){
+            System.out.println(Constants.ENTRY_POINT_GREETINGS_MSG);
+        } else {
+            System.out.println(Constants.NOT_ENTRY_POINT_GREETINGS_MSG);
         }
         while (true) {
-            System.out.println(requestHandler.handle(authenticator.getUserId(), scanner.nextLine()));
+            System.out.println(requestHandler.handle(userId, "1", scanner.nextLine(), ConsoleBot::print));
         }
+    }
+
+    private static void print(String chatId, String message) {
+        System.out.println(message);
     }
 }

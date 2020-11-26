@@ -7,10 +7,10 @@ package com.fsm;
  */
 public class Transition {
     private String key;
-    private States start;
-    private States end;
+    private State start;
+    private State end;
 
-    public Transition(States start, String key, States end){
+    public Transition(State start, String key, State end){
         this.start = start;
         this.key = key;
         this.end = end;
@@ -20,7 +20,7 @@ public class Transition {
      * Получить стартовое состояние
      * @return состояние
      */
-    public States getStartState(){
+    public State getStartState(){
         return start;
     }
 
@@ -36,7 +36,7 @@ public class Transition {
      * Получить конечное состояние
      * @return состояние
      */
-    public States getEndState(){
+    public State getEndState(){
         return end;
     }
 }

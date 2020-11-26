@@ -11,13 +11,13 @@ import java.util.ArrayList;
 public class FSM {
     private final TransitionTable trans = new TransitionTable();
     private final ArrayList<String> commands = new ArrayList<>();
-    private States currentState;
+    private State currentState;
 
     public FSM(){
         initTransitions();
         initCommands();
 
-        currentState = States.EP;
+        currentState = State.ENTRY_POINT;
     }
 
     /**
@@ -26,28 +26,50 @@ public class FSM {
     private void initCommands(){
         commands.add(Constants.ADD_TASK_COMMAND);
         commands.add(Constants.DELETE_TASK_COMMAND);
-        commands.add(Constants.SHOW_TASKS_COMMAND);
+        commands.add(Constants.COMPLETE_TASK_COMMAND);
+        commands.add(Constants.SHOW_TODO_TASKS_COMMAND);
+        commands.add(Constants.SHOW_COMPLETED_TASKS_COMMAND);
         commands.add(Constants.START_COMMAND);
         commands.add(Constants.HELP_COMMAND);
         commands.add(Constants.CANCEL_COMMAND);
+        commands.add(Constants.CLEAR_COMMAND);
+        commands.add(Constants.NOTIF_COMMAND);
     }
 
     /**
      * Инициализация таблицы переходов
      */
     private void initTransitions(){
-        trans.addTransition(new Transition(States.EP, Constants.START_COMMAND, States.START));
-        trans.addTransition(new Transition(States.START, null, States.LISTEN));
-        trans.addTransition(new Transition(States.LISTEN, Constants.ADD_TASK_COMMAND, States.ADD));
-        trans.addTransition(new Transition(States.ADD, Constants.CANCEL_COMMAND, States.LISTEN));
-        trans.addTransition(new Transition(States.ADD, null, States.LISTEN));
-        trans.addTransition(new Transition(States.LISTEN, Constants.DELETE_TASK_COMMAND, States.DEL));
-        trans.addTransition(new Transition(States.DEL, Constants.CANCEL_COMMAND, States.LISTEN));
-        trans.addTransition(new Transition(States.DEL, null, States.LISTEN));
-        trans.addTransition(new Transition(States.LISTEN, Constants.SHOW_TASKS_COMMAND, States.SHOW));
-        trans.addTransition(new Transition(States.SHOW, null, States.LISTEN));
-        trans.addTransition(new Transition(States.LISTEN, Constants.HELP_COMMAND, States.HELP));
-        trans.addTransition(new Transition(States.HELP, null, States.LISTEN));
+        trans.addTransition(new Transition(State.ENTRY_POINT, Constants.START_COMMAND, State.START));
+        trans.addTransition(new Transition(State.START, null, State.LISTEN));
+
+        trans.addTransition(new Transition(State.LISTEN, Constants.ADD_TASK_COMMAND, State.ADD));
+        trans.addTransition(new Transition(State.ADD, Constants.CANCEL_COMMAND, State.LISTEN));
+        trans.addTransition(new Transition(State.ADD, null, State.LISTEN));
+
+        trans.addTransition(new Transition(State.LISTEN, Constants.DELETE_TASK_COMMAND, State.DEL));
+        trans.addTransition(new Transition(State.DEL, Constants.CANCEL_COMMAND, State.LISTEN));
+        trans.addTransition(new Transition(State.DEL, null, State.LISTEN));
+
+        trans.addTransition(new Transition(State.LISTEN, Constants.COMPLETE_TASK_COMMAND, State.DONE));
+        trans.addTransition(new Transition(State.DONE, Constants.CANCEL_COMMAND, State.LISTEN));
+        trans.addTransition(new Transition(State.DONE, null, State.LISTEN));
+
+        trans.addTransition(new Transition(State.LISTEN, Constants.SHOW_TODO_TASKS_COMMAND, State.SHOW_TODO));
+        trans.addTransition(new Transition(State.SHOW_TODO, null, State.LISTEN));
+
+        trans.addTransition(new Transition(State.LISTEN, Constants.SHOW_COMPLETED_TASKS_COMMAND, State.SHOW_COMPLETED));
+        trans.addTransition(new Transition(State.SHOW_COMPLETED, null, State.LISTEN));
+
+        trans.addTransition(new Transition(State.LISTEN, Constants.HELP_COMMAND, State.HELP));
+        trans.addTransition(new Transition(State.HELP, null, State.LISTEN));
+
+        trans.addTransition(new Transition(State.LISTEN, Constants.CLEAR_COMMAND, State.CLEAR));
+        trans.addTransition(new Transition(State.CLEAR, null, State.LISTEN));
+
+        trans.addTransition(new Transition(State.LISTEN, Constants.NOTIF_COMMAND, State.NOTIFICATION));
+        trans.addTransition(new Transition(State.NOTIFICATION, Constants.CANCEL_COMMAND, State.LISTEN));
+        trans.addTransition(new Transition(State.NOTIFICATION, null, State.LISTEN));
     }
 
     /**
@@ -59,11 +81,19 @@ public class FSM {
             line = null;
         }
 
-        States end = trans.getEndState(currentState, line);
+        State end = trans.getEndState(currentState, line);
 
         if(end != null) {
             currentState = end;
         }
+    }
+
+    /**
+     * Установить состояние fsm
+     * @param state Новове состояние
+     */
+    public void setState(State state){
+        currentState = state;
     }
 
     /**
@@ -77,14 +107,14 @@ public class FSM {
      * Получить текущее сосотояние автмата
      * @return состояние
      */
-    public States getCurrentState(){
+    public State getCurrentState(){
         return currentState;
     }
 
     /**
      * Сравнить состояние с текйщим состоянием
      */
-    public boolean isState(States state){
+    public boolean isState(State state){
         return currentState.equals(state);
     }
 }

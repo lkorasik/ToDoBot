@@ -1,7 +1,7 @@
 package com.core;
 
 import com.fsm.FSM;
-import com.fsm.States;
+import com.fsm.State;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -26,7 +26,7 @@ public class FSMTest {
     public void testStartDialog(){
         fsm.update("/start");
 
-        Assert.assertTrue(fsm.isState(States.START));
+        Assert.assertTrue(fsm.isState(State.START));
     }
 
     /**
@@ -36,8 +36,8 @@ public class FSMTest {
     public void testNotUseStart(){
         fsm.update("/add");
 
-        Assert.assertFalse(fsm.isState(States.ADD));
-        Assert.assertTrue(fsm.isState(States.EP));
+        Assert.assertFalse(fsm.isState(State.ADD));
+        Assert.assertTrue(fsm.isState(State.ENTRY_POINT));
     }
 
     /**
@@ -49,7 +49,7 @@ public class FSMTest {
         fsm.update("/add");
         fsm.update("To");
 
-        Assert.assertTrue(fsm.isState(States.LISTEN));
+        Assert.assertTrue(fsm.isState(State.LISTEN));
     }
 
     /**
@@ -61,7 +61,7 @@ public class FSMTest {
         fsm.update("/add");
         fsm.update("/cancel");
 
-        Assert.assertTrue(fsm.isState(States.START));
+        Assert.assertTrue(fsm.isState(State.START));
     }
 
     /**
@@ -75,7 +75,7 @@ public class FSMTest {
         fsm.update("/del");
         fsm.update("0");
 
-        Assert.assertTrue(fsm.isState(States.LISTEN));
+        Assert.assertTrue(fsm.isState(State.LISTEN));
     }
 
     /**
@@ -87,7 +87,7 @@ public class FSMTest {
         fsm.update("/del");
         fsm.update("/cancel");
 
-        Assert.assertTrue(fsm.isState(States.START));
+        Assert.assertTrue(fsm.isState(State.START));
     }
 
     /**
@@ -100,7 +100,7 @@ public class FSMTest {
 
         fsm.update();
 
-        Assert.assertTrue(fsm.isState(States.LISTEN));
+        Assert.assertTrue(fsm.isState(State.LISTEN));
     }
 
     /**
@@ -113,6 +113,6 @@ public class FSMTest {
 
         fsm.update();
 
-        Assert.assertTrue(fsm.isState(States.LISTEN));
+        Assert.assertTrue(fsm.isState(State.LISTEN));
     }
 }

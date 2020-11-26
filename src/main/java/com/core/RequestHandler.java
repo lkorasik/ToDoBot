@@ -1,8 +1,12 @@
 package com.core;
 
 import com.fsm.FSM;
-import com.fsm.States;
+import com.fsm.State;
 import org.apache.commons.lang3.StringUtils;
+
+import java.text.ParseException;
+import java.util.Date;
+import java.util.function.BiConsumer;
 
 /**
  * Класс, который является прослойкой между ConsoleBot или Bot и Core
@@ -22,8 +26,20 @@ public class RequestHandler {
         return body != null && !StringUtils.isBlank(body) && !body.equals("");
     }
 
-    public States getFSMState(){
+    public State getUserFSMState(String uid) { return core.getUserFSMState(uid); }
+
+    public State getFSMState(){
         return fsm.getCurrentState();
+    }
+
+    private void updateFSMState(String uid){
+        State userState = core.getUserFSMState(uid);
+        if (userState == null){
+            core.createUser(uid);
+            fsm.setState(State.ENTRY_POINT);
+        } else{
+            fsm.setState(userState);
+        }
     }
 
     /**
@@ -31,19 +47,25 @@ public class RequestHandler {
      * @param input - сообщение
      * @return Строка с резульатом, которую надо показать пользователю
      */
-    public String handle(String uid, String input) {
+    public String handle(String uid, String chatId, String input, BiConsumer<String, String> func) throws ParseException {
+        updateFSMState(uid);
+
         if (input.equals("/fsmstate"))
             return fsm.getCurrentState().toString();
 
         String res = null;
-        boolean isAdd = fsm.isState(States.ADD);
-        boolean isDel = fsm.isState(States.DEL);
-        boolean isShow = fsm.isState(States.SHOW);
-        boolean isHelp = fsm.isState(States.HELP);
-        boolean isStart = fsm.isState(States.START);
+        boolean isAdd = fsm.isState(State.ADD);
+        boolean isDel = fsm.isState(State.DEL);
+        boolean isDone = fsm.isState(State.DONE);
+        boolean isClear = fsm.isState(State.CLEAR);
+        boolean isShowCompleted = fsm.isState(State.SHOW_COMPLETED);
+        boolean isShowTodo = fsm.isState(State.SHOW_TODO);
+        boolean isHelp = fsm.isState(State.HELP);
+        boolean isStart = fsm.isState(State.START);
         boolean isCancel = input.equals(Constants.CANCEL_COMMAND);
+        boolean isNotification = fsm.isState(State.NOTIFICATION);
 
-        if (isShow || isHelp || isStart)
+        if (isShowCompleted || isShowTodo || isHelp || isStart || isClear)
             fsm.update();
 
         fsm.update(input);
@@ -54,33 +76,73 @@ public class RequestHandler {
         else if (isDel && !input.equals(Constants.CANCEL_COMMAND)){
             res = deleteTask(uid, input);
         }
-        else if (fsm.isState(States.SHOW)){
-            res = core.getTasks(uid);
+        else if (isDone && !input.equals(Constants.CANCEL_COMMAND)){
+            res = completeTask(uid, input);
         }
-        else if(fsm.isState(States.LISTEN)){
+        else if(isNotification && !input.equals(Constants.CANCEL_COMMAND)){
+            var converter = new DateConverter();
+            var date = converter.parse(getTime(input));
+            if(date != null){
+                res = setTimer(uid, chatId, Integer.parseInt(getTaskId(input)), date, func);
+            }
+            else {
+                res = "None";
+            }
+        }
+        else if (fsm.isState(State.SHOW_COMPLETED)){
+            res = core.getFormattedCompletedTasksString(uid);
+        }
+        else if (fsm.isState(State.SHOW_TODO)){
+            res = core.getFormattedToDoTasks(uid);
+        }
+        else if (fsm.isState(State.CLEAR)){
+            res = clearTaskList(uid);
+        }
+        else if(fsm.isState(State.LISTEN)){
             if (!isCancel)
                 res = Constants.INCORRECT_COMMAND_MESSAGE;
             else
                 res = Constants.BOT_WAITING_COMMANDS;
         }
         else {
-            res = States.getMessageForState(fsm.getCurrentState());
+            res = fsm.getCurrentState().getStateMessage();
         }
+
+        core.setUserFSMState(uid, fsm.getCurrentState());
 
         return res;
     }
 
+    private String getTaskId(String message){
+        int position = message.indexOf(" ");
+
+        return message.substring(0, position);
+    }
+
+    private String getTime(String message){
+        int position = message.indexOf(" ");
+
+        return message.substring(position + 1);
+    }
+
+    private String setTimer(String uid, String chatId, int taskid, Date date, BiConsumer<String, String> func){
+        core.setTimer(uid, chatId, taskid, date, func);
+
+        return "Added";
+    }
+
     /**
-     * Добавить задачу в список
-     * @param body Текст задачи
-     * @return Результат, который надо показать пользователю
+     * Обертка над методом addTask класса Core.
+     *
+     * @param taskDescription Текст задачи
+     * @return Сообщение с результатом операции
      */
-    private String addTask(String uid, String body){
+    private String addTask(String uid, String taskDescription){
         String result;
 
-        if (bodyIsCorrect(body)) {
-            core.addTask(uid, body);
-            result = Constants.TASK_ADDED_MSG + body;
+        if (bodyIsCorrect(taskDescription)) {
+            core.addTask(uid, taskDescription);
+            result = Constants.TASK_ADDED_MSG + taskDescription;
         } else {
             result = Constants.EMPTY_TASK_DESCRIPTION_MSG;
         }
@@ -89,17 +151,18 @@ public class RequestHandler {
     }
 
     /**
-     * Удаление задачи
-     * @param body Принимается идентификатор задачи
-     * @return Результат, который надо вывести пользователю
+     * Обертка над методом deleteTask класса Core
+     *
+     * @param taskId Принимается идентификатор задачи
+     * @return Сообщение с результатом операции
      */
-    private String deleteTask(String uid, String body){
+    private String deleteTask(String uid, String taskId){
         String result;
 
-        if (bodyIsCorrect(body)) {
+        if (bodyIsCorrect(taskId)) {
             try {
-                core.deleteTask(uid, body);
-                result = Constants.TASK_DELETED_MSG + body;
+                core.deleteTask(uid, taskId);
+                result = Constants.TASK_DELETED_MSG + taskId;
             } catch (NotExistingTaskIndexException | IncorrectTaskIdTypeException exception) {
                 result = exception.getMessage();
             }
@@ -108,6 +171,42 @@ public class RequestHandler {
         }
 
         return result;
+    }
+
+    /**
+     * Обертка над методом completeTask класса Core
+     *
+     * @param uid Id пользователя
+     * @param taskId Id задачи
+     * @return Сообщение с результатом операции
+     */
+    public String completeTask(String uid, String taskId){
+        String result;
+
+        if (bodyIsCorrect(taskId)) {
+            try {
+                core.completeTask(uid, taskId);
+                result = String.format(Constants.TASK_COMPLETED_MSG, taskId);
+            } catch (IncorrectTaskIdTypeException | NotExistingTaskIndexException exception) {
+                result = exception.getMessage();
+            }
+        } else {
+            result  = Constants.EMPTY_COMPLETED_TASK_LIST_MSG;
+        }
+
+        return result;
+    }
+
+    /**
+     * Обертка над методом emptyTaskList класса Core
+     *
+     * @param uid Id пользователя, у которого нужно очистить список задач
+     * @return Сообщение с результатом операции
+     */
+    private String clearTaskList(String uid){
+        core.clearAllTaskLists(uid);
+
+        return Constants.CLEARED_TASK_LIST_MSG;
     }
 }
 

@@ -2,7 +2,7 @@ package com.telegrambot;
 
 import com.core.Constants;
 import com.core.RequestHandler;
-import com.fsm.States;
+import com.fsm.State;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Update;
@@ -10,6 +10,7 @@ import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMa
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKeyboardButton;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -23,11 +24,13 @@ public class Bot extends TelegramLongPollingBot{
     private final String BotUserName;
 
     private final InlineKeyboardMarkup mainMenuMarkup = new InlineKeyboardMarkup();
-    private final InlineKeyboardMarkup addDelMenuMarkup = new InlineKeyboardMarkup();
+    private final InlineKeyboardMarkup addDelDoneMenuMarkup = new InlineKeyboardMarkup();
     private final InlineKeyboardMarkup shortMainMenuMarkup = new InlineKeyboardMarkup();
     private final InlineKeyboardButton addButton = new InlineKeyboardButton();
     private final InlineKeyboardButton delButton = new InlineKeyboardButton();
-    private final InlineKeyboardButton showButton = new InlineKeyboardButton();
+    private final InlineKeyboardButton doneButton = new InlineKeyboardButton();
+    private final InlineKeyboardButton showToDoButton = new InlineKeyboardButton();
+    private final InlineKeyboardButton showDoneButton = new InlineKeyboardButton();
     private final InlineKeyboardButton cancelButton = new InlineKeyboardButton();
 
     private final RequestHandler requestHandler = new RequestHandler();
@@ -43,7 +46,7 @@ public class Bot extends TelegramLongPollingBot{
 
         initButtons();
         initMainMenuKeyboardMarkup();
-        initAddDelMenuMarkup();
+        initAddDelDoneMenuMarkup();
         initShortMainMenuMarkup();
     }
 
@@ -55,8 +58,12 @@ public class Bot extends TelegramLongPollingBot{
         addButton.setCallbackData(Constants.ADD_TASK_COMMAND);
         delButton.setText(Constants.DEL_TASK_BUTTON);
         delButton.setCallbackData(Constants.DELETE_TASK_COMMAND);
-        showButton.setText(Constants.SHOW_TASKS_BUTTON);
-        showButton.setCallbackData(Constants.SHOW_TASKS_COMMAND);
+        doneButton.setText(Constants.COMPLETED_TASK_BUTTON);
+        doneButton.setCallbackData(Constants.COMPLETE_TASK_COMMAND);
+        showToDoButton.setText(Constants.SHOW_TASKS_BUTTON);
+        showToDoButton.setCallbackData(Constants.SHOW_TODO_TASKS_COMMAND);
+        showDoneButton.setText(Constants.SHOW_COMPLETED_TASKS_BUTTON);
+        showDoneButton.setCallbackData(Constants.SHOW_COMPLETED_TASKS_COMMAND);
         cancelButton.setText(Constants.CANCEL_BUTTON);
         cancelButton.setCallbackData(Constants.CANCEL_COMMAND);
     }
@@ -68,6 +75,7 @@ public class Bot extends TelegramLongPollingBot{
         List<InlineKeyboardButton> row = new ArrayList<>();
         row.add(addButton);
         row.add(delButton);
+        row.add(doneButton);
 
         List<List<InlineKeyboardButton>> rowList = new ArrayList<>();
         rowList.add(row);
@@ -78,26 +86,31 @@ public class Bot extends TelegramLongPollingBot{
      * Настройка разметки основной клавиатуры (Add, Del, Show)
      */
     private void initMainMenuKeyboardMarkup(){
-        List<InlineKeyboardButton> row = new ArrayList<>();
-        row.add(addButton);
-        row.add(delButton);
-        row.add(showButton);
+        List<InlineKeyboardButton> upperRow = new ArrayList<>();
+        upperRow.add(addButton);
+        upperRow.add(delButton);
+        upperRow.add(doneButton);
+        List<InlineKeyboardButton> downRow = new ArrayList<>();
+        downRow.add(showToDoButton);
+        downRow.add(showDoneButton);
 
         List<List<InlineKeyboardButton>> rowList = new ArrayList<>();
-        rowList.add(row);
+        rowList.add(upperRow);
+        rowList.add(downRow);
+
         mainMenuMarkup.setKeyboard(rowList);
     }
 
     /**
      * Настрйока дополнительной клавиатуры (Cancel)
      */
-    private void initAddDelMenuMarkup(){
+    private void initAddDelDoneMenuMarkup(){
         List<InlineKeyboardButton> row = new ArrayList<>();
         row.add(cancelButton);
 
         List<List<InlineKeyboardButton>> rowList = new ArrayList<>();
         rowList.add(row);
-        addDelMenuMarkup.setKeyboard(rowList);
+        addDelDoneMenuMarkup.setKeyboard(rowList);
     }
 
     /**
@@ -110,10 +123,18 @@ public class Bot extends TelegramLongPollingBot{
         var answer = new SendMessage();
 
         if(update.hasMessage()){
-            answer = handleMessage(update);
+            try {
+                answer = handleMessage(update);
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
         }
         if (update.hasCallbackQuery()){
-            answer = handleCallback(update);
+            try {
+                answer = handleCallback(update);
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
         }
 
         try {
@@ -128,7 +149,7 @@ public class Bot extends TelegramLongPollingBot{
      * @param update Объект с сообщением
      * @return Ответ пользователю, его надо только отправить
      */
-    private SendMessage handleMessage(Update update){
+    private SendMessage handleMessage(Update update) throws ParseException {
         String message = update.getMessage().getText();
 
         var answer = new SendMessage();
@@ -137,9 +158,9 @@ public class Bot extends TelegramLongPollingBot{
 
         String uid = update.getMessage().getFrom().getId().toString();
 
-        String result = requestHandler.handle(uid, message);
+        String result = requestHandler.handle(uid, update.getMessage().getChatId().toString(), message, this::Print);
 
-        if ((requestHandler.getFSMState() == States.START) || (requestHandler.getFSMState() == States.LISTEN)){
+        if ((requestHandler.getFSMState() == State.START) || (requestHandler.getFSMState() == State.LISTEN)){
             answer.setReplyMarkup(mainMenuMarkup);
         }
 
@@ -153,7 +174,7 @@ public class Bot extends TelegramLongPollingBot{
      * @param update
      * @return
      */
-    private SendMessage handleCallback(Update update){
+    private SendMessage handleCallback(Update update) throws ParseException {
         SendMessage answer = new SendMessage();
         answer.setChatId(update.getCallbackQuery().getMessage().getChatId());
 
@@ -161,12 +182,13 @@ public class Bot extends TelegramLongPollingBot{
 
         String uid = update.getCallbackQuery().getFrom().getId().toString();
 
-        String result = requestHandler.handle(uid, message);
+        //String result = requestHandler.handle(uid, message);
+        String result = requestHandler.handle(uid, update.getMessage().getChatId().toString(), message, this::Print);
 
-        if((requestHandler.getFSMState() == States.ADD) || (requestHandler.getFSMState() == States.DEL)){
-            answer.setReplyMarkup(addDelMenuMarkup);
+        if((requestHandler.getFSMState() == State.ADD) || (requestHandler.getFSMState() == State.DEL) || (requestHandler.getFSMState() == State.DONE)){
+            answer.setReplyMarkup(addDelDoneMenuMarkup);
         }
-        if (requestHandler.getFSMState() == States.SHOW){
+        if ((requestHandler.getFSMState() == State.SHOW_TODO) || (requestHandler.getFSMState() == State.SHOW_COMPLETED)){
             answer.setReplyMarkup(shortMainMenuMarkup);
         }
 
@@ -191,5 +213,17 @@ public class Bot extends TelegramLongPollingBot{
     @Override
     public String getBotToken() {
         return Token;
+    }
+
+    public void Print(String chatId, String message){
+        System.out.println("Call");
+        var answer = new SendMessage().setText(message).setChatId(chatId);
+
+        try{
+            execute(answer);
+        }
+        catch (TelegramApiException a){
+            a.printStackTrace();
+        }
     }
 }
