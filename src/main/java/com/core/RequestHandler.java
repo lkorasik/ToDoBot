@@ -14,8 +14,16 @@ import java.util.function.BiConsumer;
  * @author Lev
  */
 public class RequestHandler {
-    private Core core = new Core();
+    private Core core;
     private FSM fsm = new FSM();
+
+    public RequestHandler(){
+        core = new Core();
+    }
+
+    public RequestHandler(String path){
+        core = new Core(path);
+    }
 
     /**
      * Проверка на то, что тело команды задано корректно
