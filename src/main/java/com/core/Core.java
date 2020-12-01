@@ -2,8 +2,10 @@ package com.core;
 
 import java.io.*;
 import java.lang.reflect.Type;
+import java.nio.charset.StandardCharsets;
 import java.util.*;
 import java.util.function.BiConsumer;
+import org.apache.commons.io.FileUtils;
 
 import com.fsm.State;
 import com.google.gson.*;
@@ -29,12 +31,9 @@ public class Core {
         var builder = new GsonBuilder();
         var gson = builder.create();
         try (Scanner fileReader = new Scanner(json_file)){
-            var jsonString = new StringBuilder();
-            while (fileReader.hasNextLine()){
-                jsonString.append(fileReader.nextLine());
-            }
+            var jsonString = FileUtils.readFileToString(json_file, StandardCharsets.UTF_8);
             Type type = new TypeToken<HashMap<String, User>>(){}.getType();
-            HashMap<String, User> json_data = gson.fromJson(jsonString.toString(), type);
+            HashMap<String, User> json_data = gson.fromJson(jsonString, type);
             if (json_data == null) {
                 users = new HashMap<>();
             } else {
@@ -42,6 +41,8 @@ public class Core {
             }
         } catch (FileNotFoundException exception) {
             users = new HashMap<>();
+        } catch (IOException exception) {
+            exception.printStackTrace();
         }
     }
 
