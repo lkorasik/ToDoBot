@@ -24,7 +24,7 @@ public class ConsoleBot {
             System.out.println(Constants.NOT_ENTRY_POINT_GREETINGS_MSG);
         }
         while (true) {
-            System.out.println(requestHandler.handle(userId, "1", scanner.nextLine(), ConsoleBot::print));
+            System.out.println(requestHandler.handle(userId, "1", scanner.nextLine(), this));
         }
     }
 

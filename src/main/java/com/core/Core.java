@@ -109,10 +109,10 @@ public class Core {
         updateUsersState();
     }
 
-    public void setTimer(String uid, String chatId, int taskId, Date date, BiConsumer<String, String> func){
+    public void setTimer(String uid, String chatId, int taskId, Date date, ISender sender){
         var user = users.get(uid);
         var tasks = user.getToDoTasks();
-        tasks.get(taskId).setTimer(date, chatId, func);
+        tasks.get(taskId).setTimer(date, chatId, sender);
     }
 
     /**

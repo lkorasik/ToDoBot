@@ -55,7 +55,7 @@ public class RequestHandler {
      * @param input - сообщение
      * @return Строка с резульатом, которую надо показать пользователю
      */
-    public String handle(String uid, String chatId, String input, BiConsumer<String, String> func) throws ParseException {
+    public String handle(String uid, String chatId, String input, ISender sender) throws ParseException {
         updateFSMState(uid);
 
         if (input.equals("/fsmstate"))
@@ -91,7 +91,7 @@ public class RequestHandler {
             var converter = new DateConverter();
             var date = converter.parse(getTime(input));
             if(date != null){
-                res = setTimer(uid, chatId, Integer.parseInt(getTaskId(input)), date, func);
+                res = setTimer(uid, chatId, Integer.parseInt(getTaskId(input)), date, sender);
             }
             else {
                 res = "None";
@@ -133,8 +133,8 @@ public class RequestHandler {
         return message.substring(position + 1);
     }
 
-    private String setTimer(String uid, String chatId, int taskid, Date date, BiConsumer<String, String> func){
-        core.setTimer(uid, chatId, taskid, date, func);
+    private String setTimer(String uid, String chatId, int taskid, Date date, ISender sender){
+        core.setTimer(uid, chatId, taskid, date, sender);
 
         return "Added";
     }
