@@ -43,6 +43,8 @@ public class Constants {
     public static final String ENTRY_POINT_MSG = "Enter " + Constants.START_COMMAND;
     public static final String BOT_WAITING_COMMANDS = "I'm waiting your commands";
     public static final String NOTIFICATION_MSG = "Don't forget about: ";
+    public static final String NOTIFICATION_ADDED_MSG = "Notification has been added";
+    public static final String NOTIFICATION_NOT_ADDED_MSG = "Something went wrong, no notification was added";
 
     public static final String ADD_TASK_BUTTON = "Add task";
     public static final String DEL_TASK_BUTTON = "Del task";

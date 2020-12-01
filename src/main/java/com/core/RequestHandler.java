@@ -92,10 +92,10 @@ public class RequestHandler {
             var date = converter.parse(getTime(input));
             if(date != null){
                 core.setTimer(uid, chatId, Integer.parseInt(getTaskId(input)), date, sender);
-                res = "Added";
+                res = Constants.NOTIFICATION_ADDED_MSG;
             }
             else {
-                res = "None";
+                res = Constants.NOTIFICATION_NOT_ADDED_MSG;
             }
         }
         else if (fsm.isState(State.SHOW_COMPLETED)){
