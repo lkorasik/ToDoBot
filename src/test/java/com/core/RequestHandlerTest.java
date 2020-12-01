@@ -268,13 +268,13 @@ public class RequestHandlerTest {
         requestHandler.handle(uid1, "0", "/add", null);
         requestHandler.handle(uid2, "1", "/add", null);
 
-        requestHandler.handle(uid2, "1", "Task1", null);
-        requestHandler.handle(uid1, "0", "Task2", null);
+        requestHandler.handle(uid2, "1", "Task2", null);
+        requestHandler.handle(uid1, "0", "Task1", null);
 
         String result1 = requestHandler.handle(uid1, "0", "/showtodo", null);
         String result2 = requestHandler.handle(uid2, "1", "/showtodo", null);
 
-        Assert.assertEquals("Id\tОписание\n0\tTask1", result2);
-        Assert.assertEquals("Id\tОписание\n0\tTask2", result1);
+        Assert.assertEquals("Id\tОписание\n0\tTask2", result2);
+        Assert.assertEquals("Id\tОписание\n0\tTask1", result1);
     }
 }

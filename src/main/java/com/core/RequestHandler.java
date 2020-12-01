@@ -91,7 +91,8 @@ public class RequestHandler {
             var converter = new DateConverter();
             var date = converter.parse(getTime(input));
             if(date != null){
-                res = setTimer(uid, chatId, Integer.parseInt(getTaskId(input)), date, sender);
+                core.setTimer(uid, chatId, Integer.parseInt(getTaskId(input)), date, sender);
+                res = "Added";
             }
             else {
                 res = "None";
@@ -131,12 +132,6 @@ public class RequestHandler {
         int position = message.indexOf(" ");
 
         return message.substring(position + 1);
-    }
-
-    private String setTimer(String uid, String chatId, int taskid, Date date, ISender sender){
-        core.setTimer(uid, chatId, taskid, date, sender);
-
-        return "Added";
     }
 
     /**
