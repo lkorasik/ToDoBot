@@ -43,8 +43,8 @@
 
 ### Четвертая задача
 
-1) Сделать клавиатуру, чтоб несколько разгрузить интерфейс
-2) Статистика
+1) Добавить категории для задач 
+2) Возможность начать выполнение задачи (поддержка параллельного выполнения задач)
 
 ## Интерфейс
 
@@ -95,24 +95,35 @@
 ## Примеры
 
 ```
-User: /addt Task1
-Bot: Added Task1
-U: /addt Task2
-B: Added Task2
-U: /showt
-B: \ 0) Task1
-1) Task2
-U: /delt 0
-B: Deleted Task1
+User: /add
+Bot: Enter description
+User: Task1
+Bot: Please enter task category
+User: hometasks
+Bot: Added task: Task1 [hometasks]
 ```
 
 ```
-User: /addt time=2 Task1
-Bot: Added Task1
-U: /showt
-B: 0) Task1
-U: /shown
-B: 0) 2 min
+User: /starttask
+Bot: Enter id
+U: 0
+B: 3..2..1.. GO!
+U: /wait
+B: Task id
+U: 0
+B: Ok. Task paused.
+U: /starttask
+B: Enter id
+U: 1
+B: 3..2..1.. GO!
+U: /wait
+B: Task id
+U: 1
+B: Ok. Task paused
+U: /continue
+B: Task id
+U: 0
+B: Ok
 ```
 
 ```
