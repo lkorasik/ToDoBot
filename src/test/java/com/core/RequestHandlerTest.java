@@ -1,9 +1,11 @@
 package com.core;
 
+import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.Before;
 
+import java.io.File;
 import java.text.ParseException;
 import java.util.Objects;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -222,7 +224,7 @@ public class RequestHandlerTest {
         requestHandler.handle(uid, "0", "Test", null);
         requestHandler.handle(uid, "0", "/setnotif", null);
         String result = requestHandler.handle(uid, "0", "0 10 sec", (a, b) -> called.set(true));
-        Assert.assertEquals("Added", result);
+        Assert.assertEquals("Notification has been added", result);
         while (true){
             if(called.get())
                 break;

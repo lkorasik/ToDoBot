@@ -30,7 +30,7 @@ public class Core {
         var json_file = new File(USERS_FILE);
         var builder = new GsonBuilder();
         var gson = builder.create();
-        try (Scanner fileReader = new Scanner(json_file)){
+        try (FileReader fileReader = new FileReader(json_file)){
             var jsonString = FileUtils.readFileToString(json_file, StandardCharsets.UTF_8);
             Type type = new TypeToken<HashMap<String, User>>(){}.getType();
             HashMap<String, User> json_data = gson.fromJson(jsonString, type);
