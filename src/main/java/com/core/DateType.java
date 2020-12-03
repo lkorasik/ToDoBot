@@ -6,5 +6,6 @@ public enum DateType {
     DDMM(),
     MIN(),
     HOUR(),
-    HOURMIN()
+    HOURMIN(),
+    SEC()
 }

@@ -17,7 +17,7 @@ public enum State {
     CLEAR(null),
     SHOW_COMPLETED(null),
     SHOW_TODO(null),
-    NOTIFICATION(Constants.TASK_ID_MSG),
+    NOTIFICATION(Constants.NOTIFICATION_ADD_MSG),
     HELP(Constants.HELP_MSG);
 
     private final String state;

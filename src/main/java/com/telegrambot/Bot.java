@@ -1,6 +1,7 @@
 package com.telegrambot;
 
 import com.core.Constants;
+import com.core.ISender;
 import com.core.RequestHandler;
 import com.fsm.State;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
@@ -19,7 +20,7 @@ import java.util.List;
  *
  * Описание бота (методы обработки сообщений)
  */
-public class Bot extends TelegramLongPollingBot{
+public class Bot extends TelegramLongPollingBot implements ISender {
     private final String Token;
     private final String BotUserName;
 
@@ -158,7 +159,7 @@ public class Bot extends TelegramLongPollingBot{
 
         String uid = update.getMessage().getFrom().getId().toString();
 
-        String result = requestHandler.handle(uid, update.getMessage().getChatId().toString(), message, this::Print);
+        String result = requestHandler.handle(uid, update.getMessage().getChatId().toString(), message, this);
 
         if ((requestHandler.getFSMState() == State.START) || (requestHandler.getFSMState() == State.LISTEN)){
             answer.setReplyMarkup(mainMenuMarkup);
@@ -183,7 +184,7 @@ public class Bot extends TelegramLongPollingBot{
         String uid = update.getCallbackQuery().getFrom().getId().toString();
 
         //String result = requestHandler.handle(uid, message);
-        String result = requestHandler.handle(uid, update.getMessage().getChatId().toString(), message, this::Print);
+        String result = requestHandler.handle(uid, update.getMessage().getChatId().toString(), message, this);
 
         if((requestHandler.getFSMState() == State.ADD) || (requestHandler.getFSMState() == State.DEL) || (requestHandler.getFSMState() == State.DONE)){
             answer.setReplyMarkup(addDelDoneMenuMarkup);
@@ -215,7 +216,8 @@ public class Bot extends TelegramLongPollingBot{
         return Token;
     }
 
-    public void Print(String chatId, String message){
+    @Override
+    public void print(String chatId, String message) {
         System.out.println("Call");
         var answer = new SendMessage().setText(message).setChatId(chatId);
 

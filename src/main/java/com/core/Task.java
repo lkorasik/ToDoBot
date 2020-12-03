@@ -17,14 +17,14 @@ public class Task {
         this.description = description;
     }
 
-    public void setTimer(Date date, String chatId, BiConsumer<String, String> func){
+    public void setTimer(Date date, String chatId, ISender sender){
         timer = new Timer();
 
         timer.schedule(
                 new TimerTask() {
                     @Override
                     public void run() {
-                        func.accept(chatId, Constants.NOTIFICATION_MSG + description);
+                        sender.print(chatId, Constants.NOTIFICATION_MSG + description);
                     }
         }, date);
     }

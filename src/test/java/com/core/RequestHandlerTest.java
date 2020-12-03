@@ -1,12 +1,14 @@
 package com.core;
 
-import org.glassfish.grizzly.PendingWriteQueueLimitExceededException;
+import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.Before;
 
-import javax.xml.transform.sax.SAXResult;
+import java.io.File;
 import java.text.ParseException;
+import java.util.Objects;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
  * Тестируем класс RequestHandler в связке с Core
@@ -21,7 +23,7 @@ public class RequestHandlerTest {
      */
     @Before
     public void setUp(){
-        this.requestHandler = new RequestHandler();
+        this.requestHandler = new RequestHandler("testfile.json");
     }
 
     /**
@@ -29,7 +31,7 @@ public class RequestHandlerTest {
      */
     @Test
     public void testStartChat() throws ParseException {
-        String uid = String.valueOf((int)(Math.random() * 1000));
+        String uid = "0";
 
         String result = requestHandler.handle(uid, "0", "/start", null);
         Assert.assertEquals("Hello, I'm telegram bot that can help to manage your tasks. There is all commands that you can type to operate with me:\n" +
@@ -49,7 +51,7 @@ public class RequestHandlerTest {
      */
     @Test
     public void testStartChatTwice() throws ParseException {
-        String uid = String.valueOf((int)(Math.random() * 1000));
+        String uid = "1";
 
         String result = requestHandler.handle(uid, "0", "/start", null);
         Assert.assertEquals("Hello, I'm telegram bot that can help to manage your tasks. There is all commands that you can type to operate with me:\n" +
@@ -71,7 +73,7 @@ public class RequestHandlerTest {
      */
     @Test
     public void testGetHelp() throws ParseException {
-        String uid = String.valueOf((int)(Math.random() * 1000));
+        String uid = "2";
 
         requestHandler.handle(uid, "0", "/start", null);
         String result = requestHandler.handle(uid, "0", "/help", null);
@@ -91,7 +93,7 @@ public class RequestHandlerTest {
      */
     @Test
     public void testAddTaskSuccessful() throws ParseException {
-        String uid = String.valueOf((int)(Math.random() * 1000));
+        String uid = String.valueOf("3");
 
         requestHandler.handle(uid, "0", "/start", null);
         String result = requestHandler.handle(uid, "0", "/add", null);
@@ -104,7 +106,7 @@ public class RequestHandlerTest {
      */
     @Test
     public void testAddTaskCanceled() throws ParseException{
-        String uid = String.valueOf((int)(Math.random() * 1000));
+        String uid = String.valueOf("4");
 
         requestHandler.handle(uid, "0", "/start", null);
         requestHandler.handle(uid, "0", "/add", null);
@@ -118,7 +120,7 @@ public class RequestHandlerTest {
      */
     @Test
     public void testDeleteTaskSuccessful() throws ParseException{
-        String uid = String.valueOf((int)(Math.random() * 1000));
+        String uid = String.valueOf("5");
 
         requestHandler.handle(uid, "0", "/start", null);
         requestHandler.handle(uid, "0", "/add", null);
@@ -134,7 +136,7 @@ public class RequestHandlerTest {
      */
     @Test
     public void testDeleteTaskCanceled() throws ParseException{
-        String uid = String.valueOf((int)(Math.random() * 1000));
+        String uid = String.valueOf("6");
 
         requestHandler.handle(uid, "0", "/start", null);
         requestHandler.handle(uid, "0", "/del", null);
@@ -148,7 +150,7 @@ public class RequestHandlerTest {
      */
     @Test
     public void testDeleteTaskAnotherID() throws ParseException{
-        String uid = String.valueOf((int)(Math.random() * 1000));
+        String uid = String.valueOf("7");
 
         requestHandler.handle(uid, "0", "/start", null);
         requestHandler.handle(uid, "0", "/del", null);
@@ -162,7 +164,7 @@ public class RequestHandlerTest {
      */
     @Test
     public void testDeleteTaskWithIncorrectTypeOfID() throws ParseException{
-        String uid = String.valueOf((int)(Math.random() * 1000));
+        String uid = String.valueOf("8");
 
         requestHandler.handle(uid, "0", "/start", null);
         requestHandler.handle(uid, "0", "/del", null);
@@ -176,7 +178,7 @@ public class RequestHandlerTest {
      */
     @Test
     public void testGetEmptyTaskList() throws ParseException {
-        String uid = String.valueOf((int)(Math.random() * 1000));
+        String uid = String.valueOf("9");
 
         requestHandler.handle(uid, "0", "/start", null);
         String result = requestHandler.handle(uid, "0", "/show", null);
@@ -189,7 +191,7 @@ public class RequestHandlerTest {
      */
     @Test
     public void testGetTaskList() throws ParseException {
-        String uid = String.valueOf((int)(Math.random() * 1000));
+        String uid = String.valueOf("10");
 
         requestHandler.handle(uid, "0", "/start", null);
         requestHandler.handle(uid, "0", "/add", null);
@@ -205,9 +207,76 @@ public class RequestHandlerTest {
      */
     @Test
     public void testEPToAdd() throws ParseException {
-        String uid = String.valueOf((int)(Math.random() * 1000));
+        String uid = String.valueOf("11");
 
         String result = requestHandler.handle(uid, "0", "/add", null);
         Assert.assertEquals("Enter /start", result);
+    }
+
+    @Test
+    public void testSetTimer() throws ParseException {
+        String uid = String.valueOf("12");
+
+        AtomicBoolean called = new AtomicBoolean(false);
+
+        requestHandler.handle(uid, "0", "/start", null);
+        requestHandler.handle(uid, "0", "/add", null);
+        requestHandler.handle(uid, "0", "Test", null);
+        requestHandler.handle(uid, "0", "/setnotif", null);
+        String result = requestHandler.handle(uid, "0", "0 10 sec", (a, b) -> called.set(true));
+        Assert.assertEquals("Notification has been added", result);
+        while (true){
+            if(called.get())
+                break;
+        }
+    }
+
+    @Test
+    public void testDualStart() throws ParseException {
+        String uid1 = "13";
+        String uid2 = "14";
+
+        String result1 = requestHandler.handle(uid1, "0", "/start", null);
+        String result2 = requestHandler.handle(uid2, "1", "/start", null);
+
+        Assert.assertEquals("Hello, I'm telegram bot that can help to manage your tasks. There is all commands that you can type to operate with me:\n" +
+                "/add - You can add task. In next message send your task.\n" +
+                "/del - You can delete task. In next message send task's number\n" +
+                "/done - You can mark task as completed. In next message send task's number\n" +
+                "/showtodo - You can see all tasks that you need to solve\n" +
+                "/showdone - You can see all tasks that you have done\n" +
+                "/help - You will see this message\n" +
+                "/clear - You can clear your both task lists\n" +
+                "/cancel - You can use this command if you want to cancel action such as add task or delete task.\n", result1);
+        Assert.assertEquals("Hello, I'm telegram bot that can help to manage your tasks. There is all commands that you can type to operate with me:\n" +
+                "/add - You can add task. In next message send your task.\n" +
+                "/del - You can delete task. In next message send task's number\n" +
+                "/done - You can mark task as completed. In next message send task's number\n" +
+                "/showtodo - You can see all tasks that you need to solve\n" +
+                "/showdone - You can see all tasks that you have done\n" +
+                "/help - You will see this message\n" +
+                "/clear - You can clear your both task lists\n" +
+                "/cancel - You can use this command if you want to cancel action such as add task or delete task.\n", result2);
+    }
+
+    @Test
+    public void testDualAdd() throws ParseException{
+        String uid1 = "15";
+        String uid2 = "16";
+
+        requestHandler.handle(uid1, "0", "/start", null);
+        requestHandler.handle(uid2, "1", "/start", null);
+
+        requestHandler.handle(uid1, "0", "/add", null);
+        requestHandler.handle(uid2, "1", "/add", null);
+
+        requestHandler.handle(uid2, "1", "Task2", null);
+        requestHandler.handle(uid1, "0", "Task1", null);
+
+        String result1 = requestHandler.handle(uid1, "0", "/showtodo", null);
+        String result2 = requestHandler.handle(uid2, "1", "/showtodo", null);
+
+        Assert.assertEquals("Id\tОписание\n0\tTask2", result2);
+        Assert.assertEquals("Id\tОписание\n0\tTask1", result1);
     }
 }

@@ -30,6 +30,9 @@ public class DateConverter {
             case HOURMIN:
                 date = convertHourMin(line);
                 break;
+            case SEC:
+                date = convertSec(line);
+                break;
         }
 
         date = normalize(date, type);
@@ -46,19 +49,22 @@ public class DateConverter {
         var min = Pattern.compile("^[0-9]{1,2} min$").matcher(line).find();
         var hour = Pattern.compile("^[0-9]{1,2} hour$").matcher(line).find();
         var hourMin = Pattern.compile("^[0-9]{1,2} hour [0-9]{1,2} min$").matcher(line).find();
+        var sec = Pattern.compile("^[0-9]{1,2} sec$").matcher(line).find();
 
-        if(ddmmyyyy && !(ddmmyy || ddmm || min || hour || hourMin))
+        if(ddmmyyyy && !(ddmmyy || ddmm || min || hour || hourMin || sec))
             result = DateType.DDMMYYYY;
-        if(ddmmyy && !(ddmmyyyy || ddmm || min || hour || hourMin))
+        if(ddmmyy && !(ddmmyyyy || ddmm || min || hour || hourMin || sec))
             result = DateType.DDMMYY;
-        if(ddmm && !(ddmmyyyy || ddmmyy || min || hour || hourMin))
+        if(ddmm && !(ddmmyyyy || ddmmyy || min || hour || hourMin || sec))
             result = DateType.DDMM;
-        if(min && !(ddmmyyyy || ddmmyy || ddmm || hour || hourMin))
+        if(min && !(ddmmyyyy || ddmmyy || ddmm || hour || hourMin || sec))
             result = DateType.MIN;
-        if(hour && !(ddmmyyyy || ddmmyy || ddmm || min || hourMin))
+        if(hour && !(ddmmyyyy || ddmmyy || ddmm || min || hourMin || sec))
             result = DateType.HOUR;
-        if(hourMin && !(ddmmyyyy || ddmmyy || ddmm || min || hour))
+        if(hourMin && !(ddmmyyyy || ddmmyy || ddmm || min || hour || sec))
             result = DateType.HOURMIN;
+        if(sec && !(ddmmyyyy || ddmmyy || ddmm || min || hour || hourMin))
+            result = DateType.SEC;
 
         return result;
     }
@@ -140,6 +146,19 @@ public class DateConverter {
         return date;
     }
 
+    private Date convertSec(String line){
+        Date date = null;
+
+        var sdf = new SimpleDateFormat("mm 'sec'");
+        try{
+            date = sdf.parse(line);
+        }catch (ParseException parseException){
+
+        }
+
+        return date;
+    }
+
     private Date normalize(Date date, DateType type){
         Date newDate = new Date(0);
         Date now = new Date();
@@ -167,6 +186,10 @@ public class DateConverter {
                 newDate = (Date)now.clone();
                 newDate.setMinutes(now.getMinutes() + date.getMinutes());
                 newDate.setHours(now.getHours() + date.getHours());
+                break;
+            case SEC:
+                newDate = (Date)now.clone();
+                newDate.setSeconds(now.getSeconds() + date.getSeconds());
                 break;
         }
 

@@ -14,8 +14,16 @@ import java.util.function.BiConsumer;
  * @author Lev
  */
 public class RequestHandler {
-    private Core core = new Core();
+    private Core core;
     private FSM fsm = new FSM();
+
+    public RequestHandler(){
+        core = new Core();
+    }
+
+    public RequestHandler(String path){
+        core = new Core(path);
+    }
 
     /**
      * Проверка на то, что тело команды задано корректно
@@ -47,7 +55,7 @@ public class RequestHandler {
      * @param input - сообщение
      * @return Строка с резульатом, которую надо показать пользователю
      */
-    public String handle(String uid, String chatId, String input, BiConsumer<String, String> func) throws ParseException {
+    public String handle(String uid, String chatId, String input, ISender sender) throws ParseException {
         updateFSMState(uid);
 
         if (input.equals("/fsmstate"))
@@ -83,10 +91,11 @@ public class RequestHandler {
             var converter = new DateConverter();
             var date = converter.parse(getTime(input));
             if(date != null){
-                res = setTimer(uid, chatId, Integer.parseInt(getTaskId(input)), date, func);
+                core.setTimer(uid, chatId, Integer.parseInt(getTaskId(input)), date, sender);
+                res = Constants.NOTIFICATION_ADDED_MSG;
             }
             else {
-                res = "None";
+                res = Constants.NOTIFICATION_NOT_ADDED_MSG;
             }
         }
         else if (fsm.isState(State.SHOW_COMPLETED)){
@@ -123,12 +132,6 @@ public class RequestHandler {
         int position = message.indexOf(" ");
 
         return message.substring(position + 1);
-    }
-
-    private String setTimer(String uid, String chatId, int taskid, Date date, BiConsumer<String, String> func){
-        core.setTimer(uid, chatId, taskid, date, func);
-
-        return "Added";
     }
 
     /**
