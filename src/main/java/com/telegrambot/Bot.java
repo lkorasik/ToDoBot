@@ -42,7 +42,7 @@ public class Bot extends TelegramLongPollingBot implements ISender {
     public Bot(){
         TokenLoader loader = new TokenLoader();
 
-        Token = loader.getToken();
+        Token = loader.getTelegramToken();
         BotUserName = loader.getName();
 
         initButtons();

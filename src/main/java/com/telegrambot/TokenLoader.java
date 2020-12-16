@@ -13,7 +13,8 @@ import java.util.Scanner;
  * будут использоваться для подключению к телеграму.
  */
 public class TokenLoader {
-    private String token = null;
+    private String telegramToken = null;
+    private String discordToken = null;
     private String name = null;
 
     /**
@@ -24,7 +25,8 @@ public class TokenLoader {
             File file = new File(Constants.TELEGRAM_TOKEN_FILENAME);
             Scanner myReader = new Scanner(file);
 
-            token = myReader.nextLine();
+            discordToken = myReader.nextLine();
+            telegramToken = myReader.nextLine();
             name = myReader.nextLine();
 
             myReader.close();
@@ -37,8 +39,12 @@ public class TokenLoader {
      * Получить токен
      * @return Токен
      */
-    public String getToken(){
-        return token;
+    public String getTelegramToken(){
+        return telegramToken;
+    }
+
+    public String getDiscordToken(){
+        return discordToken;
     }
 
     /**
