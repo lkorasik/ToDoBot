@@ -3,6 +3,7 @@ package com.telegrambot;
 import com.core.Constants;
 import com.core.ISender;
 import com.core.RequestHandler;
+import com.core.tokenhandler.TokenLoader;
 import com.fsm.State;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;

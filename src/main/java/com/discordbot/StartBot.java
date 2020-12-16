@@ -1,6 +1,6 @@
 package com.discordbot;
 
-import com.telegrambot.TokenLoader;
+import com.core.tokenhandler.TokenLoader;
 import net.dv8tion.jda.api.JDABuilder;
 
 import javax.security.auth.login.LoginException;

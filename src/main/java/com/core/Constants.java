@@ -54,7 +54,7 @@ public class Constants {
     public static final String SHOW_COMPLETED_TASKS_BUTTON = "Show done tasks";
     public static final String CANCEL_BUTTON = "Cancel";
 
-    public static final String TELEGRAM_TOKEN_FILENAME = "Token";
+    public static final String TOKEN_FILENAME = "Token";
 
     public static final String LOGIN_MESSAGE = "Please input your login:";
     public static final String ENTRY_POINT_GREETINGS_MSG = "You successfully logged in. Type `/start` to start using the bot.";
