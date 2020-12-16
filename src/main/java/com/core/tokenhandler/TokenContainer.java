@@ -1,6 +1,6 @@
 package com.core.tokenhandler;
 
-class TokensContainer{
+class TokenContainer{
     private String telegramToken = null;
     private String discordToken = null;
     private String botName = null;

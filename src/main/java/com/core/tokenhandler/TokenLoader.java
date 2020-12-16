@@ -32,7 +32,7 @@ public class TokenLoader {
             e.printStackTrace();
         }
 
-        TokensContainer container = new Gson().fromJson(content, (Type) TokensContainer.class);
+        TokenContainer container = new Gson().fromJson(content, (Type) TokenContainer.class);
 
         if(container != null) {
             telegramToken = container.getTelegramToken();
