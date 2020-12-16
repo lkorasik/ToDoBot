@@ -214,7 +214,7 @@ public class RequestHandlerTest {
     }
 
     @Test
-    public void testSetTimer() throws ParseException {
+    public void testSetTimer() throws ParseException, InterruptedException {
         String uid = String.valueOf("12");
 
         AtomicBoolean called = new AtomicBoolean(false);
@@ -223,12 +223,16 @@ public class RequestHandlerTest {
         requestHandler.handle(uid, "0", "/add", null);
         requestHandler.handle(uid, "0", "Test", null);
         requestHandler.handle(uid, "0", "/setnotif", null);
-        String result = requestHandler.handle(uid, "0", "0 10 sec", (a, b) -> called.set(true));
+        String result = requestHandler.handle(uid, "0", "0 1 sec", (a, b) -> called.set(true));
         Assert.assertEquals("Notification has been added", result);
+        /*
         while (true){
             if(called.get())
                 break;
         }
+         */
+        Thread.sleep(1500);
+        Assert.assertTrue(called.get());
     }
 
     @Test
