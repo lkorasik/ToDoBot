@@ -8,8 +8,12 @@ import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import org.ietf.jgss.ChannelBinding;
 
 import java.text.ParseException;
+import java.util.ArrayList;
+import java.util.List;
 
 public class Bot extends ListenerAdapter implements ISender {
+    private List<MessageChannel> channels = new ArrayList<>();
+
     private final RequestHandler requestHandler = new RequestHandler();
 
     @Override
@@ -26,6 +30,11 @@ public class Bot extends ListenerAdapter implements ISender {
 
         if (answer != null){
             var channel = event.getChannel();
+
+            if (!channels.contains(channel)){
+                channels.add(channel);
+            }
+
             channel.sendMessage(answer).queue();
         }
     }
@@ -41,6 +50,11 @@ public class Bot extends ListenerAdapter implements ISender {
 
     @Override
     public void print(String chatId, String message) {
-        
+        for(var channel : channels){
+            if(channel.getId().equalsIgnoreCase(chatId)){
+                channel.sendMessage(message).queue();
+                return;
+            }
+        }
     }
 }
