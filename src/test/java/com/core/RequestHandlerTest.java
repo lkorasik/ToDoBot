@@ -273,4 +273,36 @@ public class RequestHandlerTest {
         Assert.assertEquals("Id\tОписание\n0\tTask2", result2);
         Assert.assertEquals("Id\tОписание\n0\tTask1", result1);
     }
+
+    @Test
+    public void testCompleteTask() throws ParseException {
+        var uid = "17";
+        requestHandler.handle(uid, "0", "/start", null);
+        requestHandler.handle(uid, "0", "/add", null);
+        requestHandler.handle(uid, "0", "TodoTask", null);
+        requestHandler.handle(uid, "0", "/done", null);
+        var doneTask = requestHandler.handle(uid, "0", "0", null);
+        Assert.assertEquals("Successfully marked task with id: 0 as completed", doneTask);
+        var todoTasksMsg = requestHandler.handle(uid, "0", "/showtodo", null);
+        Assert.assertEquals("Congratulations! You don't have any tasks!", todoTasksMsg);
+        var completedTasksMsg = requestHandler.handle(uid, "0", "/showdone", null);
+        Assert.assertEquals("Id\tОписание\n0\tTodoTask", completedTasksMsg);
+    }
+
+    @Test
+    public void testClearTasks() throws ParseException {
+        var uid = "18";
+        requestHandler.handle(uid, "0", "/start", null);
+        requestHandler.handle(uid, "0", "/add", null);
+        requestHandler.handle(uid, "0", "First task", null);
+        requestHandler.handle(uid, "0", "Second task", null);
+        requestHandler.handle(uid, "0", "/done", null);
+        requestHandler.handle(uid, "0", "0", null);
+        var clearMsg = requestHandler.handle(uid, "0", "/clear", null);
+        Assert.assertEquals("Successfully cleared the completed and todo task lists", clearMsg);
+        var todoTasks = requestHandler.handle(uid, "0", "/showtodo", null);
+        var completedTasks = requestHandler.handle(uid, "0", "/showdone", null);
+        Assert.assertEquals("Congratulations! You don't have any tasks!", todoTasks);
+        Assert.assertEquals("You haven't done any tasks yet", completedTasks);
+    }
 }
