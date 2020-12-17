@@ -34,7 +34,7 @@ public class Constants {
     public static final String TASK_ADDED_MSG = "Added task: ";
     public static final String TASK_DELETED_MSG = "Successfully deleted task with id: ";
     public static final String TASK_COMPLETED_MSG = "Successfully marked task with id: %s as completed";
-    public static final String CLEARED_TASK_LIST_MSG = "Successfully cleared the task list";
+    public static final String CLEARED_TASK_LIST_MSG = "Successfully cleared the completed and todo task lists";
     public static final String NOT_EXISTING_TASK_ID_EXCEPTION_MSG = "There is no task with id: ";
     public static final String INCORRECT_TASK_ID_TYPE_EXCEPTION_MSG = "Please enter tasks id, not description";
     public static final String EMPTY_TODO_TASK_LIST_MSG = "Congratulations! You don't have any tasks!";
