@@ -34,7 +34,7 @@ public class Constants {
     public static final String TASK_ADDED_MSG = "Added task: ";
     public static final String TASK_DELETED_MSG = "Successfully deleted task with id: ";
     public static final String TASK_COMPLETED_MSG = "Successfully marked task with id: %s as completed";
-    public static final String CLEARED_TASK_LIST_MSG = "Successfully cleared the task list";
+    public static final String CLEARED_TASK_LIST_MSG = "Successfully cleared the completed and todo task lists";
     public static final String NOT_EXISTING_TASK_ID_EXCEPTION_MSG = "There is no task with id: ";
     public static final String INCORRECT_TASK_ID_TYPE_EXCEPTION_MSG = "Please enter tasks id, not description";
     public static final String EMPTY_TODO_TASK_LIST_MSG = "Congratulations! You don't have any tasks!";
@@ -54,7 +54,7 @@ public class Constants {
     public static final String SHOW_COMPLETED_TASKS_BUTTON = "Show done tasks";
     public static final String CANCEL_BUTTON = "Cancel";
 
-    public static final String TELEGRAM_TOKEN_FILENAME = "Token";
+    public static final String TOKEN_FILENAME = "Token";
 
     public static final String LOGIN_MESSAGE = "Please input your login:";
     public static final String ENTRY_POINT_GREETINGS_MSG = "You successfully logged in. Type `/start` to start using the bot.";
