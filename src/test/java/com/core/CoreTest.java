@@ -36,7 +36,7 @@ public class CoreTest {
     public static void deleteFile() {
         var testfile = new File(test_filename);
         if (testfile.exists()) {
-            testfile.delete();
+            testfile.deleteOnExit();
         }
     }
 
@@ -83,6 +83,18 @@ public class CoreTest {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    /**
+     * Проверка корректной работы Core, если файл с данными пользователей отсутствует
+     */
+    @Test
+    public void runCoreWithoutUsersFile(){
+        core.createUser(userId);
+        var todoTasks = core.getFormattedToDoTasks(userId);
+        Assert.assertEquals("Congratulations! You don't have any tasks!", todoTasks);
+        var doneTasks = core.getFormattedCompletedTasksString(userId);
+        Assert.assertEquals("You haven't done any tasks yet", doneTasks);
     }
 
     /**
