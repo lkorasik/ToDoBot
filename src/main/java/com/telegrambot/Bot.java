@@ -18,7 +18,7 @@ import java.util.List;
 
 /**
  * @author Lev
- *
+ * <p>
  * Описание бота (методы обработки сообщений)
  */
 public class Bot extends TelegramLongPollingBot implements ISender {
@@ -40,7 +40,7 @@ public class Bot extends TelegramLongPollingBot implements ISender {
     /**
      * Создать бота
      */
-    public Bot(){
+    public Bot() {
         TokenLoader loader = new TokenLoader();
 
         Token = loader.getTelegramToken();
@@ -55,7 +55,7 @@ public class Bot extends TelegramLongPollingBot implements ISender {
     /**
      * Настройка кнопок для клавиатуры
      */
-    private void initButtons(){
+    private void initButtons() {
         addButton.setText(Constants.ADD_TASK_BUTTON);
         addButton.setCallbackData(Constants.ADD_TASK_COMMAND);
         delButton.setText(Constants.DEL_TASK_BUTTON);
@@ -73,7 +73,7 @@ public class Bot extends TelegramLongPollingBot implements ISender {
     /**
      * Настройка разметки сокращенной основной клавиатуры (Add, Del)
      */
-    private void initShortMainMenuMarkup(){
+    private void initShortMainMenuMarkup() {
         List<InlineKeyboardButton> row = new ArrayList<>();
         row.add(addButton);
         row.add(delButton);
@@ -87,7 +87,7 @@ public class Bot extends TelegramLongPollingBot implements ISender {
     /**
      * Настройка разметки основной клавиатуры (Add, Del, Show)
      */
-    private void initMainMenuKeyboardMarkup(){
+    private void initMainMenuKeyboardMarkup() {
         List<InlineKeyboardButton> upperRow = new ArrayList<>();
         upperRow.add(addButton);
         upperRow.add(delButton);
@@ -106,7 +106,7 @@ public class Bot extends TelegramLongPollingBot implements ISender {
     /**
      * Настрйока дополнительной клавиатуры (Cancel)
      */
-    private void initAddDelDoneMenuMarkup(){
+    private void initAddDelDoneMenuMarkup() {
         List<InlineKeyboardButton> row = new ArrayList<>();
         row.add(cancelButton);
 
@@ -117,6 +117,7 @@ public class Bot extends TelegramLongPollingBot implements ISender {
 
     /**
      * Этот метод вызывается, когда приходит сообщение боту в тг
+     *
      * @param update - объект, в ктором есть само сообщение
      *               (ну и еще немного полезной инфы)
      */
@@ -124,14 +125,14 @@ public class Bot extends TelegramLongPollingBot implements ISender {
     public void onUpdateReceived(Update update) {
         var answer = new SendMessage();
 
-        if(update.hasMessage()){
+        if (update.hasMessage()) {
             try {
                 answer = handleMessage(update);
             } catch (ParseException e) {
                 e.printStackTrace();
             }
         }
-        if (update.hasCallbackQuery()){
+        if (update.hasCallbackQuery()) {
             try {
                 answer = handleCallback(update);
             } catch (ParseException e) {
@@ -148,6 +149,7 @@ public class Bot extends TelegramLongPollingBot implements ISender {
 
     /**
      * Обработка сообщения от пользователя
+     *
      * @param update Объект с сообщением
      * @return Ответ пользователю, его надо только отправить
      */
@@ -162,7 +164,7 @@ public class Bot extends TelegramLongPollingBot implements ISender {
 
         String result = requestHandler.handle(uid, update.getMessage().getChatId().toString(), message, this);
 
-        if ((requestHandler.getFSMState() == State.START) || (requestHandler.getFSMState() == State.LISTEN)){
+        if ((requestHandler.getUserFSMState(uid) == State.START) || (requestHandler.getUserFSMState(uid) == State.LISTEN)) {
             answer.setReplyMarkup(mainMenuMarkup);
         }
 
@@ -173,6 +175,7 @@ public class Bot extends TelegramLongPollingBot implements ISender {
 
     /**
      * Обработка нажатий на клавиатуру
+     *
      * @param update
      * @return
      */
@@ -187,10 +190,17 @@ public class Bot extends TelegramLongPollingBot implements ISender {
         //String result = requestHandler.handle(uid, message);
         String result = requestHandler.handle(uid, update.getMessage().getChatId().toString(), message, this);
 
-        if((requestHandler.getFSMState() == State.ADD) || (requestHandler.getFSMState() == State.DEL) || (requestHandler.getFSMState() == State.DONE)){
+        if (
+                (requestHandler.getUserFSMState(uid) == State.ADD) ||
+                (requestHandler.getUserFSMState(uid) == State.DEL) ||
+                (requestHandler.getUserFSMState(uid) == State.DONE)
+        ) {
             answer.setReplyMarkup(addDelDoneMenuMarkup);
         }
-        if ((requestHandler.getFSMState() == State.SHOW_TODO) || (requestHandler.getFSMState() == State.SHOW_COMPLETED)){
+        if (
+                (requestHandler.getUserFSMState(uid) == State.SHOW_TODO) ||
+                (requestHandler.getUserFSMState(uid) == State.SHOW_COMPLETED)
+        ) {
             answer.setReplyMarkup(shortMainMenuMarkup);
         }
 
@@ -201,6 +211,7 @@ public class Bot extends TelegramLongPollingBot implements ISender {
 
     /**
      * Возвращает имя бота
+     *
      * @return Bot's name
      */
     @Override
@@ -210,6 +221,7 @@ public class Bot extends TelegramLongPollingBot implements ISender {
 
     /**
      * Возвращает токен доступа к телеграму
+     *
      * @return Token
      */
     @Override
@@ -222,10 +234,9 @@ public class Bot extends TelegramLongPollingBot implements ISender {
         System.out.println("Call");
         var answer = new SendMessage().setText(message).setChatId(chatId);
 
-        try{
+        try {
             execute(answer);
-        }
-        catch (TelegramApiException a){
+        } catch (TelegramApiException a) {
             a.printStackTrace();
         }
     }

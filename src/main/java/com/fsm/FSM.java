@@ -74,34 +74,32 @@ public class FSM {
 
     /**
      * Обновить состояние автомата
-     * @param line строка с сообщением от пользователя
+     * @param stateKey ключ перехода к новому состоянию
      */
-    public void update(String line){
-        if(!commands.contains(line)){
-            line = null;
+    public void updateState(String stateKey){
+        if(!commands.contains(stateKey)){
+            stateKey = null;
         }
 
-        State end = trans.getEndState(currentState, line);
+        State end = trans.getEndState(currentState, stateKey);
 
         if(end != null) {
             currentState = end;
         }
     }
 
+    public void setListenState(){
+        currentState = State.LISTEN;
+    }
+
     /**
      * Установить состояние fsm
-     * @param state Новове состояние
+     * @param state Новое состояние
      */
     public void setState(State state){
         currentState = state;
     }
 
-    /**
-     * Обновить состояние автомата
-     */
-    public void update(){
-        update("");
-    }
 
     /**
      * Получить текущее сосотояние автмата

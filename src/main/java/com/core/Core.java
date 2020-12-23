@@ -4,9 +4,7 @@ import java.io.*;
 import java.lang.reflect.Type;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
-import java.util.function.BiConsumer;
 import org.apache.commons.io.FileUtils;
-
 import com.fsm.State;
 import com.google.gson.*;
 import com.google.gson.reflect.TypeToken;
@@ -30,9 +28,9 @@ public class Core {
         var json_file = new File(USERS_FILE);
         var builder = new GsonBuilder();
         var gson = builder.create();
-        try (FileReader fileReader = new FileReader(json_file)){
+        try (FileReader fileReader = new FileReader(json_file)) {
             var jsonString = FileUtils.readFileToString(json_file, StandardCharsets.UTF_8);
-            Type type = new TypeToken<HashMap<String, User>>(){}.getType();
+            Type type = new TypeToken<HashMap<String, User>>() {}.getType();
             HashMap<String, User> json_data = gson.fromJson(jsonString, type);
             if (json_data == null) {
                 users = new HashMap<>();
@@ -46,7 +44,9 @@ public class Core {
         }
     }
 
-    public Core() {this(Constants.USERS_FILE) ; }
+    public Core() {
+        this(Constants.USERS_FILE);
+    }
 
     /**
      * Инициализация пользователя. Должен вызываться вызываться перед добавлением,
@@ -54,44 +54,39 @@ public class Core {
      *
      * @param userId Id пользователя
      */
-    public void createUser(String userId){
+    public void createUser(String userId) {
         var user = new User();
         users.put(userId, user);
-        updateUsersState();
+        dumpsUserData();
     }
 
-    /**
-     * Получение состояние FSM конкретного пользователя. Используется для востановления состояния.
-     *
-     * @param userId Id пользователя
-     * @return State enum
-     */
-    public State getUserFSMState(String userId) {
-        if (users.containsKey(userId)) {
-            return users.get(userId).getFsmState();
+    public State getUserFsmState(String userId){
+        return users.get(userId).getFsmState();
+    }
+
+    public State updateUserFsmState(String userId, String stateKey){
+        var user = users.get(userId);
+        switch (user.getFsmState()){
+            case SHOW_COMPLETED:
+            case SHOW_TODO:
+            case HELP:
+            case START:
+            case CLEAR:
+                user.fsm.setListenState();
+            default:
+                user.fsm.updateState(stateKey);
         }
-        else { return null; }
-    }
 
-    /**
-     * Установка и сериализация состояния FSM пользователя.
-     *
-     * @param userId Id пользователя
-     * @param state Одно из значений enum State
-     */
-    public void setUserFSMState(String userId, State state) {
-        users.get(userId).setFsmState(state);
-        updateUsersState();
+        return user.getFsmState();
     }
 
     /**
      * Записывает текущее состояние поля `users` в JSON файл
      */
-    private void updateUsersState() {
+    private void dumpsUserData() {
         var gson = new Gson();
         try (FileWriter file = new FileWriter(USERS_FILE)) {
             file.write(gson.toJson(users));
-
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -100,16 +95,16 @@ public class Core {
     /**
      * Добавляет задание в список задач конкретного пользователя
      *
-     * @param userId Id пользователя
+     * @param userId      Id пользователя
      * @param description Текст задачи
      */
     public void addTask(String userId, String description) {
         var task = new Task(description);
         users.get(userId).addTodoTask(task);
-        updateUsersState();
+        dumpsUserData();
     }
 
-    public void setTimer(String uid, String chatId, int taskId, Date date, ISender sender){
+    public void setTimer(String uid, String chatId, int taskId, Date date, ISender sender) {
         var user = users.get(uid);
         var tasks = user.getToDoTasks();
         tasks.get(taskId).setTimer(date, chatId, sender);
@@ -118,16 +113,16 @@ public class Core {
     /**
      * Удаляет задание из списка задач конкретного пользователя.
      *
-     * @param index Id задачи в списке
+     * @param index  Id задачи в списке
      * @param userId Id пользователя у которого нужно удалить задачу
-     * @throws IncorrectTaskIdTypeException при попытке удаления задачи с некорректным Id
+     * @throws IncorrectTaskIdTypeException  при попытке удаления задачи с некорректным Id
      * @throws NotExistingTaskIndexException при попытке удаления несуществующей задачи
      */
     public Task deleteTask(String userId, String index) throws NotExistingTaskIndexException, IncorrectTaskIdTypeException {
         User user = users.get(userId);
         var userTasks = user.getToDoTasks();
         Task completedTask;
-        try{
+        try {
             completedTask = userTasks.remove(Integer.parseInt(index));
         } catch (IndexOutOfBoundsException | NullPointerException exception) {
             throw new NotExistingTaskIndexException(Constants.NOT_EXISTING_TASK_ID_EXCEPTION_MSG + index);
@@ -135,7 +130,7 @@ public class Core {
             throw new IncorrectTaskIdTypeException(Constants.INCORRECT_TASK_ID_TYPE_EXCEPTION_MSG);
         }
         users.put(userId, user);
-        updateUsersState();
+        dumpsUserData();
         return completedTask;
     }
 
@@ -144,15 +139,15 @@ public class Core {
      * Удаление задачи из списка задач и добавление её в список выполненных задач.
      *
      * @param userId Id пользователя
-     * @param index Id задачи из списка задач
-     * @throws IncorrectTaskIdTypeException при попытке удаления задачи с некорректным Id
+     * @param index  Id задачи из списка задач
+     * @throws IncorrectTaskIdTypeException  при попытке удаления задачи с некорректным Id
      * @throws NotExistingTaskIndexException при попытке удаления несуществующей задачи
      */
     public void completeTask(String userId, String index) throws NotExistingTaskIndexException, IncorrectTaskIdTypeException {
         var user = users.get(userId);
         var completedTask = deleteTask(userId, index);
         user.addCompletedTask(completedTask);
-        updateUsersState();
+        dumpsUserData();
     }
 
     /**
@@ -187,7 +182,7 @@ public class Core {
      * @param tasks список, по которому нужно собрать строку
      * @return Форматированная строка, сформированная согласно переданному списку
      */
-    private String buildFormattedString(List<Task> tasks){
+    private String buildFormattedString(List<Task> tasks) {
         var formattedTasks = new StringBuilder("Id\tОписание\n");
         for (int i = 0; i < tasks.size(); i++) {
             if (i == tasks.size() - 1) {
@@ -204,8 +199,8 @@ public class Core {
      *
      * @param userId Id пользователя у которого нужно очистить список задач
      */
-    public void clearAllTaskLists(String userId){
-        users.put(userId, new User());
-        updateUsersState();
+    public void clearAllTaskLists(String userId) {
+        users.get(userId).eraseAllTasks();
+        dumpsUserData();
     }
 }
