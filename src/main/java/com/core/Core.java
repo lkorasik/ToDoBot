@@ -28,19 +28,23 @@ public class Core {
         var json_file = new File(USERS_FILE);
         var builder = new GsonBuilder();
         var gson = builder.create();
-        try (FileReader fileReader = new FileReader(json_file)) {
-            var jsonString = FileUtils.readFileToString(json_file, StandardCharsets.UTF_8);
-            Type type = new TypeToken<HashMap<String, User>>() {}.getType();
-            HashMap<String, User> json_data = gson.fromJson(jsonString, type);
-            if (json_data == null) {
-                users = new HashMap<>();
-            } else {
-                users = json_data;
-            }
-        } catch (FileNotFoundException exception) {
+        String jsonString = null;
+        try {
+            jsonString = FileUtils.readFileToString(
+                    json_file, StandardCharsets.UTF_8
+            );
+        } catch (FileNotFoundException e) {
             users = new HashMap<>();
-        } catch (IOException exception) {
-            exception.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        Type type = new TypeToken<HashMap<String, User>>() {
+        }.getType();
+        HashMap<String, User> json_data = gson.fromJson(jsonString, type);
+        if (json_data == null) {
+            users = new HashMap<>();
+        } else {
+            users = json_data;
         }
     }
 
@@ -60,21 +64,21 @@ public class Core {
         dumpsUserData();
     }
 
-    public State getUserFsmState(String userId){
+    public State getUserFsmState(String userId) {
         return users.get(userId).getFsmState();
     }
 
-    public State updateUserFsmState(String userId, String stateKey){
+    public State updateUserFsmState(String userId, String stateKey) {
         var user = users.get(userId);
-        switch (user.getFsmState()){
+        switch (user.getFsmState()) {
             case SHOW_COMPLETED:
             case SHOW_TODO:
             case HELP:
             case START:
             case CLEAR:
-                user.fsm.setListenState();
+                user.setListenFsmState();
             default:
-                user.fsm.updateState(stateKey);
+                user.updateFsmState(stateKey);
         }
 
         return user.getFsmState();

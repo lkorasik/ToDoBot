@@ -1,11 +1,13 @@
 package com.fsm;
 
 import com.core.Constants;
+import com.google.gson.annotations.Expose;
 
 import java.util.ArrayList;
 
 /**
  * Класс, который реализцует конечный автомат
+ *
  * @author Lev
  */
 public class FSM {
@@ -13,7 +15,7 @@ public class FSM {
     private final ArrayList<String> commands = new ArrayList<>();
     private State currentState;
 
-    public FSM(){
+    public FSM() {
         initTransitions();
         initCommands();
 
@@ -23,7 +25,7 @@ public class FSM {
     /**
      * Инициализация списка команд
      */
-    private void initCommands(){
+    private void initCommands() {
         commands.add(Constants.ADD_TASK_COMMAND);
         commands.add(Constants.DELETE_TASK_COMMAND);
         commands.add(Constants.COMPLETE_TASK_COMMAND);
@@ -39,7 +41,7 @@ public class FSM {
     /**
      * Инициализация таблицы переходов
      */
-    private void initTransitions(){
+    private void initTransitions() {
         trans.addTransition(new Transition(State.ENTRY_POINT, Constants.START_COMMAND, State.START));
         trans.addTransition(new Transition(State.START, null, State.LISTEN));
 
@@ -74,38 +76,41 @@ public class FSM {
 
     /**
      * Обновить состояние автомата
+     *
      * @param stateKey ключ перехода к новому состоянию
      */
-    public void updateState(String stateKey){
-        if(!commands.contains(stateKey)){
+    public void updateState(String stateKey) {
+        if (!commands.contains(stateKey)) {
             stateKey = null;
         }
 
         State end = trans.getEndState(currentState, stateKey);
 
-        if(end != null) {
+        if (end != null) {
             currentState = end;
         }
     }
 
-    public void setListenState(){
+    public void setListenState() {
         currentState = State.LISTEN;
     }
 
     /**
      * Установить состояние fsm
+     *
      * @param state Новое состояние
      */
-    public void setState(State state){
+    public void setState(State state) {
         currentState = state;
     }
 
 
     /**
      * Получить текущее сосотояние автмата
+     *
      * @return состояние
      */
-    public State getCurrentState(){
+    public State getCurrentState() {
         return currentState;
     }
 

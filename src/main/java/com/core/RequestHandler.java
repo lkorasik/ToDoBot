@@ -2,7 +2,6 @@ package com.core;
 
 import com.fsm.State;
 import org.apache.commons.lang3.StringUtils;
-import java.text.ParseException;
 
 /**
  * Класс, который является прослойкой между ConsoleBot или Bot и Core
@@ -12,16 +11,22 @@ import java.text.ParseException;
 public class RequestHandler {
     private Core core;
 
-    public RequestHandler(){
+    public RequestHandler() {
         core = new Core();
     }
 
-    public RequestHandler(String path){
+    public RequestHandler(String path) {
         core = new Core(path);
     }
 
-    public boolean isUserSignedIn(String uid){
-        try{
+    /**
+     * Проверка, что пользователь уже создан
+     *
+     * @param uid Id пользователя
+     * @return True, если пользователь создан, false - иначе
+     */
+    public boolean isUserCreated(String uid) {
+        try {
             getUserFSMState(uid);
         } catch (NullPointerException e) {
             return false;
@@ -31,14 +36,16 @@ public class RequestHandler {
 
     /**
      * Получение текущего состояния пользователя
+     *
      * @param uid Id пользователя
      */
-    public State getUserFSMState(String uid){
+    public State getUserFSMState(String uid) {
         return core.getUserFsmState(uid);
     }
 
     /**
      * Проверка на то, что тело команды задано корректно
+     *
      * @param body Тело команды
      * @return True, если все хорошо
      */
@@ -48,11 +55,12 @@ public class RequestHandler {
 
     /**
      * Обработка сообщения
+     *
      * @param input - сообщение
      * @return Строка с резульатом, которую надо показать пользователю
      */
     public String handle(String uid, String chatId, String input, ISender sender) {
-        if (!isUserSignedIn(uid)) {
+        if (!isUserCreated(uid)) {
             core.createUser(uid);
         }
 
@@ -61,7 +69,6 @@ public class RequestHandler {
             return core.getUserFsmState(uid).toString();
 
         var currentState = core.getUserFsmState(uid);
-        var newState = core.updateUserFsmState(uid, input);
 
         switch (currentState) {
             case ADD:
@@ -100,8 +107,9 @@ public class RequestHandler {
                 }
                 break;
         }
-        if (res == null){
-            switch (newState){
+        var newState = core.updateUserFsmState(uid, input);
+        if (res == null) {
+            switch (newState) {
                 case LISTEN:
                     res = Constants.INCORRECT_COMMAND_MESSAGE;
                     break;
@@ -122,13 +130,13 @@ public class RequestHandler {
         return res;
     }
 
-    private String getTaskId(String message){
+    private String getTaskId(String message) {
         int position = message.indexOf(" ");
 
         return message.substring(0, position);
     }
 
-    private String getTime(String message){
+    private String getTime(String message) {
         int position = message.indexOf(" ");
 
         return message.substring(position + 1);
@@ -140,7 +148,7 @@ public class RequestHandler {
      * @param taskDescription Текст задачи
      * @return Сообщение с результатом операции
      */
-    private String addTask(String uid, String taskDescription){
+    private String addTask(String uid, String taskDescription) {
         String result;
 
         if (bodyIsCorrect(taskDescription)) {
@@ -159,7 +167,7 @@ public class RequestHandler {
      * @param taskId Принимается идентификатор задачи
      * @return Сообщение с результатом операции
      */
-    private String deleteTask(String uid, String taskId){
+    private String deleteTask(String uid, String taskId) {
         String result;
 
         if (bodyIsCorrect(taskId)) {
@@ -179,11 +187,11 @@ public class RequestHandler {
     /**
      * Обертка над методом completeTask класса Core
      *
-     * @param uid Id пользователя
+     * @param uid    Id пользователя
      * @param taskId Id задачи
      * @return Сообщение с результатом операции
      */
-    public String completeTask(String uid, String taskId){
+    public String completeTask(String uid, String taskId) {
         String result;
 
         if (bodyIsCorrect(taskId)) {
@@ -194,7 +202,7 @@ public class RequestHandler {
                 result = exception.getMessage();
             }
         } else {
-            result  = Constants.EMPTY_COMPLETED_TASK_LIST_MSG;
+            result = Constants.EMPTY_COMPLETED_TASK_LIST_MSG;
         }
 
         return result;
@@ -206,7 +214,7 @@ public class RequestHandler {
      * @param uid Id пользователя, у которого нужно очистить список задач
      * @return Сообщение с результатом операции
      */
-    private String clearTaskList(String uid){
+    private String clearTaskList(String uid) {
         core.clearAllTaskLists(uid);
 
         return Constants.CLEARED_TASK_LIST_MSG;
