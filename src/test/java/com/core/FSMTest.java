@@ -24,7 +24,7 @@ public class FSMTest {
      */
     @Test
     public void testStartDialog(){
-        fsm.update("/start");
+        fsm.updateState("/start");
 
         Assert.assertTrue(fsm.isState(State.START));
     }
@@ -34,7 +34,7 @@ public class FSMTest {
      */
     @Test
     public void testNotUseStart(){
-        fsm.update("/add");
+        fsm.updateState("/add");
 
         Assert.assertFalse(fsm.isState(State.ADD));
         Assert.assertTrue(fsm.isState(State.ENTRY_POINT));
@@ -45,9 +45,9 @@ public class FSMTest {
      */
     @Test
     public void testAddTask(){
-        fsm.update("/start");
-        fsm.update("/add");
-        fsm.update("To");
+        fsm.updateState("/start");
+        fsm.updateState("/add");
+        fsm.updateState("To");
 
         Assert.assertTrue(fsm.isState(State.LISTEN));
     }
@@ -57,9 +57,9 @@ public class FSMTest {
      */
     @Test
     public void testAddTaskCanceled(){
-        fsm.update("/start");
-        fsm.update("/add");
-        fsm.update("/cancel");
+        fsm.updateState("/start");
+        fsm.updateState("/add");
+        fsm.updateState("/cancel");
 
         Assert.assertTrue(fsm.isState(State.START));
     }
@@ -69,11 +69,11 @@ public class FSMTest {
      */
     @Test
     public void testDeleteTask(){
-        fsm.update("/start");
-        fsm.update("/add");
-        fsm.update("A");
-        fsm.update("/del");
-        fsm.update("0");
+        fsm.updateState("/start");
+        fsm.updateState("/add");
+        fsm.updateState("A");
+        fsm.updateState("/del");
+        fsm.updateState("0");
 
         Assert.assertTrue(fsm.isState(State.LISTEN));
     }
@@ -83,9 +83,9 @@ public class FSMTest {
      */
     @Test
     public void testDelTaskCanceled(){
-        fsm.update("/start");
-        fsm.update("/del");
-        fsm.update("/cancel");
+        fsm.updateState("/start");
+        fsm.updateState("/del");
+        fsm.updateState("/cancel");
 
         Assert.assertTrue(fsm.isState(State.START));
     }
@@ -95,10 +95,10 @@ public class FSMTest {
      */
     @Test
     public void testShow(){
-        fsm.update("/start");
-        fsm.update("/show");
+        fsm.updateState("/start");
+        fsm.updateState("/show");
 
-        fsm.update();
+        fsm.setListenState();
 
         Assert.assertTrue(fsm.isState(State.LISTEN));
     }
@@ -108,10 +108,10 @@ public class FSMTest {
      */
     @Test
     public void testHelp(){
-        fsm.update("/start");
-        fsm.update("/help");
+        fsm.updateState("/start");
+        fsm.updateState("/help");
 
-        fsm.update();
+        fsm.setListenState();
 
         Assert.assertTrue(fsm.isState(State.LISTEN));
     }
