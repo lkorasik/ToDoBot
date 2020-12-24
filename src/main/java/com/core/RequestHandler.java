@@ -1,12 +1,8 @@
 package com.core;
 
-import com.fsm.FSM;
 import com.fsm.State;
 import org.apache.commons.lang3.StringUtils;
-
 import java.text.ParseException;
-import java.util.Date;
-import java.util.function.BiConsumer;
 
 /**
  * Класс, который является прослойкой между ConsoleBot или Bot и Core
@@ -15,7 +11,6 @@ import java.util.function.BiConsumer;
  */
 public class RequestHandler {
     private Core core;
-    private FSM fsm = new FSM();
 
     public RequestHandler(){
         core = new Core();
@@ -23,6 +18,23 @@ public class RequestHandler {
 
     public RequestHandler(String path){
         core = new Core(path);
+    }
+
+    public boolean isUserSignedIn(String uid){
+        try{
+            getUserFSMState(uid);
+        } catch (NullPointerException e) {
+            return false;
+        }
+        return true;
+    }
+
+    /**
+     * Получение текущего состояния пользователя
+     * @param uid Id пользователя
+     */
+    public State getUserFSMState(String uid){
+        return core.getUserFsmState(uid);
     }
 
     /**
@@ -34,90 +46,78 @@ public class RequestHandler {
         return body != null && !StringUtils.isBlank(body) && !body.equals("");
     }
 
-    public State getUserFSMState(String uid) { return core.getUserFSMState(uid); }
-
-    public State getFSMState(){
-        return fsm.getCurrentState();
-    }
-
-    private void updateFSMState(String uid){
-        State userState = core.getUserFSMState(uid);
-        if (userState == null){
-            core.createUser(uid);
-            fsm.setState(State.ENTRY_POINT);
-        } else{
-            fsm.setState(userState);
-        }
-    }
-
     /**
      * Обработка сообщения
      * @param input - сообщение
      * @return Строка с резульатом, которую надо показать пользователю
      */
-    public String handle(String uid, String chatId, String input, ISender sender) throws ParseException {
-        updateFSMState(uid);
-
-        if (input.equals("/fsmstate"))
-            return fsm.getCurrentState().toString();
+    public String handle(String uid, String chatId, String input, ISender sender) {
+        if (!isUserSignedIn(uid)) {
+            core.createUser(uid);
+        }
 
         String res = null;
-        boolean isAdd = fsm.isState(State.ADD);
-        boolean isDel = fsm.isState(State.DEL);
-        boolean isDone = fsm.isState(State.DONE);
-        boolean isClear = fsm.isState(State.CLEAR);
-        boolean isShowCompleted = fsm.isState(State.SHOW_COMPLETED);
-        boolean isShowTodo = fsm.isState(State.SHOW_TODO);
-        boolean isHelp = fsm.isState(State.HELP);
-        boolean isStart = fsm.isState(State.START);
-        boolean isCancel = input.equals(Constants.CANCEL_COMMAND);
-        boolean isNotification = fsm.isState(State.NOTIFICATION);
+        if (input.equals("/fsmstate"))
+            return core.getUserFsmState(uid).toString();
 
-        if (isShowCompleted || isShowTodo || isHelp || isStart || isClear)
-            fsm.update();
+        var currentState = core.getUserFsmState(uid);
+        var newState = core.updateUserFsmState(uid, input);
 
-        fsm.update(input);
-
-        if(isAdd && !input.equals(Constants.CANCEL_COMMAND)){
-            res = addTask(uid, input);
+        switch (currentState) {
+            case ADD:
+                if (input.equals("/cancel")) {
+                    res = Constants.BOT_WAITING_COMMANDS;
+                } else {
+                    res = addTask(uid, input);
+                }
+                break;
+            case DEL:
+                if (input.equals("/cancel")) {
+                    res = Constants.BOT_WAITING_COMMANDS;
+                } else {
+                    res = deleteTask(uid, input);
+                }
+                break;
+            case DONE:
+                if (input.equals("/cancel")) {
+                    res = Constants.BOT_WAITING_COMMANDS;
+                } else {
+                    res = completeTask(uid, input);
+                }
+                break;
+            case NOTIFICATION:
+                if (input.equals("/cancel")) {
+                    res = Constants.BOT_WAITING_COMMANDS;
+                } else {
+                    var converter = new DateConverter();
+                    var date = converter.parse(getTime(input));
+                    if (date != null) {
+                        core.setTimer(uid, chatId, Integer.parseInt(getTaskId(input)), date, sender);
+                        res = Constants.NOTIFICATION_ADDED_MSG;
+                    } else {
+                        res = Constants.NOTIFICATION_NOT_ADDED_MSG;
+                    }
+                }
+                break;
         }
-        else if (isDel && !input.equals(Constants.CANCEL_COMMAND)){
-            res = deleteTask(uid, input);
-        }
-        else if (isDone && !input.equals(Constants.CANCEL_COMMAND)){
-            res = completeTask(uid, input);
-        }
-        else if(isNotification && !input.equals(Constants.CANCEL_COMMAND)){
-            var converter = new DateConverter();
-            var date = converter.parse(getTime(input));
-            if(date != null){
-                core.setTimer(uid, chatId, Integer.parseInt(getTaskId(input)), date, sender);
-                res = Constants.NOTIFICATION_ADDED_MSG;
+        if (res == null){
+            switch (newState){
+                case LISTEN:
+                    res = Constants.INCORRECT_COMMAND_MESSAGE;
+                    break;
+                case SHOW_COMPLETED:
+                    res = core.getFormattedCompletedTasksString(uid);
+                    break;
+                case SHOW_TODO:
+                    res = core.getFormattedToDoTasks(uid);
+                    break;
+                case CLEAR:
+                    res = clearTaskList(uid);
+                    break;
+                default:
+                    res = core.getUserFsmState(uid).getStateMessage();
             }
-            else {
-                res = Constants.NOTIFICATION_NOT_ADDED_MSG;
-            }
         }
-        else if (fsm.isState(State.SHOW_COMPLETED)){
-            res = core.getFormattedCompletedTasksString(uid);
-        }
-        else if (fsm.isState(State.SHOW_TODO)){
-            res = core.getFormattedToDoTasks(uid);
-        }
-        else if (fsm.isState(State.CLEAR)){
-            res = clearTaskList(uid);
-        }
-        else if(fsm.isState(State.LISTEN)){
-            if (!isCancel)
-                res = Constants.INCORRECT_COMMAND_MESSAGE;
-            else
-                res = Constants.BOT_WAITING_COMMANDS;
-        }
-        else {
-            res = fsm.getCurrentState().getStateMessage();
-        }
-
-        core.setUserFSMState(uid, fsm.getCurrentState());
 
         return res;
     }

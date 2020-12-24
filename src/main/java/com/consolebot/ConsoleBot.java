@@ -20,15 +20,15 @@ public class ConsoleBot implements ISender {
         this.userId = userId;
         requestHandler = new RequestHandler();
         scanner = new Scanner(System.in);
-        chatId = "1";
+        chatId = "consoleBotChat";
 
     }
 
     public void printGreetingsMessage() {
-        if (requestHandler.getUserFSMState(userId) == null){
-            System.out.println(Constants.ENTRY_POINT_GREETINGS_MSG);
-        } else {
+        if (requestHandler.isUserSignedIn(userId)){
             System.out.println(Constants.NOT_ENTRY_POINT_GREETINGS_MSG);
+        } else {
+            System.out.println(Constants.ENTRY_POINT_GREETINGS_MSG);
         }
     }
     public void run() throws ParseException {
